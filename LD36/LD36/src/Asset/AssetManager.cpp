@@ -20,6 +20,7 @@ sf::Texture * AssetManager::LoadTexture(const sf::String & FilePath)
 	{
 		return Tex;
 	}
+
 	TextureData Data;
 	Data.Filepath = FilePath;
 	Data.Texture = new sf::Texture;

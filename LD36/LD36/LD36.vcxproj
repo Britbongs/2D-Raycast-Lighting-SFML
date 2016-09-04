@@ -87,7 +87,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>SFML_STATIC;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\SFML-2.3.2\include;C:\Users\Mace\Documents\Visual Studio 2015\Projects\LD36\LD36\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\SFML-2.3.2\include;C:\Users\Mace\Documents\GitHub\Get-Dat-Boaty-Post-LD36-\LD36\LD36\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -172,7 +172,7 @@
     <ClCompile Include="src\DerivedStates\MenuState.cpp" />
     <ClCompile Include="src\Boat\Boat.cpp" />
     <ClCompile Include="src\Asset\AssetManager.cpp" />
-    <ClCompile Include="src\Game\PlayState.cpp" />
+    <ClCompile Include="src\DerivedStates\PlayState.cpp" />
     <ClCompile Include="src\States\State.cpp" />
     <ClCompile Include="src\States\StateManager.cpp" />
     <ClCompile Include="src\Game\Game.cpp" />

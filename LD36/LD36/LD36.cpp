@@ -10,14 +10,16 @@ int main(int argc, char* argv[], char* envp[])
 {
 	Game GameObj;
 
+
 	if (!GameObj.InitGame())
 	{
 		return(-1);
 	}
-	
+
 	GameObj.RunGame();
 
 	GameObj.CleanUpGame();
-	
+
+
 	return 0;
 }

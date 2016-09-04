@@ -104,10 +104,10 @@
     <ClCompile Include="src\Projectile\ProjectileManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\PlayState.cpp">
+    <ClCompile Include="src\Player\PlayerController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Player\PlayerController.cpp">
+    <ClCompile Include="src\DerivedStates\PlayState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

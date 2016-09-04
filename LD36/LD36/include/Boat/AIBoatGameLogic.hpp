@@ -14,7 +14,7 @@ public:
 
 	void InitialiseAI(BoatType StartType = BoatType::Raft);
 
-	void SetAIBoat( Boat* B);
+	void SetAIBoat(Boat* B);
 
 private:
 
