@@ -1,0 +1,12 @@
+﻿  PlayerController.cpp
+  Boat.cpp
+  PlayState.cpp
+  Game.cpp
+  LD36.cpp
+  Generating code
+  106 of 2059 functions ( 5.1%) were compiled, the rest were copied from previous compilation.
+    13 functions were new in current compilation
+    98 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  LD36.vcxproj -> C:\Users\Mace\documents\visual studio 2015\Projects\LD36\Release\LD36.exe
+  LD36.vcxproj -> C:\Users\Mace\documents\visual studio 2015\Projects\LD36\Release\LD36.pdb (Full PDB)
