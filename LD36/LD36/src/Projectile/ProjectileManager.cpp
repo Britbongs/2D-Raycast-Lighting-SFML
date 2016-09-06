@@ -6,8 +6,6 @@ ProjectileManager::ProjectileManager(const RenderTexture* const RTex)
 	: Projectiles_(ProjectileCount_, nullptr), RTex_(RTex)
 {
 
-	Textures_ = new Texture*[ProjectileTypeCount_];
-	assert(Textures_);
 
 	AssetMgr_ = AssetManager::GetInstance();
 
@@ -34,10 +32,8 @@ ProjectileManager::~ProjectileManager()
 		P = nullptr;
 	}
 
-	delete[] Textures_;
-	Textures_ = nullptr;
-
 	delete[] ProjectileSpeeds_;
+	ProjectileSpeeds_ = nullptr;
 }
 
 bool ProjectileManager::SetupProjectiles()
@@ -116,8 +112,8 @@ void ProjectileManager::ProjectileUpdate(float Delta, std::vector<Boat>& Boats)
 		{ //if out of bounds
 			P->InUse = false;
 			P->FiredFromState = None;
+			continue;
 		}
-
 
 		for (auto B : Boats)
 		{
@@ -136,18 +132,15 @@ void ProjectileManager::ProjectileUpdate(float Delta, std::vector<Boat>& Boats)
 		}
 
 	}
-
-
 }
 
 void ProjectileManager::draw(sf::RenderTarget & RTarget, sf::RenderStates RStates) const
 {
-
 	for (auto P : Projectiles_)
 	{
 		if (!P->InUse)
 		{
-			//continue;
+			continue;
 		}
 		RTarget.draw(P->Body);
 	}
@@ -155,7 +148,6 @@ void ProjectileManager::draw(sf::RenderTarget & RTarget, sf::RenderStates RState
 
 ProjectileManager::ProjectileType ProjectileManager::BoatTypeToProjectileType(BoatType Type) const
 {
-
 	if (Type == Raft || Type == RowingBoat)
 	{
 		return Rock;
