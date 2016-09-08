@@ -3,6 +3,13 @@
 #include "Boat\Boat.hpp"
 #include "Projectile\ProjectileManager.hpp"
 
+enum PlayerMoveDirection
+{
+	UP,
+	UP_LEFT, 
+	UP_RIGHT
+};
+
 class PlayerController
 {
 public:
@@ -14,10 +21,11 @@ public:
 	//Add a pointer to each boat type to the players boat list
 	void AddPlayerBoats(Boat* Boat[BOAT_TYPE_COUNT]);
 
-	void Fire(Vector2f MousePos);
+	//Fire a projectile 
+	void Fire();
 
-	// 0 = no movement, 1 = right, -1 = left
-	void Move(Int32 Direc);
+	// Set the movement direction of the player 
+	void SetDirection(PlayerMoveDirection Move);
 
 	//Will update players timers & players position
 	void UpdatePlayer(float Delta);
@@ -35,6 +43,8 @@ public:
 
 private:
 
+	//Player movement speed 
+	const float MOVE_SPEED = 150.f; 
 	//Players total number of kills 
 	Int32 KillCount_ = 0;
 
@@ -61,4 +71,5 @@ private:
 
 	//Asset Manager pointer
 	AssetManager* AssetMgr_ = nullptr;
+	
 };
