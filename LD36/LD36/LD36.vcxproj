@@ -147,6 +147,7 @@
     <ClInclude Include="include\Boat\AIBoatGameLogic.hpp" />
     <ClInclude Include="include\Boat\Boat.hpp" />
     <ClInclude Include="include\Asset\AssetManager.hpp" />
+    <ClInclude Include="include\GameVars.hpp" />
     <ClInclude Include="include\Player\PlayerController.hpp" />
     <ClInclude Include="include\States\State.hpp" />
     <ClInclude Include="include\States\StateManager.hpp" />

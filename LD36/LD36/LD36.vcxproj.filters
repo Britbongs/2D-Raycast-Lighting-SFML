@@ -66,6 +66,9 @@
     <ClInclude Include="include\Player\PlayerController.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\GameVars.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LD36.cpp">

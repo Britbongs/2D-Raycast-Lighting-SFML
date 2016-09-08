@@ -12,7 +12,7 @@ public:
 	~PlayerController();
 
 	//Add a pointer to each boat type to the players boat list
-	void AddBoat(Boat* B);
+	void AddPlayerBoats(Boat* Boat[BOAT_TYPE_COUNT]);
 
 	void Fire(Vector2f MousePos);
 
@@ -56,4 +56,9 @@ private:
 	//Start the player on a raft
 	BoatType CurrentBoat_ = Raft;
 
+	//Texture pointers 
+	Texture* BoatTextures_[BOAT_TYPE_COUNT];
+
+	//Asset Manager pointer
+	AssetManager* AssetMgr_ = nullptr;
 };

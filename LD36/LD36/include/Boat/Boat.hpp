@@ -1,6 +1,6 @@
 #pragma once
 #include "Projectile\ProjectileManager.hpp"	
-#define BOAT_TYPE_COUNT 5
+#include "GameVars.hpp"
 
 enum BoatControlState
 {

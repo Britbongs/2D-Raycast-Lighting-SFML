@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Asset\AssetManager.hpp"
+#include "GameVars.hpp"
 
 enum BoatType;
 enum BoatControlState;
@@ -65,13 +66,13 @@ private:
 
 	std::vector<Projectile*> Projectiles_;
 
-	sf::Texture** Textures_ = nullptr;
+	sf::Texture* Textures_[5];
 
 	float* ProjectileSpeeds_ = nullptr;
 
 	const sf::RenderTexture* const RTex_;
 
-	AssetManager* AssetMgr_;
+	AssetManager* AssetMgr_ = nullptr;
 
 };
 

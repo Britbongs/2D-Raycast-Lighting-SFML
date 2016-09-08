@@ -24,7 +24,7 @@ private:
 
 	std::vector<Boat*> ActiveAIBoats_;
 
-	AssetManager* AsstMgr_ = nullptr;
+	AssetManager* AssetMgr_ = nullptr;
 
 	Texture* BoatTextures_[BOAT_TYPE_COUNT];
 
