@@ -79,7 +79,6 @@ void Boat::Fire(Vector2f Direction)
 void Boat::draw(sf::RenderTarget & RTarget, sf::RenderStates RStates) const
 {
 	RStates.transform *= getTransform();
-	//RTarget.draw(ColShape_);
 	RTarget.draw(Shape_, RStates);
 }
 

@@ -84,5 +84,4 @@ __forceinline std::istream& operator >> (std::istream& IStream, Vector2<T>& Vect
 	return (IStream);
 }
 
-
 /////////////////////////////////////
