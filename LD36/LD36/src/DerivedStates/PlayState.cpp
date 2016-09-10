@@ -33,9 +33,20 @@ bool PlayState::Initialise()
 
 	assert(ProjectileMgr_);
 
-	Player_ = new PlayerController(ProjectileMgr_);
+	Player_ = new PlayerController(ProjectileMgr_, Vector2f(GetRenderTexture()->getSize()));
 
 	assert(Player_);
+
+	Boats_.push_back(Boat(ProjectileMgr_, None, Raft));
+	//Implement one after another when ready
+	//Boats_.push_back(Boat(ProjectileMgr_, None, RowingBoat));
+	//Boats_.push_back(Boat(ProjectileMgr_, None, SailBoat));
+	//Boats_.push_back(Boat(ProjectileMgr_, None, SteamBoat));
+	//Boats_.push_back(Boat(ProjectileMgr_, None, Warship));
+
+	Player_->AddPlayerBoats(Boats_);
+
+
 
 	//Instructions text
 	sf::Font* f = AM->GetDefaultFont();
@@ -46,7 +57,7 @@ bool PlayState::Initialise()
 
 	//Initialise game texts 
 	Instructions_.setFont(*f);
-	Instructions_.setString("Tap Space To Begin");
+	Instructions_.setString("Tap X To Begin");
 	Instructions_.setCharacterSize(48u);
 
 	RespawnText_.setFont(*f);
@@ -78,9 +89,6 @@ bool PlayState::Initialise()
 	BG_->SetTexture(T);
 	BG_->setPosition(0, (float)GetRenderWindow()->getSize().y - ScreenScale);
 
-	//First boat init
-	InitialiseBoats();
-
 	SpawnObstacles();
 
 	View V = GetRenderTexture()->getView();
@@ -100,41 +108,37 @@ void PlayState::Update(float Delta)
 
 	LivesText_.setString(L"Lives: " + std::to_wstring(PlayerData_.Lives) + L"\nKills: " + std::to_wstring(PlayerData_.KillCount));
 
-	Vector2f MoveVector(0.f, -1.f);
+	/*
+	TODO:
+	- Player controls with new player controller
+	- Moving the view by players move vector * delta
+	*/
+
+	PlayerMoveDirection Direc;
 
 	if (Keyboard::isKeyPressed(Keyboard::Left) || Keyboard::isKeyPressed(Keyboard::A))
 	{
-		MoveVector.x = -1.f;
-		Boats_[ActiveBoat_].setRotation(-45.f);
+		Direc = UP_LEFT;
 	}
 	else if (Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::D))
 	{
-		MoveVector.x = 1.f;
-		Boats_[ActiveBoat_].setRotation(45.f);
+		Direc = UP_RIGHT;
 	}
 	else
 	{
-		Boats_[ActiveBoat_].setRotation(0.f);
+		Direc = UP;
 	}
 
-	MoveVector = MoveVector * Delta * MoveSpeed;
+	Player_->SetDirection(Direc);
+	//todo: collision detection with sides of map to player controller
 
 	View V(GetRenderTexture()->getView());
-	Boats_[ActiveBoat_].move(MoveVector);
 
-	if (Boats_[ActiveBoat_].getPosition().x <= 0.f)
-	{
-		Boats_[ActiveBoat_].move(1.5f * MoveSpeed * Delta, 0.f);
-	}
-	else if (Boats_[ActiveBoat_].getPosition().x + Boats_[ActiveBoat_].GetGlobalBounds().width / 2.f >= GetRenderTexture()->getSize().x)
-	{
-		Boats_[ActiveBoat_].move(-1.5f * MoveSpeed * Delta, 0.f);
-	}
 
-	V.move(0.f, MoveVector.y);
+	V.move(0.f, Player_->GetMoveVector().y* Delta);
 	GetRenderTexture()->setView(V);
 
-	for (auto B : AIBoats_)
+	/*for (auto B : AIBoats_)
 	{
 		View V(GetRenderTexture()->getView());
 		float MaxY = V.getCenter().y + V.getSize().y / 2.f;
@@ -171,39 +175,46 @@ void PlayState::Update(float Delta)
 		}
 	}
 
-	Boats_[ActiveBoat_].Update(Delta);
+	Boats_[ActiveBoat_].Update(Delta);*/
 
-	if (Mouse::isButtonPressed(Mouse::Left))
+	Player_->UpdatePlayer(Delta);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-		if (PlayerData_.FireTimer == 0.f)
-		{
-			const Vector2f MousePos(GetRenderTexture()->mapPixelToCoords(sf::Mouse::getPosition(*GetRenderWindow())));
-			Vector2f Direc = (MousePos - Boats_[ActiveBoat_].getPosition());
-			Direc = Normalise(Direc);
-
-			ProjectileFireData Data;
-			Data.BoatType = Raft;
-			Data.Direction = Direc;
-			Data.FiredBy = Player;
-			Data.StartPos = Boats_[ActiveBoat_].getPosition();
-
-			ProjectileMgr_->FireProjectile(Data);
-
-			PlayerData_.FireTimer += Delta;
-			//Boats_[ActiveBoat_].Fire(Direc);
-		}
-		else
-		{
-			PlayerData_.FireTimer += Delta;
-			if (PlayerData_.FireTimer > 0.75f)
-			{
-				PlayerData_.FireTimer = 0.f;
-			}
-		}
+		Player_->Fire();
 	}
+	//if (PlayerData_.FireTimer == 0.f)
+	//{
+	//	const Vector2f MousePos(GetRenderTexture()->mapPixelToCoords(sf::Mouse::getPosition(*GetRenderWindow())));
+	//	Vector2f Direc = (MousePos - Boats_[ActiveBoat_].getPosition());
+	//	Direc = Normalise(Direc);
+
+	//	ProjectileFireData Data;
+	//	Data.BoatType = Raft;
+	//	Data.Direction = Direc;
+	//	Data.FiredBy = Player;
+	//	Data.StartPos = Boats_[ActiveBoat_].getPosition();
+
+	//	ProjectileMgr_->FireProjectile(Data);
+
+	//	PlayerData_.FireTimer += Delta;
+	//	//Boats_[ActiveBoat_].Fire(Direc);
+	//}
+	//else
+	//{
+	//	PlayerData_.FireTimer += Delta;
+	//	if (PlayerData_.FireTimer > 0.75f)
+	//	{
+	//		PlayerData_.FireTimer = 0.f;
+	//	}
+	//}
 
 	ProjectileMgr_->ProjectileUpdate(Delta, Boats_);
 
+	//Todo: allow player to query a database of world data that contains all objects data for collisions  
+	//Todo: add in player health mechanic 
+
+	/*
 	if (PlayerCrashed())
 	{
 		--PlayerData_.Lives;
@@ -216,7 +227,8 @@ void PlayState::Update(float Delta)
 		Vector2f Size(RespawnText_.getGlobalBounds().width / 2.f, RespawnText_.getGlobalBounds().height / 2.f);
 		RespawnText_.setPosition(GetRenderTexture()->getView().getCenter() - Size);
 	}
-
+	*/
+	/*
 	if (PlayerData_.Lives <= 0)
 	{
 		Boats_[ActiveBoat_].SetBoatDead();
@@ -226,6 +238,7 @@ void PlayState::Update(float Delta)
 		Vector2f Size(RespawnText_.getGlobalBounds().width / 2.f, RespawnText_.getGlobalBounds().height / 2.f);
 		RespawnText_.setPosition(GetRenderTexture()->getView().getCenter() - Size);
 	}
+	*/
 }
 
 void PlayState::Render() const
@@ -245,6 +258,7 @@ void PlayState::Render() const
 				GetRenderTexture()->draw(B);
 			}
 		}
+
 		//Render projectiles here 
 		GetRenderTexture()->draw(*ProjectileMgr_);
 		if (!GameStarted_)
@@ -274,10 +288,9 @@ void PlayState::PostRender() const
 
 void PlayState::HandleEvents(sf::Event& Evnt, float Delta)
 {
-
 	if (Evnt.type == sf::Event::KeyPressed)
 	{
-		if (Evnt.key.code == Keyboard::Space && !GameStarted_)
+		if (Evnt.key.code == Keyboard::X && !GameStarted_)
 		{
 			GameStarted_ = true;
 		}
@@ -288,78 +301,6 @@ void PlayState::HandleEvents(sf::Event& Evnt, float Delta)
 			Respawn();
 		}
 	}
-}
-
-bool PlayState::InitialiseBoats()
-{
-	//Boats_.resize(BoatCount_);
-	sf::Texture* Tex(nullptr);
-
-	sf::Vector2f Pos;
-	BoatType Type = BoatType::Raft;
-
-	Int32 IType = (int)Type;
-	Int32 Count = 0;
-
-	for (Int32 i = 0; i < BoatCount_; ++i)
-	{
-		Boats_.push_back(Boat(ProjectileMgr_, BoatControlState::None, Type));
-		auto& B = Boats_.back();
-		if (Count % 6 == 0 && Count > 0)
-		{
-			++IType;
-			Type = (BoatType)IType;
-		}
-		//auto& B 
-		B = Boat(ProjectileMgr_, BoatControlState::None, Type);
-		B.setPosition(Vector2f(-100, -100));
-
-		switch (B.GetBoatType())
-		{
-		case BoatType::Raft:
-			Tex = AssetMgr_->LoadTexture("res//textures//raft.png");
-			break;
-
-		case BoatType::RowingBoat:
-			Tex = AssetMgr_->LoadTexture("res//textures//rowboat.png");
-			break;
-
-		case BoatType::SailBoat:
-			Tex = AssetMgr_->LoadTexture("res//textures//sailboat.png");
-			break;
-
-		case BoatType::SteamBoat:
-			Tex = AssetMgr_->LoadTexture("res//textures//steam_warship.png");
-			break;
-
-		case BoatType::Warship:
-			Tex = AssetMgr_->LoadTexture("res//textures//modern_warship.png");
-			break;
-		}
-
-		sf::Texture* BuoyTex = AssetMgr_->LoadTexture("res//textures//buoy.png");
-		B.SetSize(Vector2f(Tex->getSize()));
-		if (Tex != nullptr && BuoyTex != nullptr)
-		{
-
-			B.SetTexture(Tex, BuoyTex);
-		}
-		++Count;
-	}
-
-	EvolvePlayerAndAI(BoatType::Warship);
-	for (auto B : AIBoats_)
-	{
-		SetAIBoatPosition(*B);
-	}
-
-	Pos.x = ((float)GetRenderWindow()->getSize().x / 2.f);
-	Pos.y = ((float)GetRenderWindow()->getSize().y / 2.f);
-
-	Boats_[ActiveBoat_].setOrigin(Boats_[ActiveBoat_].GetGlobalBounds().width / 2.f, Boats_[ActiveBoat_].GetGlobalBounds().height / 2.f);
-	Boats_[ActiveBoat_].setPosition(Pos);
-
-	return true;
 }
 
 void PlayState::SetAIBoatPosition(Boat & B)

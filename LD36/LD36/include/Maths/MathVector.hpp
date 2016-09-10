@@ -19,52 +19,55 @@ using namespace sf;
 ///Param: ref Vector2
 ///Return: Vector2
 template<typename T>
-inline Vector2<T> Normalise(const Vector2<T>& Vector);
+__forceinline Vector2<T> Normalise(const Vector2<T>& Vector);
 
 ///Get the dot product between two vectors
 ///Param: ref Vector2
 ///Return: type of vector(float, int etc..)
 template<typename T>
-inline T DotProduct(const Vector2<T>& Vector1, const Vector2<T>& Vector2);
+__forceinline T DotProduct(const Vector2<T>& Vector1, const Vector2<T>& Vector2);
 
 ///Get the length of a vector
 ///Param: ref Vector2
 ///Return: type of vector 
 template<typename T>
-inline T GetLength(const Vector2<T>& Vector);
+__forceinline T GetLength(const Vector2<T>& Vector);
 
 ///Get the squared length of a vector 
 ///Param: ref Vector2
 ///Return: Type of vector
 template<typename T>
-inline T GetSquareLength(const Vector2<T>& Vector);
+__forceinline T GetSquareLength(const Vector2<T>& Vector);
 
 ///Set a vector to 0, 0
 ///Param: ref Vector2
 ///Return: Vector2
 template<typename T>
-inline void Zero(Vector2<T>& Vector);
+__forceinline void Zero(Vector2<T>& Vector);
 
 ///Get angle between two vectors
 ///Param: ref Vector2
 ///Return: Type of vector
 template<typename T>
-inline T GetAngleBetween(const Vector2<T>& Vector);
+__forceinline T GetAngleBetween(const Vector2<T>& Vector);
+
+template<typename T>
+__forceinline float GetAngle(const Vector2<T>&Vector);
 
 ///Rotate a vector by angle theta (in radians)
 ///Param: ref Vector2
 ///Param: float Angle
 ///Return: Type of vector
 template<typename T>
-inline Vector2<T> RotateVector(const sf::Vector2<T>& Vector, float Angle);
+__forceinline Vector2<T> RotateVector(const sf::Vector2<T>& Vector, float Angle);
 
 ///Output stream operator for Vector2
 template<typename T>
-inline std::ostream& operator<< (std::ostream& OStream, const Vector2<T>& Vector);
+__forceinline std::ostream& operator<< (std::ostream& OStream, const Vector2<T>& Vector);
 
 ///Input stream operator for Vector2
 template<typename T>
-inline std::istream& operator >> (std::istream& IStream, Vector2<T>& Vector);
+__forceinline std::istream& operator >> (std::istream& IStream, Vector2<T>& Vector);
 
 typedef Vector2<double> Vector2d;
 

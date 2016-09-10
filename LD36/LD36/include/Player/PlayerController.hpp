@@ -3,21 +3,35 @@
 #include "Boat\Boat.hpp"
 #include "Projectile\ProjectileManager.hpp"
 
+enum PlayerMoveDirection
+{
+	UP,
+	UP_LEFT,
+	UP_RIGHT
+};
+
+/*
+TODO:
+- Implement attack grace timer
+- Implement fire cool down timer
+*/
+
 class PlayerController
 {
 public:
 
-	explicit PlayerController(ProjectileManager* ProjMgr);
+	explicit PlayerController(ProjectileManager* ProjMgr, Vector2f ScreenSize);
 
 	~PlayerController();
 
 	//Add a pointer to each boat type to the players boat list
-	void AddPlayerBoats(Boat* Boat[BOAT_TYPE_COUNT]);
+	void AddPlayerBoats(std::vector<Boat>& Boats);
 
-	void Fire(Vector2f MousePos);
+	//Fire a projectile 
+	void Fire();
 
-	// 0 = no movement, 1 = right, -1 = left
-	void Move(Int32 Direc);
+	// Set the movement direction of the player 
+	void SetDirection(PlayerMoveDirection Move);
 
 	//Will update players timers & players position
 	void UpdatePlayer(float Delta);
@@ -25,16 +39,19 @@ public:
 	//Get a pointer to the active boat to allow the camera to be centred on it 
 	const Boat* const GetActiveBoat() const
 	{
-		assert(ActiveIndex_ >= 0 && ActiveIndex_ < (signed)Boats_.size());
-
-		return Boats_[ActiveIndex_];
+		return Boats_[CurrentBoat_];
 	}
 
 	//Get the total number of kills the player has
 	Int32 GetKillCount() const { return KillCount_; };
 
+	//Get the player movement vector 
+	Vector2f GetMoveVector() const { return MoveVec_; }
+
 private:
 
+	//Player movement speed 
+	const float MOVE_SPEED = 150.f;
 	//Players total number of kills 
 	Int32 KillCount_ = 0;
 
@@ -47,18 +64,23 @@ private:
 	// Projectile manager to allow the boat to fire
 	ProjectileManager* const ProjectileMgr_ = nullptr;
 
-	//Index of the boat the player is currently using 
-	Int32 ActiveIndex_ = INDEX_NONE; //Active boat index
-
 	//Players movement vector
 	Vector2f MoveVec_ = Vector2f(0.f, 0.f);
+
+	//Screen dimensions
+	const Vector2f ScreenSize_;
 
 	//Start the player on a raft
 	BoatType CurrentBoat_ = Raft;
 
+	Time GraceTimer_ = seconds(0.f);
+
+	Time FireCooldownTimer_ = seconds(0.f);
 	//Texture pointers 
 	Texture* BoatTextures_[BOAT_TYPE_COUNT];
-
+	
+	Texture* BuoyTexture_ = nullptr;
 	//Asset Manager pointer
 	AssetManager* AssetMgr_ = nullptr;
+
 };

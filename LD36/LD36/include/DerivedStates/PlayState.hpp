@@ -32,13 +32,12 @@ private:
 	{
 		Int32 Lives = 10;
 		Int32 Ammo = 10;
-		float TimeAlive = 0.f; //Maybe
 		Int32 KillCount = 0;
 		Int32 Type = (Int32)BoatType::Raft;
+		float TimeAlive = 0.f;
 		float FireTimer = 0.f;
 	};
 
-	bool InitialiseBoats();
 
 	void SetAIBoatPosition(Boat& B);
 
