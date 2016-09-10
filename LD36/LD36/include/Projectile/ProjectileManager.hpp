@@ -48,7 +48,7 @@ public:
 
 	void FireProjectile(const ProjectileFireData& Data);
 
-	void ProjectileUpdate(float Delta, std::vector<Boat>& Boats);
+	void ProjectileUpdate(float Delta, std::vector<Boat*>& Boats);
 
 private:
 

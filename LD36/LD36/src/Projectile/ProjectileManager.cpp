@@ -86,7 +86,7 @@ void ProjectileManager::FireProjectile(const ProjectileFireData& Data)
 	P->Velocity = Data.Direction * ProjectileSpeeds_[Type];
 }
 
-void ProjectileManager::ProjectileUpdate(float Delta, std::vector<Boat>& Boats)
+void ProjectileManager::ProjectileUpdate(float Delta, std::vector<Boat*>& Boats)
 {
 	View V(RTex_->getView());
 	FloatRect ViewCollider;
@@ -119,12 +119,12 @@ void ProjectileManager::ProjectileUpdate(float Delta, std::vector<Boat>& Boats)
 		{
 			assert(P);
 
-			if (!B.IsBoatAlive() || B.GetControlState() == P->FiredFromState)
+			if (!B->IsBoatAlive() || B->GetControlState() == P->FiredFromState)
 			{
 				continue;
 			}
 
-			if (P->Body.getGlobalBounds().intersects(B.GetGlobalBounds()))
+			if (P->Body.getGlobalBounds().intersects(B->GetGlobalBounds()))
 			{
 				P->InUse = false;
 				P->FiredFromState = None;

@@ -8,23 +8,13 @@ PlayerController::PlayerController(ProjectileManager* ProjectileMgr, Vector2f Sc
 	AssetMgr_ = AssetManager::GetInstance();
 	// Load boat textures
 	BoatTextures_[BoatType::Raft] = AssetMgr_->LoadTexture("res//textures//raft.png");
-	assert(BoatTextures_[BoatType::Raft]);
-
 	BoatTextures_[BoatType::RowingBoat] = AssetMgr_->LoadTexture("res//textures//rowboat.png");
-	assert(BoatTextures_[BoatType::RowingBoat]);
-
 	BoatTextures_[BoatType::SailBoat] = AssetMgr_->LoadTexture("res//textures//sailboat.png");
-	assert(BoatTextures_[BoatType::SailBoat]);
-
 	BoatTextures_[BoatType::SteamBoat] = AssetMgr_->LoadTexture("res//textures//steam_warship.png");
-	assert(BoatTextures_[BoatType::SteamBoat]);
-
 	BoatTextures_[BoatType::Warship] = AssetMgr_->LoadTexture("res//textures//modern_warship.png");
-	assert(BoatTextures_[BoatType::Warship]);
-
+	
 	//Load buoy texture
 	BuoyTexture_ = AssetMgr_->LoadTexture("res//textures//buoy.png");
-	assert(BuoyTexture_);
 }
 
 
@@ -33,10 +23,10 @@ PlayerController::~PlayerController()
 
 }
 
-void PlayerController::AddPlayerBoats(std::vector<Boat>& Boats)
+void PlayerController::AddPlayerBoats(std::vector<Boat*>& Boats)
 {
 	//Todo: Implemenet other boats when ready
-	Boats_.push_back(&Boats[Raft]);
+	Boats_.push_back(Boats[Raft]);
 	Boats_.back()->SetTexture(BoatTextures_[Raft], BuoyTexture_);
 
 	//spawn the first boat in the centre of the screen

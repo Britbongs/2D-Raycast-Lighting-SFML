@@ -18,7 +18,7 @@
 
 //Game Includes
 #include "Maths\MathInclude.hpp"
-
+#include "GameVars.hpp"
 
 // TODO: reference additional headers your program requires here
 

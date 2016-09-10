@@ -6,6 +6,7 @@
 #include "TiledBackground\TiledBackground.hpp"
 #include "Projectile\ProjectileManager.hpp"	
 #include "Player\PlayerController.hpp"
+#include "AI\AIBoatManager.hpp"
 
 class PlayState : public State
 
@@ -57,7 +58,7 @@ private:
 	sf::RectangleShape SeaBackground_;
 
 	std::vector<sf::RectangleShape> Obstacles_;
-	std::vector<Boat> Boats_;
+	std::vector<Boat*> Boats_;
 	std::vector<Boat*> AIBoats_;
 
 	sf::Text Instructions_;
@@ -75,11 +76,11 @@ private:
 
 	float MoveSpeed = 120.f;
 
-	AssetManager* AssetMgr_ = nullptr;
-
 	PlayerData PlayerData_;
 
+	AssetManager* AssetMgr_ = nullptr;
 	ProjectileManager* ProjectileMgr_ = nullptr;
+	AIBoatManager* AIBoatMgr_ = nullptr;
 	PlayerController* Player_ = nullptr;
 	TiledBackground* BG_ = nullptr;
 

@@ -144,7 +144,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\Boat\AIBoatGameLogic.hpp" />
+    <ClInclude Include="include\AI\AIController.h" />
+    <ClInclude Include="include\AI\AIBoatManager.hpp" />
     <ClInclude Include="include\Boat\Boat.hpp" />
     <ClInclude Include="include\Asset\AssetManager.hpp" />
     <ClInclude Include="include\GameVars.hpp" />
@@ -164,9 +165,10 @@
     <ClInclude Include="include\Projectile\ProjectileManager.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AI\AIController.cpp" />
     <ClCompile Include="src\Player\PlayerController.cpp" />
     <ClCompile Include="src\Projectile\ProjectileManager.cpp" />
-    <ClCompile Include="src\Boat\AIBoatGameLogic.cpp" />
+    <ClCompile Include="src\AI\AIBoatManager.cpp" />
     <ClCompile Include="src\DerivedStates\MenuState.cpp" />
     <ClCompile Include="src\Boat\Boat.cpp" />
     <ClCompile Include="src\Asset\AssetManager.cpp" />
