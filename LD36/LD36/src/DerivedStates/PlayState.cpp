@@ -4,7 +4,7 @@
 using namespace sf;
 
 PlayState::PlayState(sf::Int32 ID, sf::RenderWindow* RWindow, sf::RenderTexture* RTexture)
-	: State("Play", ID, RWindow, RTexture), AIBoats_(5, nullptr)
+	: State("Play", ID, RWindow, RTexture)
 {
 	AssetMgr_ = AssetManager::GetInstance();
 }
@@ -19,6 +19,12 @@ PlayState::~PlayState()
 
 	delete Player_;
 	Player_ = nullptr;
+
+	for (auto& B : Boats_)
+	{
+		delete B;
+		B = nullptr;
+	}
 
 }
 
@@ -37,16 +43,21 @@ bool PlayState::Initialise()
 
 	assert(Player_);
 
-	Boats_.push_back(Boat(ProjectileMgr_, None, Raft));
-	//Implement one after another when ready
-	//Boats_.push_back(Boat(ProjectileMgr_, None, RowingBoat));
-	//Boats_.push_back(Boat(ProjectileMgr_, None, SailBoat));
-	//Boats_.push_back(Boat(ProjectileMgr_, None, SteamBoat));
-	//Boats_.push_back(Boat(ProjectileMgr_, None, Warship));
+	//Implement other player boats after another when ready
+	Boats_.push_back(new Boat(ProjectileMgr_, None, Raft));
 
 	Player_->AddPlayerBoats(Boats_);
 
+	//AI boat manager
+	AIBoatMgr_ = new AIBoatManager(ProjectileMgr_);
+	//todo add boats then call initialise
+	for (Int32 i = 0; i < AI_BOAT_COUNT; ++i)
+	{
+		Boats_.push_back(new Boat());
+		AIBoatMgr_->AddBoat(Boats_.back());
+	}
 
+	AIBoatMgr_->InitialiseAI(GetRenderTexture()->getView());
 
 	//Instructions text
 	sf::Font* f = AM->GetDefaultFont();
@@ -83,8 +94,10 @@ bool PlayState::Initialise()
 	}
 
 	T->setRepeated(true);
+
 	Int32 ScreenScale = (Int32)GetRenderWindow()->getSize().y * 100u;
 	Int32 BGHeight = (GetRenderWindow()->getSize().y * 100u) / 128u;
+
 	BG_ = new TiledBackground(128u, Vector2u(GetRenderWindow()->getSize().x / 128u, BGHeight));
 	BG_->SetTexture(T);
 	BG_->setPosition(0, (float)GetRenderWindow()->getSize().y - ScreenScale);
@@ -253,9 +266,9 @@ void PlayState::Render() const
 
 		for (const auto& B : Boats_)
 		{
-			if (B.GetControlState() != BoatControlState::None)
+			if (B->GetControlState() != BoatControlState::None)
 			{
-				GetRenderTexture()->draw(B);
+				GetRenderTexture()->draw(*B);
 			}
 		}
 
@@ -307,7 +320,7 @@ void PlayState::SetAIBoatPosition(Boat & B)
 {
 	const float SpawnDist(800);
 
-	float BeforePoint(Boats_[ActiveBoat_].getPosition().y);
+	float BeforePoint(Boats_[ActiveBoat_]->getPosition().y);
 	float XSpawn = RandFloat(0.f, (float)GetRenderTexture()->getSize().x - B.GetGlobalBounds().width);
 
 	BeforePoint -= GetRenderTexture()->getView().getSize().y;
@@ -387,10 +400,10 @@ void PlayState::Respawn()
 	if (PlayerData_.Lives > 0)
 	{
 
-		Vector2f Pos = Boats_[ActiveBoat_].getPosition();
+		Vector2f Pos = Boats_[ActiveBoat_]->getPosition();
 
-		Pos.y += Boats_[ActiveBoat_].GetGlobalBounds().height * 4.0f;
-		Boats_[ActiveBoat_].setPosition(Pos);
+		Pos.y += Boats_[ActiveBoat_]->GetGlobalBounds().height * 4.0f;
+		Boats_[ActiveBoat_]->setPosition(Pos);
 
 
 		CentreViewOnPlayer();
@@ -400,10 +413,10 @@ void PlayState::Respawn()
 	PlayerData_.Lives = 5;
 
 	sf::Vector2f Pos;
-	Pos.x = ((float)GetRenderWindow()->getSize().x / 2.f) - (Boats_[ActiveBoat_].GetSize().x / 2.f);
-	Pos.y = ((float)GetRenderWindow()->getSize().y / 2.f) - (Boats_[ActiveBoat_].GetSize().y / 2.f);
-	Boats_[ActiveBoat_].setPosition(Pos);
-	Boats_[ActiveBoat_].setOrigin(Boats_[ActiveBoat_].GetGlobalBounds().width / 2.f, Boats_[ActiveBoat_].GetGlobalBounds().height / 2.f);
+	Pos.x = ((float)GetRenderWindow()->getSize().x / 2.f) - (Boats_[ActiveBoat_]->GetSize().x / 2.f);
+	Pos.y = ((float)GetRenderWindow()->getSize().y / 2.f) - (Boats_[ActiveBoat_]->GetSize().y / 2.f);
+	Boats_[ActiveBoat_]->setPosition(Pos);
+	Boats_[ActiveBoat_]->setOrigin(Boats_[ActiveBoat_]->GetGlobalBounds().width / 2.f, Boats_[ActiveBoat_]->GetGlobalBounds().height / 2.f);
 
 	CentreViewOnPlayer();
 
@@ -417,7 +430,8 @@ void PlayState::Respawn()
 
 bool PlayState::PlayerCrashed()
 {
-	Boat* PBoat = &Boats_[ActiveBoat_];
+	/*  
+	Boat* PBoat = Boats_[ActiveBoat_];
 
 	for (auto& B2 : Boats_)
 	{
@@ -451,13 +465,13 @@ bool PlayState::PlayerCrashed()
 			return true;
 		}
 	}
-
+	*/
 	return false;
 }
 
 void PlayState::CentreViewOnPlayer()
 {
-	View V = GetRenderTexture()->getView();
+	/*View V = GetRenderTexture()->getView();
 	if (!BG_->GetGlobalBounds().contains(V.getCenter() - sf::Vector2f(0.f, (float)V.getSize().y)))
 	{
 		return;
@@ -469,62 +483,62 @@ void PlayState::CentreViewOnPlayer()
 
 	V.setCenter(V.getCenter().x, Boats_[ActiveBoat_].getPosition().y);
 
-	GetRenderTexture()->setView(V);
+	GetRenderTexture()->setView(V);*/
 }
 
 void PlayState::EvolvePlayerAndAI(BoatType Type)
 {
-	for (auto& B : Boats_)
-	{
-		B.SetControlState(BoatControlState::None);
-		B.SetBoatAlive();
-		B.SetHealthPoints(100);
-	}
+	//for (auto& B : Boats_)
+	//{
+	//	B.SetControlState(BoatControlState::None);
+	//	B.SetBoatAlive();
+	//	B.SetHealthPoints(100);
+	//}
 
-	const Int32 BoatTypeCount = 5;
-	Int32 Index = 0;
-	Int32 AICount = 0;
-	bool AISet(false);
-	bool PlayerSet(false);
+	//const Int32 BoatTypeCount = 5;
+	//Int32 Index = 0;
+	//Int32 AICount = 0;
+	//bool AISet(false);
+	//bool PlayerSet(false);
 
-	while (Index < (signed)Boats_.size())
-	{
-		auto& B = Boats_[Index];
+	//while (Index < (signed)Boats_.size())
+	//{
+	//	auto& B = Boats_[Index];
 
-		if (B.GetBoatType() != Type)
-		{
-			++Index;
-			continue;
-		}
+	//	if (B.GetBoatType() != Type)
+	//	{
+	//		++Index;
+	//		continue;
+	//	}
 
-		if (PlayerSet && !AISet)
-		{
-			B.SetControlState(BoatControlState::AI);
-			AIBoats_[AICount] = &B;
-			++AICount;
-			if (AICount >= (BoatCount_ / BoatTypeCount) - 1)
-			{
-				AISet = true;
-			}
-		}
+	//	if (PlayerSet && !AISet)
+	//	{
+	//		B.SetControlState(BoatControlState::AI);
+	//		AIBoats_[AICount] = &B;
+	//		++AICount;
+	//		if (AICount >= (BoatCount_ / BoatTypeCount) - 1)
+	//		{
+	//			AISet = true;
+	//		}
+	//	}
 
-		if (!PlayerSet)
-		{
-			B.SetControlState(BoatControlState::Player);
-			PlayerSet = true;
-			ActiveBoat_ = Index;
+	//	if (!PlayerSet)
+	//	{
+	//		B.SetControlState(BoatControlState::Player);
+	//		PlayerSet = true;
+	//		ActiveBoat_ = Index;
 
 
-			Vector2f Pos;
-			Pos.x = ((float)GetRenderWindow()->getSize().x / 2.f);
-			Pos.y = ((float)GetRenderWindow()->getSize().y / 2.f);
-			Boats_[ActiveBoat_].setPosition(Pos);
-			Boats_[ActiveBoat_].setOrigin(Boats_[ActiveBoat_].GetGlobalBounds().width / 2.f, Boats_[ActiveBoat_].GetGlobalBounds().height / 2.f);
+	//		Vector2f Pos;
+	//		Pos.x = ((float)GetRenderWindow()->getSize().x / 2.f);
+	//		Pos.y = ((float)GetRenderWindow()->getSize().y / 2.f);
+	//		Boats_[ActiveBoat_].setPosition(Pos);
+	//		Boats_[ActiveBoat_].setOrigin(Boats_[ActiveBoat_].GetGlobalBounds().width / 2.f, Boats_[ActiveBoat_].GetGlobalBounds().height / 2.f);
 
-			PlayerData_.KillCount = 0;
-			PlayerData_.Lives = 10;
-			B.SetBoatAlive();
-		}
-		++Index;
-	}
+	//		PlayerData_.KillCount = 0;
+	//		PlayerData_.Lives = 10;
+	//		B.SetBoatAlive();
+	//	}
+	//	++Index;
+	//}
 }

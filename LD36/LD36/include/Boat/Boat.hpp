@@ -27,7 +27,7 @@ class Boat : public sf::Drawable, public sf::Transformable
 
 public:
 
-	Boat(ProjectileManager* Projectiles, BoatControlState ControlState = BoatControlState::None, BoatType Type = BoatType::Raft);
+	Boat(ProjectileManager* Projectiles = nullptr, BoatControlState ControlState = BoatControlState::None, BoatType Type = BoatType::Raft);
 
 	~Boat();
 

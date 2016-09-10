@@ -54,9 +54,6 @@
     <ClInclude Include="include\DerivedStates\MenuState.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Boat\AIBoatGameLogic.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Asset\AssetManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -67,6 +64,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\GameVars.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AI\AIController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AI\AIBoatManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -98,9 +101,6 @@
     <ClCompile Include="src\DerivedStates\MenuState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Boat\AIBoatGameLogic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Projectile\ProjectileManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -108,6 +108,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\DerivedStates\PlayState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AI\AIController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AI\AIBoatManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
