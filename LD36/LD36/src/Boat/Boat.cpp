@@ -42,6 +42,7 @@ sf::FloatRect Boat::GetGlobalBounds() const
 {
 	FloatRect R(getTransform().transformRect(Shape_.getGlobalBounds()));
 	const Vector2f OriginalCentre(R.left + (R.width / 2.f), (R.top + R.height / 2.f));
+	
 	float WPercent = 0.8f;
 	float HPercent = 0.8f;
 

@@ -59,7 +59,18 @@ void AIBoatManager::AddBoat(Boat* B)
 
 void AIBoatManager::Update(float Delta, const View& V)
 {
+	for (auto B : Boats_)
+	{
+		if (B->GetControlState() != AI)
+		{
+			continue;
+		}
 
+		if (IsOutsideView(V, B->getPosition().y - B->GetGlobalBounds().height / 2.f))
+		{
+			SpawnAIPosition(B, V);
+		}
+	}
 }
 
 // Private functions 
@@ -85,7 +96,8 @@ void AIBoatManager::SpawnAIPosition(Boat * B, const View & V)
 {
 	//TODO spawn boats off camera randomly and spaced out enough 
 
-	B->setPosition(V.getCenter());
+	const Vector2f LastPos = B->getPosition();
+	B->setPosition(V.getCenter() - Vector2f(RandFloat(0.f, V.getSize().x), 200));
 }
 
 void AIBoatManager::SetCurrentBoatType(BoatType Type)
@@ -104,4 +116,21 @@ void AIBoatManager::SetCurrentBoatType(BoatType Type)
 		B->SetControlState(AI);
 	}
 	CurrentBoatType_ = Type;
+}
+
+bool AIBoatManager::IsOutsideView(const View & V, float YPos) const
+{
+	//Create a float rect container
+	FloatRect ViewBounds;
+	ViewBounds.left = V.getCenter().x - V.getSize().x / 2.f;
+	ViewBounds.top = V.getCenter().y - V.getSize().y / 2.f;
+	ViewBounds.width = V.getSize().x;
+	ViewBounds.width = V.getSize().y;
+
+	//Check if the objects y position is off the screen and the objects y position 
+	if (YPos > V.getCenter().y + V.getSize().y / 2.f)
+	{
+		return true;
+	}
+	return false;
 }

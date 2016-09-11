@@ -222,6 +222,8 @@ void PlayState::Update(float Delta)
 	//	}
 	//}
 
+	AIBoatMgr_->Update(Delta, GetRenderTexture()->getView());
+
 	ProjectileMgr_->ProjectileUpdate(Delta, Boats_);
 
 	//Todo: allow player to query a database of world data that contains all objects data for collisions  

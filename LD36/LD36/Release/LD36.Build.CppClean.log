@@ -1,22 +1,29 @@
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\ld36.pch
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\vc140.pdb
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\stdafx.obj
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\tiledbackground.obj
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\ld36.obj
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\game.obj
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\statemanager.obj
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\state.obj
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\playstate.obj
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\assetmanager.obj
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\boat.obj
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\menustate.obj
-c:\users\mace\documents\visual studio 2015\projects\ld36\release\ld36.exe
-c:\users\mace\documents\visual studio 2015\projects\ld36\release\ld36.ipdb
-c:\users\mace\documents\visual studio 2015\projects\ld36\release\ld36.iobj
-c:\users\mace\documents\visual studio 2015\projects\ld36\release\ld36.pdb
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\ld36.tlog\cl.command.1.tlog
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\ld36.tlog\cl.read.1.tlog
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\ld36.tlog\cl.write.1.tlog
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\ld36.tlog\link.command.1.tlog
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\ld36.tlog\link.read.1.tlog
-c:\users\mace\documents\visual studio 2015\projects\ld36\ld36\release\ld36.tlog\link.write.1.tlog
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\vc140.pdb
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\tiledbackground.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\ld36.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\game.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\statemanager.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\state.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\playstate.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\assetmanager.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\boat.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\menustate.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\aiboatgamelogic.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\projectilemanager.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\playercontroller.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\ld36.pch
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\stdafx.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\timingtest.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\aiboatmanager.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\aicontroller.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\release\ld36.exe
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\release\ld36.ipdb
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\release\ld36.iobj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\release\ld36.pdb
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\player.obj
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\ld36.tlog\cl.command.1.tlog
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\ld36.tlog\cl.read.1.tlog
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\ld36.tlog\cl.write.1.tlog
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\ld36.tlog\link.command.1.tlog
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\ld36.tlog\link.read.1.tlog
+c:\users\mace\documents\github\get-dat-boaty-post-ld36-\ld36\ld36\release\ld36.tlog\link.write.1.tlog

@@ -29,6 +29,9 @@ private:
 
 	void SetCurrentBoatType(BoatType Type);
 
+	//Pass the current view and the maximum y value of the object ( Y + Height )
+	bool IsOutsideView(const View& V, float YPos)const;
+
 	std::vector<Boat*> Boats_;
 
 	AssetManager* AssetMgr_ = nullptr;

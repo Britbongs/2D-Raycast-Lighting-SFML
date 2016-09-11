@@ -74,9 +74,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LD36.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -114,6 +111,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AI\AIBoatManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LD36.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
