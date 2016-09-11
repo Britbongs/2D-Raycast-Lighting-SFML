@@ -39,18 +39,7 @@ private:
 		float FireTimer = 0.f;
 	};
 
-
-	void SetAIBoatPosition(Boat& B);
-
 	void SpawnObstacles();
-
-	void Respawn();
-
-	bool PlayerCrashed();
-
-	void CentreViewOnPlayer();
-
-	void EvolvePlayerAndAI(BoatType Type);
 
 	const sf::Int32 ObstacleCount_ = 200;
 	const sf::Int32 BoatCount_ = 30;
@@ -58,7 +47,7 @@ private:
 	sf::RectangleShape SeaBackground_;
 
 	std::vector<sf::RectangleShape> Obstacles_;
-	std::vector<Boat*> Boats_;
+	std::vector<GameObject*> GameObjects_;
 	std::vector<Boat*> AIBoats_;
 
 	sf::Text Instructions_;

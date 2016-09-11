@@ -76,11 +76,4 @@ private:
 	Time GraceTimer_ = seconds(0.f);
 
 	Time FireCooldownTimer_ = seconds(0.f);
-	//Texture pointers 
-	Texture* BoatTextures_[BOAT_TYPE_COUNT];
-	
-	Texture* BuoyTexture_ = nullptr;
-	//Asset Manager pointer
-	AssetManager* AssetMgr_ = nullptr;
-
 };

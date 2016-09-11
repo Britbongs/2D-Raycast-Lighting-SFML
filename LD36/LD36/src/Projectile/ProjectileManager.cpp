@@ -119,12 +119,12 @@ void ProjectileManager::ProjectileUpdate(float Delta, std::vector<Boat*>& Boats)
 		{
 			assert(P);
 
-			if (!B->IsBoatAlive() || B->GetControlState() == P->FiredFromState)
+			/*if (!B->IsBoatAlive() || B->GetControlState() == P->FiredFromState)
 			{
 				continue;
-			}
+			}*/
 
-			if (P->Body.getGlobalBounds().intersects(B->GetGlobalBounds()))
+			if (P->Body.getGlobalBounds().intersects(B->GetAABB()))
 			{
 				P->InUse = false;
 				P->FiredFromState = None;
@@ -148,7 +148,7 @@ void ProjectileManager::draw(sf::RenderTarget & RTarget, sf::RenderStates RState
 
 ProjectileManager::ProjectileType ProjectileManager::BoatTypeToProjectileType(BoatType Type) const
 {
-	if (Type == Raft || Type == RowingBoat)
+	if (Type == Raft || Type == Canoe)
 	{
 		return Rock;
 	}
