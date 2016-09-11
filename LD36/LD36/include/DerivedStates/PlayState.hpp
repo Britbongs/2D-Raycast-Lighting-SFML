@@ -7,6 +7,7 @@
 #include "Projectile\ProjectileManager.hpp"	
 #include "Player\PlayerController.hpp"
 #include "AI\AIBoatManager.hpp"
+#include "World\World.h"
 
 class PlayState : public State
 
@@ -72,5 +73,6 @@ private:
 	AIBoatManager* AIBoatMgr_ = nullptr;
 	PlayerController* Player_ = nullptr;
 	TiledBackground* BG_ = nullptr;
+	World* World_ = nullptr;
 
 };

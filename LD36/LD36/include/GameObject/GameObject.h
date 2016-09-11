@@ -18,6 +18,7 @@ public:
 	Vector2f GetSize() const { return Shape_.getSize(); }
 
 	FloatRect GetAABB() const;
+	
 	FloatRect GetLocalBounds() const;
 
 	ColliderData GetColliderData() const { return Collider_; };
@@ -35,6 +36,7 @@ private:
 	virtual void draw(RenderTarget& RTarget, RenderStates RStates) const;
 
 	RectangleShape Shape_;
+
 	ColliderData Collider_;
 
 	bool IsActive_ = false;

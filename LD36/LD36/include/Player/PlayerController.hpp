@@ -25,7 +25,7 @@ public:
 	~PlayerController();
 
 	//Add a pointer to each boat type to the players boat list
-	void AddPlayerBoats(std::vector<Boat*>& Boats);
+	void AddPlayerBoats(Boat * B);
 
 	//Fire a projectile 
 	void Fire();

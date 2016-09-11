@@ -20,19 +20,19 @@ T Max(T A, T B);
 template <typename T>
 T Min(T Value, T Min);
 
-__forceinline void InitRand()
+static __forceinline void InitRand()
 {
 	srand(static_cast<unsigned>(time(0)));
 }
 
 //Random float between 0 - 1
-__forceinline float RandFloat()
+static __forceinline float RandFloat()
 {
 	return (static_cast<float> (rand()) / static_cast<float>(RAND_MAX));
 }
 
 //Random float between 0 and Max
-__forceinline float RandFloat(float Max)
+static __forceinline float RandFloat(float Max)
 {
 	if (Max != 0)
 	{
@@ -42,7 +42,7 @@ __forceinline float RandFloat(float Max)
 }
 
 //Random float between max & min
-__forceinline float RandFloat(float Min, float Max)
+static __forceinline float RandFloat(float Min, float Max)
 {
 	if (Max - Min != 0)
 	{

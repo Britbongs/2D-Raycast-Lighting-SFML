@@ -16,10 +16,10 @@ PlayerController::~PlayerController()
 	} 
 }
 
-void PlayerController::AddPlayerBoats(std::vector<Boat*>& Boats)
+void PlayerController::AddPlayerBoats(Boat* B)
 {
 	//Todo: Implemenet other boats when ready
-	Boats_.push_back(Boats[Raft]);
+	Boats_.push_back(B);
 
 	//spawn the first boat in the centre of the screen
 	Boats_[Raft]->setPosition((ScreenSize_ * 0.5f) - (Boats_[Raft]->GetSize() * 0.5f));

@@ -1,12 +1,14 @@
 #pragma once
 
 #include "Asset\AssetManager.hpp"
+#include "GameObject\GameObject.h"
 #include "GameVars.hpp"
 
 enum BoatType;
 enum BoatControlState;
 
 class Boat;
+class World;
 
 struct ProjectileFireData
 {
@@ -16,39 +18,39 @@ struct ProjectileFireData
 	BoatType BoatType;
 };
 
+enum ProjectileType
+{
+	Rock,
+	Cannonball,
+	Missile
+};
+
+struct Projectile : public GameObject
+{
+	sf::Vector2f Velocity = sf::Vector2f(0.f, 0.f);
+	bool InUse = false;
+	ProjectileType ProjectileType = Rock;
+	BoatControlState FiredFromState;
+};
+
+
 class ProjectileManager :
 	public sf::Drawable
 {
 
-private:
-
-	enum ProjectileType
-	{
-		Rock,
-		Cannonball,
-		Missile
-	};
-
-	struct Projectile
-	{
-		sf::RectangleShape Body;
-		sf::Vector2f Velocity = sf::Vector2f(0.f, 0.f);
-		bool InUse = false;
-		ProjectileType ProjectileType = Rock;
-		BoatControlState FiredFromState;
-	};
-
 public:
 
-	ProjectileManager(const sf::RenderTexture* const RTex);
+	ProjectileManager(World* W);
 
 	~ProjectileManager();
 
 	bool SetupProjectiles();
 
+	void AddProjectile(Projectile* P);
+
 	void FireProjectile(const ProjectileFireData& Data);
 
-	void ProjectileUpdate(float Delta, std::vector<Boat*>& Boats);
+	void ProjectileUpdate(float Delta);
 
 private:
 
@@ -58,11 +60,7 @@ private:
 
 	Int32 GetSpareProjectileIndex(ProjectileType Type) const;
 
-	const Int32 ProjectileTypeCount_ = 3;
-
-	const Int32 ProjectilePerType_ = 15;
-
-	const Int32 ProjectileCount_ = (ProjectileTypeCount_ * ProjectilePerType_);
+	const Int32 ProjectileCount_ = (PROJECTILE_TYPE_COUNT * PROJECTILE_PER_TYPE);
 
 	std::vector<Projectile*> Projectiles_;
 
@@ -70,9 +68,8 @@ private:
 
 	float* ProjectileSpeeds_ = nullptr;
 
-	const sf::RenderTexture* const RTex_;
-
 	AssetManager* AssetMgr_ = nullptr;
 
+	World* World_ = nullptr;
 };
 

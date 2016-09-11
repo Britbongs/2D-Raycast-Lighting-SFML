@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DerivedStates\PlayState.hpp"
-#include "Game\Game.hpp"
+
 using namespace sf;
 
 PlayState::PlayState(sf::Int32 ID, sf::RenderWindow* RWindow, sf::RenderTexture* RTexture)
@@ -34,19 +34,27 @@ bool PlayState::Initialise()
 
 	auto AM = AssetManager::GetInstance();
 
-	ProjectileMgr_ = new ProjectileManager(GetRenderTexture());
-	ProjectileMgr_->SetupProjectiles();
+	World_ = new World(GameObjects_, GetRenderTexture());
+	assert(World_);
 
+	ProjectileMgr_ = new ProjectileManager(World_);
+
+	for (Int32 i = 0; i < PROJECTILE_PER_TYPE * PROJECTILE_TYPE_COUNT; ++i)
+	{
+		GameObjects_.push_back(new Projectile);
+		ProjectileMgr_->AddProjectile(dynamic_cast<Projectile*> (GameObjects_.back()));
+	}
+	
+	ProjectileMgr_->SetupProjectiles();
 	assert(ProjectileMgr_);
 
 	Player_ = new PlayerController(ProjectileMgr_, Vector2f(GetRenderTexture()->getSize()));
-
 	assert(Player_);
 
 	//Implement other player boats after another when ready
 	GameObjects_.push_back(new Boat(None, Raft));
 
-	Player_->AddPlayerBoats(GameObjects_);
+	Player_->AddPlayerBoats(dynamic_cast<Boat*>(GameObjects_.back()));
 
 	//AI boat manager
 	AIBoatMgr_ = new AIBoatManager(ProjectileMgr_);
@@ -54,7 +62,7 @@ bool PlayState::Initialise()
 	for (Int32 i = 0; i < AI_BOAT_COUNT; ++i)
 	{
 		GameObjects_.push_back(new Boat());
-		AIBoatMgr_->AddBoat(GameObjects_.back());
+		AIBoatMgr_->AddBoat(dynamic_cast<Boat*>(GameObjects_.back()));
 	}
 
 	AIBoatMgr_->InitialiseAI(GetRenderTexture()->getView());
@@ -158,7 +166,7 @@ void PlayState::Update(float Delta)
 
 	AIBoatMgr_->Update(Delta, GetRenderTexture()->getView());
 
-	//ProjectileMgr_->ProjectileUpdate(Delta, GameObjects_);
+	ProjectileMgr_->ProjectileUpdate(Delta);
 
 	//Todo: allow player to query a database of world data that contains all objects data for collisions  
 	//Todo: add in player health mechanic 
@@ -237,7 +245,7 @@ void PlayState::SpawnObstacles()
 
 	for (Int32 i = 0; i < (signed)Obstacles_.size(); ++i)
 	{
-		if (i + 1 > (signed) Obstacles_.size() / 2)
+		if ((i + 1) > (signed) Obstacles_.size() / 2)
 		{
 			MaxSpawnY = BG_->getPosition().y / 2.f;
 			MinSpawnY = BG_->getPosition().y;

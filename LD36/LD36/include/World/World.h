@@ -1,39 +1,35 @@
 #pragma once
 
-class Boat;
+#include "GameObject\GameObject.h"
+#include "Boat\Boat.hpp"
 
-struct Obstacle;
-
-enum ColliderOwner
+enum CollidedWith
 {
-	None,
+	NoOwner,
 	AI_Boat,
 	Player_Boat,
 	ObstacleCollider,
 	Follower
 };
 
-struct ColliderData
-{
-	ColliderOwner Owner = ColliderOwner::None;
-	FloatRect AABB;
-	//TODO - Sat collider data field added
-};
-
 class World
 {
 public:
 
-	World();
+	explicit World(std::vector<GameObject*>& Objects_, RenderTexture* RTexture);
+
 	~World();
-	ColliderOwner CheckCollision(const ColliderData& Collider) const;
-	void SetVectors(std::vector<Boat*>* Boats, std::vector<Obstacle*>* Obstacles);
+
+	CollidedWith CheckCollision(const FloatRect& Collider) const;
+
+	bool IsInsideView(const FloatRect& AABB) const;
+
 private:
 	//TODO Implement sat collision here
 	bool IsCollisionPresent(const ColliderData&) const;
 
-	std::vector<Boat*>* Boats_ = nullptr;
-	std::vector<Obstacle*>* Obstacles_ = nullptr;
+	std::vector<GameObject*>Objects_;
 
+	RenderTexture* RTexture_;
 };
 

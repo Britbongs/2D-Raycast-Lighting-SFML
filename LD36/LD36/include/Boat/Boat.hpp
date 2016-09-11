@@ -54,7 +54,5 @@ private:
 	sf::Texture* BoatTex_ = nullptr;
 	sf::Texture* BuoyTex_ = nullptr;
 
-	ProjectileManager* Projectile_ = nullptr;
-
 };
 
