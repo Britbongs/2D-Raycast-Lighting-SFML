@@ -11,16 +11,60 @@ World::~World()
 {
 }
 
-CollidedWith World::CheckCollision(const FloatRect& Collider) const
+CollisionData World::CheckCollision(const GameObject& Object)
 {
-	return NoOwner;
+	CollisionData Data;
+	Data.bDidCollide = false;
+	Data.ObjType = ObjectType::eEmpty;
+
+	AABBCollisionCheck(Object);
+
+	if (CollidersToCheck_.size() == 0)
+	{
+		return Data;
+	}
+	else
+	{
+		MeshCollisionCheck(Object);
+		if (CollidersToCheck_.size() == 0)
+		{
+			return Data;
+		}
+		else
+		{
+			Data.bDidCollide = true;
+			Data.ObjType = CollidersToCheck_[0]->GetObjectType();
+		}
+	}
 }
 
-bool World::IsCollisionPresent(const ColliderData &) const
+void World::MeshCollisionCheck(const GameObject&)
 {
-	std::vector<ColliderData> PossibleCollidables;
+	//std::vector<GameObject*> PossibleCollidables;
+	return;
+}
 
-	return false;
+void World::AABBCollisionCheck(const GameObject& Object)
+{
+	CollidersToCheck_.clear();
+
+	for (auto o : Objects_)
+	{
+
+		if (o == &Object)
+		{//Same object, continue 
+			continue;
+		}
+
+
+		if (!o->GetAABB().intersects(Object.GetAABB()))
+		{//No intersection, continue 
+			continue;
+		}
+
+		//add it to the list
+		CollidersToCheck_.push_back(o);
+	}
 }
 
 bool World::IsInsideView(const FloatRect& AABB) const

@@ -34,6 +34,7 @@ void AIBoatManager::InitialiseAI(const View& V)
 		}
 
 		B = Boat(None, Type);
+		B.SetObjectType(ObjectType::eAIBoat);
 	}
 
 	SetCurrentBoatType(Warship);

@@ -4,11 +4,16 @@
 #include "GameObject\GameObject.h"
 #include "GameVars.hpp"
 
+//Forward declerations
+
 enum BoatType;
 enum BoatControlState;
+enum ObjectType;
 
 class Boat;
 class World;
+
+//
 
 struct ProjectileFireData
 {
@@ -19,23 +24,24 @@ struct ProjectileFireData
 };
 
 enum ProjectileType
-{
-	Rock,
-	Cannonball,
-	Missile
+{//Game projectile types
+	eRock,
+	eCannonball,
+	eMissile
 };
 
+//Projectile struct
 struct Projectile : public GameObject
+
 {
+	Projectile();
 	sf::Vector2f Velocity = sf::Vector2f(0.f, 0.f);
-	bool InUse = false;
-	ProjectileType ProjectileType = Rock;
+	ProjectileType ProjectileType = eRock;
 	BoatControlState FiredFromState;
 };
 
 
-class ProjectileManager :
-	public sf::Drawable
+class ProjectileManager
 {
 
 public:
@@ -44,17 +50,19 @@ public:
 
 	~ProjectileManager();
 
+	//Will initialise uninitialised projectiles game objects with a set number of projectiles of each type
 	bool SetupProjectiles();
 
+	//Add a projectile to the list of available ones
 	void AddProjectile(Projectile* P);
 
+	//Fire a projectile using data provided
 	void FireProjectile(const ProjectileFireData& Data);
 
+	//Update all projectiles in game
 	void ProjectileUpdate(float Delta);
 
 private:
-
-	virtual void draw(sf::RenderTarget& RTarget, sf::RenderStates RStates) const override;
 
 	ProjectileType BoatTypeToProjectileType(BoatType Type) const;
 

@@ -2,9 +2,13 @@
 #include "Player\PlayerController.hpp"
 
 
-PlayerController::PlayerController(ProjectileManager* ProjectileMgr, Vector2f ScreenSize)
-	: ProjectileMgr_(ProjectileMgr), ScreenSize_(ScreenSize)
+PlayerController::PlayerController(ProjectileManager* ProjectileMgr, World* ActiveWorld, Vector2f ScreenSize)
+	: ProjectileMgr_(ProjectileMgr), ScreenSize_(ScreenSize), World_(ActiveWorld)
 {
+#if IN_DEVELOPMENT_BUILD
+	assert(ProjectileMgr);
+	assert(ActiveWorld);
+#endif
 }
 
 
@@ -13,18 +17,18 @@ PlayerController::~PlayerController()
 	for (auto B : Boats_)
 	{
 		B = nullptr;
-	} 
+	}
 }
 
 void PlayerController::AddPlayerBoats(Boat* B)
 {
 	//Todo: Implemenet other boats when ready
 	Boats_.push_back(B);
+	B->SetObjectType(ObjectType::ePlayerBoat);
 
 	//spawn the first boat in the centre of the screen
 	Boats_[Raft]->setPosition((ScreenSize_ * 0.5f) - (Boats_[Raft]->GetSize() * 0.5f));
 	Boats_[Raft]->SetControlState(Player); //set the boats control staete as the boat
-
 }
 
 void PlayerController::Fire()
@@ -74,5 +78,11 @@ void PlayerController::UpdatePlayer(float Delta)
 	if (B.getPosition().x <= 0.f || B.getPosition().x + B.GetSize().x > ScreenSize_.x)
 	{
 		B.move(MoveVec_ * Delta * -1.5f); //repel it from the wall it's crossing/crossed
+	}
+
+	CollisionData CollData = World_->CheckCollision(B);
+	if (CollData.bDidCollide == true)
+	{
+		printf("\nPlayer Collision");
 	}
 }

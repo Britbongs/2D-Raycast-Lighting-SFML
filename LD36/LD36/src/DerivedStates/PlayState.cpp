@@ -35,7 +35,6 @@ bool PlayState::Initialise()
 	auto AM = AssetManager::GetInstance();
 
 	World_ = new World(GameObjects_, GetRenderTexture());
-	assert(World_);
 
 	ProjectileMgr_ = new ProjectileManager(World_);
 
@@ -44,12 +43,16 @@ bool PlayState::Initialise()
 		GameObjects_.push_back(new Projectile);
 		ProjectileMgr_->AddProjectile(dynamic_cast<Projectile*> (GameObjects_.back()));
 	}
-	
-	ProjectileMgr_->SetupProjectiles();
-	assert(ProjectileMgr_);
 
-	Player_ = new PlayerController(ProjectileMgr_, Vector2f(GetRenderTexture()->getSize()));
+	ProjectileMgr_->SetupProjectiles();
+
+	Player_ = new PlayerController(ProjectileMgr_, World_, Vector2f(GetRenderTexture()->getSize()));
+
+#if IN_DEVELOPMENT_BUILD
+	assert(ProjectileMgr_);
+	assert(World_);
 	assert(Player_);
+#endif 
 
 	//Implement other player boats after another when ready
 	GameObjects_.push_back(new Boat(None, Raft));
@@ -129,12 +132,6 @@ void PlayState::Update(float Delta)
 
 	LivesText_.setString(L"Lives: " + std::to_wstring(PlayerData_.Lives) + L"\nKills: " + std::to_wstring(PlayerData_.KillCount));
 
-	/*
-	TODO:
-	- Player controls with new player controller
-	- Moving the view by players move vector * delta
-	*/
-
 	PlayerMoveDirection Direc;
 
 	if (Keyboard::isKeyPressed(Keyboard::Left) || Keyboard::isKeyPressed(Keyboard::A))
@@ -168,7 +165,6 @@ void PlayState::Update(float Delta)
 
 	ProjectileMgr_->ProjectileUpdate(Delta);
 
-	//Todo: allow player to query a database of world data that contains all objects data for collisions  
 	//Todo: add in player health mechanic 
 }
 
@@ -184,20 +180,18 @@ void PlayState::Render() const
 
 		for (const auto& GO : GameObjects_)
 		{
-			if (GO->IsActive() != BoatControlState::None)
+			if (GO->IsActive() == true)
 			{
 				GetRenderTexture()->draw(*GO);
 			}
 		}
 
-		//Render projectiles here 
-		GetRenderTexture()->draw(*ProjectileMgr_);
-		if (!GameStarted_)
+		if (GameStarted_ == false)
 		{
 			GetRenderTexture()->draw(Instructions_);
 		}
 
-		if (Respawning_)
+		if (Respawning_ == true)
 		{
 			GetRenderTexture()->draw(RespawnText_);
 		}
@@ -207,7 +201,7 @@ void PlayState::Render() const
 
 void PlayState::PostRender() const
 {
-	if (!ShowFinished_)
+	if (ShowFinished_ == false)
 	{
 		GetRenderWindow()->draw(LivesText_);
 	}

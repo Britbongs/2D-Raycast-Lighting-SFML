@@ -5,7 +5,7 @@
 using namespace sf;
 
 Boat::Boat(BoatControlState ControlState, BoatType Type)
-	: ControlState_(ControlState), BoatType_(Type)
+	: GameObject(eEmpty), ControlState_(ControlState), BoatType_(Type)
 {
 	SetBoatTexture();
 	BuoyTex_ = AssetManager::GetInstance()->LoadTexture("res//textures//buoy.png");

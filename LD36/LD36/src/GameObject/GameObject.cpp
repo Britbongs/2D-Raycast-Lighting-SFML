@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "GameObject\GameObject.h"
+#include "World\World.h"
 
-
-GameObject::GameObject()
+GameObject::GameObject(ObjectType Type = ObjectType::eEmpty)
+	:Type_(Type)
 {
 	Shape_.setSize(Vector2f(1.f, 1.f));
 }
@@ -46,4 +47,9 @@ void GameObject::draw(RenderTarget & RTarget, RenderStates RStates) const
 {
 	RStates.transform *= getTransform();
 	RTarget.draw(Shape_, RStates);
+}
+
+void GameObject::RefreshColliderData()
+{
+
 }

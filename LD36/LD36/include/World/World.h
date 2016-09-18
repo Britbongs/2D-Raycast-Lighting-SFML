@@ -1,15 +1,24 @@
 #pragma once
 
 #include "GameObject\GameObject.h"
-#include "Boat\Boat.hpp"
 
-enum CollidedWith
+enum ObjectType
 {
-	NoOwner,
-	AI_Boat,
-	Player_Boat,
-	ObstacleCollider,
-	Follower
+	eEmpty,
+	eAIBoat,
+	ePlayerBoat,
+	eObstacle,
+	eProjectile,
+	eFollower
+};
+
+//did collide & owner
+using CollisionData = std::pair<bool, ObjectType>;
+
+struct CollisionData
+{
+	bool bDidCollide = false; 
+	ObjectType ObjType = ObjectType::eEmpty;
 };
 
 class World
@@ -20,15 +29,20 @@ public:
 
 	~World();
 
-	CollidedWith CheckCollision(const FloatRect& Collider) const;
+	CollisionData CheckCollision(const GameObject& Collider);
 
 	bool IsInsideView(const FloatRect& AABB) const;
 
 private:
+	using AABB = FloatRect;
 	//TODO Implement sat collision here
-	bool IsCollisionPresent(const ColliderData&) const;
+	void MeshCollisionCheck(const GameObject& SATColider);
 
-	std::vector<GameObject*>Objects_;
+	void AABBCollisionCheck(const GameObject& Object);
+
+	std::vector<GameObject*> CollidersToCheck_;
+
+	std::vector<GameObject*>& Objects_;
 
 	RenderTexture* RTexture_;
 };

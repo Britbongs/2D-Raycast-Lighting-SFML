@@ -2,6 +2,7 @@
 
 #include "Boat\Boat.hpp"
 #include "Projectile\ProjectileManager.hpp"
+#include "World\World.h"
 
 enum PlayerMoveDirection
 {
@@ -20,7 +21,7 @@ class PlayerController
 {
 public:
 
-	explicit PlayerController(ProjectileManager* ProjMgr, Vector2f ScreenSize);
+	explicit PlayerController(ProjectileManager* ProjMgr, World*, Vector2f ScreenSize);
 
 	~PlayerController();
 
@@ -76,4 +77,7 @@ private:
 	Time GraceTimer_ = seconds(0.f);
 
 	Time FireCooldownTimer_ = seconds(0.f);
+	
+	//Pointer to active world
+	World* World_ = nullptr;
 };
