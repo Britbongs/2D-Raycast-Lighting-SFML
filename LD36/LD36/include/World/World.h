@@ -13,8 +13,6 @@ enum ObjectType
 };
 
 //did collide & owner
-using CollisionData = std::pair<bool, ObjectType>;
-
 struct CollisionData
 {
 	bool bDidCollide = false; 
