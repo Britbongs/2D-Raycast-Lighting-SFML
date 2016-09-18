@@ -5,17 +5,8 @@
 AIBoatManager::AIBoatManager(ProjectileManager* ProjMgr)
 	: ProjMgr_(ProjMgr)
 {
-	AssetMgr_ = AssetManager::GetInstance();
-	//Load textures on construction
-	BoatTextures_[BoatType::Raft] = AssetMgr_->LoadTexture("res//textures//raft.png");
-	BoatTextures_[BoatType::RowingBoat] = AssetMgr_->LoadTexture("res//textures//rowboat.png");
-	BoatTextures_[BoatType::SailBoat] = AssetMgr_->LoadTexture("res//textures//sailboat.png");
-	BoatTextures_[BoatType::SteamBoat] = AssetMgr_->LoadTexture("res//textures//steam_warship.png");
-	BoatTextures_[BoatType::Warship] = AssetMgr_->LoadTexture("res//textures//modern_warship.png");
 
-	BuoyTexture_ = AssetMgr_->LoadTexture("res//textures//buoy.png");
 }
-
 
 AIBoatManager::~AIBoatManager()
 {
@@ -42,12 +33,19 @@ void AIBoatManager::InitialiseAI(const View& V)
 			Type = GetNextBoatType(Type);
 		}
 
-		B = Boat(ProjMgr_, None, Type);
-		B.SetTexture(BoatTextures_[Type], BuoyTexture_);
-		B.SetSize(Vector2f(BoatTextures_[Type]->getSize()));
-		SpawnAIPosition(&B, V);
+		B = Boat(None, Type);
+		B.SetObjectType(ObjectType::eAIBoat);
 	}
+
 	SetCurrentBoatType(Warship);
+
+	for (auto B : Boats_)
+	{
+		if (B->GetControlState() != AI)
+		{
+			SpawnAIPosition(B, V);
+		}
+	}
 }
 
 void AIBoatManager::AddBoat(Boat* B)
@@ -59,7 +57,18 @@ void AIBoatManager::AddBoat(Boat* B)
 
 void AIBoatManager::Update(float Delta, const View& V)
 {
+	for (auto B : Boats_)
+	{
+		if (B->GetControlState() != AI)
+		{
+			continue;
+		}
 
+		if (IsOutsideView(V, B->getPosition().y - B->GetSize().y / 2.f))
+		{
+			SpawnAIPosition(B, V);
+		}
+	}
 }
 
 // Private functions 
@@ -73,8 +82,8 @@ BoatType AIBoatManager::GetNextBoatType(BoatType Type) const
 {
 	switch (Type)
 	{
-	case Raft: Type = RowingBoat; break;
-	case RowingBoat: Type = SailBoat; break;
+	case Raft: Type = Canoe; break;
+	case Canoe: Type = SailBoat; break;
 	case SailBoat: Type = SteamBoat; break;
 	default: Type = Warship; break;
 	}
@@ -85,7 +94,32 @@ void AIBoatManager::SpawnAIPosition(Boat * B, const View & V)
 {
 	//TODO spawn boats off camera randomly and spaced out enough 
 
-	B->setPosition(V.getCenter());
+	const Vector2f LastPos = B->getPosition();
+	B->setPosition(V.getCenter() - Vector2f(RandFloat(0.f, V.getSize().x), 200));
+
+
+	const float SpawnDist(800);
+
+	float BeforePoint(V.getCenter().y);
+	float XSpawn = RandFloat(B->GetSize().x / 2.f, (float)V.getSize().x - B->GetSize().x);
+
+	BeforePoint -= V.getSize().y;
+	BeforePoint = fabs(BeforePoint);
+
+	B->setPosition(XSpawn, RandFloat(BeforePoint, BeforePoint + SpawnDist) * -1);
+
+	for (auto B2 : Boats_)
+	{
+		if (B2 != B)
+		{
+			if (GetSquareLength(B2->getPosition() - B->getPosition()) <= pow(SpawnDist, 2))
+			{
+				XSpawn = RandFloat(0.f, (float)V.getSize().x - B->GetSize().x);
+				B->setPosition(XSpawn, RandFloat(BeforePoint, BeforePoint + SpawnDist) * -1);
+			}
+		}
+	}
+	printf("%f\n", XSpawn);
 }
 
 void AIBoatManager::SetCurrentBoatType(BoatType Type)
@@ -104,4 +138,21 @@ void AIBoatManager::SetCurrentBoatType(BoatType Type)
 		B->SetControlState(AI);
 	}
 	CurrentBoatType_ = Type;
+}
+
+bool AIBoatManager::IsOutsideView(const View & V, float YPos) const
+{
+	//Create a float rect container
+	FloatRect ViewBounds;
+	ViewBounds.left = V.getCenter().x - V.getSize().x / 2.f;
+	ViewBounds.top = V.getCenter().y - V.getSize().y / 2.f;
+	ViewBounds.width = V.getSize().x;
+	ViewBounds.width = V.getSize().y;
+
+	//Check if the objects y position is off the screen and the objects y position 
+	if (YPos > V.getCenter().y + V.getSize().y / 2.f)
+	{
+		return true;
+	}
+	return false;
 }

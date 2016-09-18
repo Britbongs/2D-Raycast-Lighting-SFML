@@ -2,6 +2,7 @@
 
 #include "Boat\Boat.hpp"
 #include "Projectile\ProjectileManager.hpp"
+#include "World\World.h"
 
 enum PlayerMoveDirection
 {
@@ -20,12 +21,12 @@ class PlayerController
 {
 public:
 
-	explicit PlayerController(ProjectileManager* ProjMgr, Vector2f ScreenSize);
+	explicit PlayerController(ProjectileManager* ProjMgr, World*, Vector2f ScreenSize);
 
 	~PlayerController();
 
 	//Add a pointer to each boat type to the players boat list
-	void AddPlayerBoats(std::vector<Boat*>& Boats);
+	void AddPlayerBoats(Boat * B);
 
 	//Fire a projectile 
 	void Fire();
@@ -76,11 +77,7 @@ private:
 	Time GraceTimer_ = seconds(0.f);
 
 	Time FireCooldownTimer_ = seconds(0.f);
-	//Texture pointers 
-	Texture* BoatTextures_[BOAT_TYPE_COUNT];
 	
-	Texture* BuoyTexture_ = nullptr;
-	//Asset Manager pointer
-	AssetManager* AssetMgr_ = nullptr;
-
+	//Pointer to active world
+	World* World_ = nullptr;
 };

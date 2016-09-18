@@ -23,6 +23,7 @@ public:
 	sf::Texture* LoadTexture(const sf::String& FilePath);
 
 private:
+
 	struct TextureData
 	{
 		sf::String Filepath = "";

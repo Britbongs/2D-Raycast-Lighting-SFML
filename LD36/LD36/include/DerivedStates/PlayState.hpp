@@ -7,6 +7,7 @@
 #include "Projectile\ProjectileManager.hpp"	
 #include "Player\PlayerController.hpp"
 #include "AI\AIBoatManager.hpp"
+#include "World\World.h"
 
 class PlayState : public State
 
@@ -39,18 +40,7 @@ private:
 		float FireTimer = 0.f;
 	};
 
-
-	void SetAIBoatPosition(Boat& B);
-
 	void SpawnObstacles();
-
-	void Respawn();
-
-	bool PlayerCrashed();
-
-	void CentreViewOnPlayer();
-
-	void EvolvePlayerAndAI(BoatType Type);
 
 	const sf::Int32 ObstacleCount_ = 200;
 	const sf::Int32 BoatCount_ = 30;
@@ -58,7 +48,7 @@ private:
 	sf::RectangleShape SeaBackground_;
 
 	std::vector<sf::RectangleShape> Obstacles_;
-	std::vector<Boat*> Boats_;
+	std::vector<GameObject*> GameObjects_;
 	std::vector<Boat*> AIBoats_;
 
 	sf::Text Instructions_;
@@ -83,5 +73,6 @@ private:
 	AIBoatManager* AIBoatMgr_ = nullptr;
 	PlayerController* Player_ = nullptr;
 	TiledBackground* BG_ = nullptr;
+	World* World_ = nullptr;
 
 };

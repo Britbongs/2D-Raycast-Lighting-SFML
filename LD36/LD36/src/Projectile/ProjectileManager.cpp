@@ -1,64 +1,69 @@
 #include "stdafx.h"
 #include "Projectile\ProjectileManager.hpp"
 #include "Boat\Boat.hpp"
+#include "World\World.h"
 
-ProjectileManager::ProjectileManager(const RenderTexture* const RTex)
-	: Projectiles_(ProjectileCount_, nullptr), RTex_(RTex)
+
+//PROJECTILE CTOR
+Projectile::Projectile()
+	:GameObject(ObjectType::eProjectile)
 {
 
-
+}
+//
+ProjectileManager::ProjectileManager(World* W)
+	: World_(W)
+{
 	AssetMgr_ = AssetManager::GetInstance();
 
-	Textures_[Rock] = AssetMgr_->LoadTexture("res//textures//rock.png");
+	Textures_[eRock] = AssetMgr_->LoadTexture("res//textures//rock.png");
 
-	Textures_[Cannonball] = AssetMgr_->LoadTexture("res//textures//cannonball.png");
+	Textures_[eCannonball] = AssetMgr_->LoadTexture("res//textures//cannonball.png");
 
-	Textures_[Missile] = AssetMgr_->LoadTexture("res//textures//missile.png");
+	Textures_[eMissile] = AssetMgr_->LoadTexture("res//textures//missile.png");
 
-	ProjectileSpeeds_ = new float[ProjectileTypeCount_];
+	ProjectileSpeeds_ = new float[PROJECTILE_TYPE_COUNT];
 
 	assert(ProjectileSpeeds_);
 
-	ProjectileSpeeds_[Rock] = 700.f;
-	ProjectileSpeeds_[Cannonball] = 720.f;
-	ProjectileSpeeds_[Missile] = 740.f;
+	ProjectileSpeeds_[eRock] = 700.f;
+
+	ProjectileSpeeds_[eCannonball] = 720.f;
+
+	ProjectileSpeeds_[eMissile] = 740.f;
 }
 
 ProjectileManager::~ProjectileManager()
 {
-	for (auto P : Projectiles_)
-	{
-		delete P;
-		P = nullptr;
-	}
-
 	delete[] ProjectileSpeeds_;
 	ProjectileSpeeds_ = nullptr;
 }
 
 bool ProjectileManager::SetupProjectiles()
 {
-	Int32 Type = (Int32)Rock;
+	Int32 Type = (Int32)eRock;
 	Int32 Count = 0;
 
 	for (auto& P : Projectiles_)
 	{
-		P = new Projectile;
-		assert(P);
-
-		if (Count % (ProjectileCount_ / ProjectileTypeCount_) == 0 && Count > 0)
+		if (Count % (ProjectileCount_ / PROJECTILE_TYPE_COUNT) == 0 && Count > 0)
 		{
 			++Type;
 		}
 
 		P->FiredFromState = None;
 		P->ProjectileType = (ProjectileType)Type;
-		P->Body.setSize(Vector2f(Textures_[Type]->getSize()));
-		P->Body.setOrigin(P->Body.getLocalBounds().width / 2.f, P->Body.getLocalBounds().height / 2.f);
-		P->Body.setTexture(Textures_[Type]);
-
+		P->SetSize(Vector2f(Textures_[Type]->getSize()));
+		P->setOrigin(P->GetSize() * 0.5f);
+		P->SetTexture(Textures_[Type]);
+		P->SetInActive();
 	}
 	return (true);
+}
+
+void ProjectileManager::AddProjectile(Projectile * P)
+{
+	Projectiles_.push_back(P);
 }
 
 void ProjectileManager::FireProjectile(const ProjectileFireData& Data)
@@ -66,7 +71,6 @@ void ProjectileManager::FireProjectile(const ProjectileFireData& Data)
 	/*
 	Todo: set projectile as active, set the rotation of the body, set start position, set fired by
 	*/
-
 	ProjectileType Type = BoatTypeToProjectileType(Data.BoatType);
 	const Int32 Index = GetSpareProjectileIndex(Type);
 
@@ -78,96 +82,64 @@ void ProjectileManager::FireProjectile(const ProjectileFireData& Data)
 
 	auto P = Projectiles_[Index];
 
-	P->InUse = true;
 	P->FiredFromState = Data.FiredBy;
-	P->Body.setPosition(Data.StartPos);
-	P->Body.setRotation(Degrees(theta));
-
+	P->setPosition(Data.StartPos);
+	P->setRotation(Degrees(theta));
 	P->Velocity = Data.Direction * ProjectileSpeeds_[Type];
+	P->SetActive();
 }
 
-void ProjectileManager::ProjectileUpdate(float Delta, std::vector<Boat*>& Boats)
+void ProjectileManager::ProjectileUpdate(float Delta)
 {
-	View V(RTex_->getView());
-	FloatRect ViewCollider;
-
-	ViewCollider.left = V.getCenter().x - V.getSize().x / 2.f;
-	ViewCollider.top = V.getCenter().y - V.getSize().y / 2.f;
-	ViewCollider.width = V.getSize().x;
-	ViewCollider.height = V.getSize().y;
-
-
 	for (auto P : Projectiles_)
 	{
-		if (!P->InUse)
+		if (P->IsActive() == false)
 		{
 			continue;
 		}
 
-		P->Body.move(P->Velocity * Delta);
+		P->move(P->Velocity * Delta);
 
-		printf("%f - %f\n", P->Body.getPosition().x, P->Body.getPosition().y);
+		printf("%f - %f\n", P->getPosition().x, P->getPosition().y);
 
-		if (!ViewCollider.contains(P->Body.getPosition()))
+		if (!World_->IsInsideView(P->GetAABB()))
 		{ //if out of bounds
-			P->InUse = false;
+			P->SetInActive();
 			P->FiredFromState = None;
 			continue;
 		}
 
-		for (auto B : Boats)
+		CollisionData CollidedWith = World_->CheckCollision(*P);
+
+		if (CollidedWith.ObjType == ePlayerBoat || CollidedWith.ObjType == eAIBoat)
 		{
-			assert(P);
-
-			if (!B->IsBoatAlive() || B->GetControlState() == P->FiredFromState)
-			{
-				continue;
-			}
-
-			if (P->Body.getGlobalBounds().intersects(B->GetGlobalBounds()))
-			{
-				P->InUse = false;
-				P->FiredFromState = None;
-			}
+			P->FiredFromState = None;
+			P->SetInActive();
 		}
-
 	}
 }
 
-void ProjectileManager::draw(sf::RenderTarget & RTarget, sf::RenderStates RStates) const
+ProjectileType ProjectileManager::BoatTypeToProjectileType(BoatType Type) const
 {
-	for (auto P : Projectiles_)
+	if (Type == Raft || Type == Canoe)
 	{
-		if (!P->InUse)
-		{
-			continue;
-		}
-		RTarget.draw(P->Body);
-	}
-}
-
-ProjectileManager::ProjectileType ProjectileManager::BoatTypeToProjectileType(BoatType Type) const
-{
-	if (Type == Raft || Type == RowingBoat)
-	{
-		return Rock;
+		return eRock;
 	}
 
 	if (Type == SailBoat || Type == SteamBoat)
 	{
-		return Cannonball;
+		return eCannonball;
 	}
 
-	return Missile;
+	return eMissile;
 }
 
 Int32 ProjectileManager::GetSpareProjectileIndex(ProjectileType Type) const
 {
 	//start the search for a free projectile starting at the first index where that type is located 
-
-	for (Int32 i = (Int32)Type * ProjectilePerType_; i < ProjectileCount_; ++i)
+	for (Int32 i = (Int32)Type * PROJECTILE_PER_TYPE; i < ProjectileCount_; ++i)
 	{
-		if (Projectiles_[i]->ProjectileType == Type && !Projectiles_[i]->InUse)
+		if (Projectiles_[i]->ProjectileType == Type && Projectiles_[i]->IsActive() == false)
 		{
 			return i;
 		}

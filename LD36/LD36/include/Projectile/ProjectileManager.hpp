@@ -1,12 +1,19 @@
 #pragma once
 
 #include "Asset\AssetManager.hpp"
+#include "GameObject\GameObject.h"
 #include "GameVars.hpp"
+
+//Forward declerations
 
 enum BoatType;
 enum BoatControlState;
+enum ObjectType;
 
 class Boat;
+class World;
+
+//
 
 struct ProjectileFireData
 {
@@ -16,53 +23,52 @@ struct ProjectileFireData
 	BoatType BoatType;
 };
 
-class ProjectileManager :
-	public sf::Drawable
+enum ProjectileType
+{//Game projectile types
+	eRock,
+	eCannonball,
+	eMissile
+};
+
+//Projectile struct
+struct Projectile : public GameObject
+
 {
+	Projectile();
+	sf::Vector2f Velocity = sf::Vector2f(0.f, 0.f);
+	ProjectileType ProjectileType = eRock;
+	BoatControlState FiredFromState;
+};
 
-private:
 
-	enum ProjectileType
-	{
-		Rock,
-		Cannonball,
-		Missile
-	};
-
-	struct Projectile
-	{
-		sf::RectangleShape Body;
-		sf::Vector2f Velocity = sf::Vector2f(0.f, 0.f);
-		bool InUse = false;
-		ProjectileType ProjectileType = Rock;
-		BoatControlState FiredFromState;
-	};
+class ProjectileManager
+{
 
 public:
 
-	ProjectileManager(const sf::RenderTexture* const RTex);
+	ProjectileManager(World* W);
 
 	~ProjectileManager();
 
+	//Will initialise uninitialised projectiles game objects with a set number of projectiles of each type
 	bool SetupProjectiles();
 
+	//Add a projectile to the list of available ones
+	void AddProjectile(Projectile* P);
+
+	//Fire a projectile using data provided
 	void FireProjectile(const ProjectileFireData& Data);
 
-	void ProjectileUpdate(float Delta, std::vector<Boat*>& Boats);
+	//Update all projectiles in game
+	void ProjectileUpdate(float Delta);
 
 private:
-
-	virtual void draw(sf::RenderTarget& RTarget, sf::RenderStates RStates) const override;
 
 	ProjectileType BoatTypeToProjectileType(BoatType Type) const;
 
 	Int32 GetSpareProjectileIndex(ProjectileType Type) const;
 
-	const Int32 ProjectileTypeCount_ = 3;
-
-	const Int32 ProjectilePerType_ = 15;
-
-	const Int32 ProjectileCount_ = (ProjectileTypeCount_ * ProjectilePerType_);
+	const Int32 ProjectileCount_ = (PROJECTILE_TYPE_COUNT * PROJECTILE_PER_TYPE);
 
 	std::vector<Projectile*> Projectiles_;
 
@@ -70,9 +76,8 @@ private:
 
 	float* ProjectileSpeeds_ = nullptr;
 
-	const sf::RenderTexture* const RTex_;
-
 	AssetManager* AssetMgr_ = nullptr;
 
+	World* World_ = nullptr;
 };
 

@@ -3,7 +3,7 @@
 #include "Asset\AssetManager.hpp"
 #include "Boat\Boat.hpp"
 #include "Projectile\ProjectileManager.hpp"
-
+#include "World\World.h"
 class AIBoatManager
 {
 
@@ -28,6 +28,9 @@ private:
 	void SpawnAIPosition(Boat* B, const View& V);
 
 	void SetCurrentBoatType(BoatType Type);
+
+	//Pass the current view and the maximum y value of the object ( Y + Height )
+	bool IsOutsideView(const View& V, float YPos)const;
 
 	std::vector<Boat*> Boats_;
 

@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\GameObject\GameObject.h" />
     <ClInclude Include="include\AI\AIController.h" />
     <ClInclude Include="include\AI\AIBoatManager.hpp" />
     <ClInclude Include="include\Boat\Boat.hpp" />
@@ -163,8 +164,11 @@
     <ClInclude Include="include\TiledBackground\TiledBackground.hpp" />
     <ClInclude Include="include\DerivedStates\MenuState.hpp" />
     <ClInclude Include="include\Projectile\ProjectileManager.hpp" />
+    <ClInclude Include="include\World\World.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\GameObject\GameObject.cpp" />
+    <ClCompile Include="LD36.cpp" />
     <ClCompile Include="src\AI\AIController.cpp" />
     <ClCompile Include="src\Player\PlayerController.cpp" />
     <ClCompile Include="src\Projectile\ProjectileManager.cpp" />
@@ -176,7 +180,6 @@
     <ClCompile Include="src\States\State.cpp" />
     <ClCompile Include="src\States\StateManager.cpp" />
     <ClCompile Include="src\Game\Game.cpp" />
-    <ClCompile Include="LD36.cpp" />
     <ClCompile Include="src\States\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -184,6 +187,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\TildBackground\TiledBackground.cpp" />
+    <ClCompile Include="src\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Maths\MathsUtilities.inl" />

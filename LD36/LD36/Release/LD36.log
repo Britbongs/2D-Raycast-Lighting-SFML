@@ -1,31 +1,8 @@
-﻿  stdafx.cpp
-  PlayerController.cpp
-  ProjectileManager.cpp
-  AIBoatGameLogic.cpp
-src\Boat\AIBoatGameLogic.cpp(57): warning C4018: '<': signed/unsigned mismatch
-  MenuState.cpp
-  Boat.cpp
-  AssetManager.cpp
-  PlayState.cpp
-  State.cpp
-  StateManager.cpp
-  Game.cpp
-  LD36.cpp
-  TiledBackground.cpp
-src\TildBackground\TiledBackground.cpp(86): warning C4244: 'argument': conversion from 'sf::Uint32' to 'float', possible loss of data
-src\TildBackground\TiledBackground.cpp(87): warning C4244: 'argument': conversion from 'sf::Uint32' to 'float', possible loss of data
-src\TildBackground\TiledBackground.cpp(88): warning C4244: 'argument': conversion from 'sf::Uint32' to 'float', possible loss of data
-src\TildBackground\TiledBackground.cpp(89): warning C4244: 'argument': conversion from 'sf::Uint32' to 'float', possible loss of data
-src\TildBackground\TiledBackground.cpp(102): warning C4244: 'argument': conversion from 'sf::Uint32' to 'float', possible loss of data
-src\TildBackground\TiledBackground.cpp(103): warning C4244: 'argument': conversion from 'sf::Uint32' to 'float', possible loss of data
-src\TildBackground\TiledBackground.cpp(104): warning C4244: 'argument': conversion from 'const sf::Uint32' to 'float', possible loss of data
-src\TildBackground\TiledBackground.cpp(104): warning C4244: 'argument': conversion from 'sf::Uint32' to 'float', possible loss of data
-src\TildBackground\TiledBackground.cpp(105): warning C4244: 'argument': conversion from 'const sf::Uint32' to 'float', possible loss of data
-src\TildBackground\TiledBackground.cpp(105): warning C4244: 'argument': conversion from 'sf::Uint32' to 'float', possible loss of data
+﻿  ProjectileManager.cpp
   Generating code
-  0 of 2023 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+  2 of 2074 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    11 functions had inline decision re-evaluated but remain unchanged
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   LD36.vcxproj -> C:\Users\Mace\Documents\GitHub\Get-Dat-Boaty-Post-LD36-\LD36\Release\LD36.exe
   LD36.vcxproj -> C:\Users\Mace\Documents\GitHub\Get-Dat-Boaty-Post-LD36-\LD36\Release\LD36.pdb (Full PDB)
