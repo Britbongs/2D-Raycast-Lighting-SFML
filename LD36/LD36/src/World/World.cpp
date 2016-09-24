@@ -19,23 +19,17 @@ CollisionData World::CheckCollision(const GameObject& Object)
 
 	AABBCollisionCheck(Object);
 
-	if (CollidersToCheck_.size() == 0)
-	{
-		return Data;
-	}
-	else
+	if (CollidersToCheck_.size() != 0)
 	{
 		MeshCollisionCheck(Object);
-		if (CollidersToCheck_.size() == 0)
-		{
-			return Data;
-		}
-		else
+
+		if (CollidersToCheck_.size() != 0)
 		{
 			Data.bDidCollide = true;
 			Data.ObjType = CollidersToCheck_[0]->GetObjectType();
 		}
 	}
+	return Data;
 }
 
 void World::MeshCollisionCheck(const GameObject&)

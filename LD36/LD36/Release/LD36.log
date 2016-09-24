@@ -1,8 +1,2 @@
-﻿  ProjectileManager.cpp
-  Generating code
-  2 of 2074 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
-  Finished generating code
-  LD36.vcxproj -> C:\Users\Mace\Documents\GitHub\Get-Dat-Boaty-Post-LD36-\LD36\Release\LD36.exe
-  LD36.vcxproj -> C:\Users\Mace\Documents\GitHub\Get-Dat-Boaty-Post-LD36-\LD36\Release\LD36.pdb (Full PDB)
+﻿LD36.obj : error LNK2001: unresolved external symbol "int __cdecl DebugPrint(char const *,...)" (?DebugPrint@@YAHPBDZZ)
+C:\Users\Mace\Documents\GitHub\Get-Dat-Boaty-Post-LD36-\LD36\Release\LD36.exe : fatal error LNK1120: 1 unresolved externals

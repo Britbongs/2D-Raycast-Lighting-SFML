@@ -83,10 +83,10 @@ void TiledBackground::SetupVetices()
 		{
 			sf::Vertex* Tile = &Map_[(i + j * Dimensions_.x) * 4];
 
-			Tile[0].position = Vector2f((float)i* TileSize_, j * TileSize_);
-			Tile[1].position = Vector2f((i + 1) * TileSize_, j * TileSize_);
-			Tile[2].position = Vector2f((i + 1) * TileSize_, (j + 1) * TileSize_);
-			Tile[3].position = Vector2f(i * TileSize_, (j + 1)*TileSize_);
+			Tile[0].position = Vector2f((float)i* TileSize_, (float)j * TileSize_);
+			Tile[1].position = Vector2f((float)(i + 1) * TileSize_, (float)j * TileSize_);
+			Tile[2].position = Vector2f((float)(i + 1) * TileSize_, (float)(j + 1) * TileSize_);
+			Tile[3].position = Vector2f((float)i * TileSize_, (float)(j + 1)*TileSize_);
 		}
 	}
 }
@@ -99,8 +99,8 @@ void TiledBackground::SetTextureCoord(Vertex* Tile)
 	Int32 TexId(rand() % 100);
 	TexId > 50 ? TexId = 0 : TexId = 1;
 
-	Tile[0].texCoords = Vector2f(TexId * TileSize_, 0.f);
-	Tile[1].texCoords = Vector2f((TexId + 1)* TileSize_, 0.f);
-	Tile[2].texCoords = Vector2f((TexId + 1) * TileSize_, TileSize_);
-	Tile[3].texCoords = Vector2f(TexId * TileSize_, TileSize_);
+	Tile[0].texCoords = Vector2f((float)TexId * TileSize_, 0.f);
+	Tile[1].texCoords = Vector2f(((float)TexId + 1)* TileSize_, 0.f);
+	Tile[2].texCoords = Vector2f(((float)TexId + 1) * TileSize_, (float)TileSize_);
+	Tile[3].texCoords = Vector2f((float)TexId * TileSize_, (float)TileSize_);
 }

@@ -26,14 +26,18 @@ sf::Texture * AssetManager::LoadTexture(const sf::String & FilePath)
 	Data.Texture = new sf::Texture;
 	if (Data.Texture == nullptr)
 	{
+#if !PLAYABLE_BUILD
 		PrintToDebug("Error", "Failed to create memory for texture at" + FilePath);
+#endif
 		return nullptr;
 	}
 	if (!Data.Texture->loadFromFile(FilePath))
 	{
+#ifndef PLAYABLE_BUILD
 		PrintToDebug("Error", "Failed to load texture at " + FilePath);
+#endif
 		return nullptr;
-	}
+}
 	Textures_.push_back(Data);
 	return Textures_.back().Texture;
 }
