@@ -11,6 +11,9 @@
 #include <tchar.h>
 #include <iostream>
 #include <assert.h>
+#include <stdlib.h>
+#include <string.h>
+#include <tchar.h>
 
 //SFML Includes
 #include <SFML\Graphics.hpp>
@@ -21,13 +24,7 @@
 #include "GameVars.hpp"
 
 // TODO: reference additional headers your program requires here
-#if _DEBUG
-#define IN_DEVELOPMENT_BUILD 1 
-#else
-#define IN_DEVELOPMENT_BUILD 0
-#endif
 
 #define INDEX_NONE -1
 
 #include "DebugHelper.h"
-

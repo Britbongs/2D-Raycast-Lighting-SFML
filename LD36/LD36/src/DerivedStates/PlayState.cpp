@@ -100,8 +100,10 @@ bool PlayState::Initialise()
 	sf::Texture* T = AM->LoadTexture("res//textures//water.png");
 	if (T == nullptr)
 	{
+#ifndef PLAYABLE_BUILD
 		PrintToDebug("Error", "Failed to load water texture");
-		return false;
+#endif
+		return (false);
 	}
 
 	T->setRepeated(true);
@@ -258,7 +260,7 @@ void PlayState::SpawnObstacles()
 		Pos.y = RandFloat(fabs(MaxSpawnY), fabs(MinSpawnY))*-1;
 		R.setPosition(Pos);
 
-		for (int i(0); i < 4; ++i)
+		for (int j(0); i < 4; ++i)
 		{
 			for (RectangleShape& R2 : Obstacles_)
 			{

@@ -19,7 +19,9 @@ bool Game::InitGame()
 	auto AM = AssetManager::GetInstance();
 	if (AM->GetDefaultFont() == nullptr)
 	{
+#ifndef PLAYABLE_BUILD
 		PrintToDebug("Error: ", "Failed To Load FPS Font");
+#endif
 		return false;
 	}
 
@@ -61,7 +63,7 @@ void Game::RunGame()
 			}
 			HandleEvents(Evnt, Delta);
 		}
-	
+
 		Update(Delta);
 
 		Render(Delta);
@@ -91,7 +93,9 @@ bool Game::InitialiseWindow()
 	auto AM = AssetManager::GetInstance();
 	if (AM->GetDefaultFont() == nullptr)
 	{
+#ifndef PLAYABLE_BUILD
 		PrintToDebug("Error: ", "Failed To Load FPS Font");
+#endif
 		return false;
 	}
 
@@ -128,7 +132,7 @@ void Game::Update(float Delta)
 
 void Game::HandleEvents(sf::Event & Evnt, float Delta)
 {
-#if IN_DEVELOPMENT_BUILD
+#ifndef PLAYABLE_BUILD
 	if (Evnt.type == sf::Event::KeyPressed)
 	{
 		if (Evnt.key.code == sf::Keyboard::Escape)
@@ -136,8 +140,8 @@ void Game::HandleEvents(sf::Event & Evnt, float Delta)
 			RWindow_.close();
 		}
 	}
-	StateManager_.ActiveStateHandleEvents(Evnt, Delta);
 #endif
+	StateManager_.ActiveStateHandleEvents(Evnt, Delta);
 }
 
 void Game::Render(float Delta)

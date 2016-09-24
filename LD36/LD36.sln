@@ -12,6 +12,8 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Playable Build|x64 = Playable Build|x64
+		Playable Build|x86 = Playable Build|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
@@ -20,6 +22,10 @@ Global
 		{CC7B5EDA-073B-4145-B767-D96CCDC4D0BF}.Debug|x64.Build.0 = Debug|x64
 		{CC7B5EDA-073B-4145-B767-D96CCDC4D0BF}.Debug|x86.ActiveCfg = Debug|Win32
 		{CC7B5EDA-073B-4145-B767-D96CCDC4D0BF}.Debug|x86.Build.0 = Debug|Win32
+		{CC7B5EDA-073B-4145-B767-D96CCDC4D0BF}.Playable Build|x64.ActiveCfg = Playable Build|x64
+		{CC7B5EDA-073B-4145-B767-D96CCDC4D0BF}.Playable Build|x64.Build.0 = Playable Build|x64
+		{CC7B5EDA-073B-4145-B767-D96CCDC4D0BF}.Playable Build|x86.ActiveCfg = Playable Build|Win32
+		{CC7B5EDA-073B-4145-B767-D96CCDC4D0BF}.Playable Build|x86.Build.0 = Playable Build|Win32
 		{CC7B5EDA-073B-4145-B767-D96CCDC4D0BF}.Release|x64.ActiveCfg = Release|x64
 		{CC7B5EDA-073B-4145-B767-D96CCDC4D0BF}.Release|x64.Build.0 = Release|x64
 		{CC7B5EDA-073B-4145-B767-D96CCDC4D0BF}.Release|x86.ActiveCfg = Release|Win32

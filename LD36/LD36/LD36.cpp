@@ -6,20 +6,51 @@
 
 #include "Game\Game.hpp"
 
-int main(int argc, char* argv[], char* envp[])
+#ifndef PLAYABLE_BUILD
+int main(void)
 {
-	Game GameObj;
+	Game GameInstance;
 
+	DebugPrint("fuck you");
 
-	if (!GameObj.InitGame())
+	if (!GameInstance.InitGame())
 	{
 		return(-1);
 	}
 
-	GameObj.RunGame();
+	GameInstance.RunGame();
 
-	GameObj.CleanUpGame();
+	GameInstance.CleanUpGame();
 
 
 	return 0;
 }
+#endif
+
+#ifdef PLAYABLE_BUILD 
+#include <Windows.h>
+
+// Winmain to hide console
+int WINAPI WinMain(
+	_In_ HINSTANCE hInstance,
+	_In_ HINSTANCE hPrevInstance,
+	_In_ LPSTR     lpCmdLine,
+	_In_ int       nCmdShow
+)
+
+{
+	Game GameInstance;
+
+	if (!GameInstance.InitGame())
+	{
+		return(EXIT_FAILURE);
+	}
+
+	GameInstance.RunGame();
+
+	GameInstance.CleanUpGame();
+
+	return EXIT_SUCCESS;
+}
+
+#endif
