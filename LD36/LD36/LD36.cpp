@@ -11,7 +11,7 @@ int main(void)
 {
 	Game GameInstance;
 
-	DebugPrint("fuck you");
+	//DebugPrint("fuck you");
 
 	if (!GameInstance.InitGame())
 	{
