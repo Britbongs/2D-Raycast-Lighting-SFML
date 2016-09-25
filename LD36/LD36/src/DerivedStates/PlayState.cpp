@@ -98,10 +98,10 @@ bool PlayState::Initialise()
 
 	//Game background init 
 	sf::Texture* T = AM->LoadTexture("res//textures//water.png");
-	if (T == nullptr)
+	if (T != nullptr)
 	{
 #ifndef PLAYABLE_BUILD
-		PrintToDebug("Error", "Failed to load water texture");
+		DebugPrintF(AssetLog, L"Failed to load texture at %s", L"res//textures//water.png");
 #endif
 		return (false);
 	}

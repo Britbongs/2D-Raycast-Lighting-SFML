@@ -11,8 +11,6 @@ int main(void)
 {
 	Game GameInstance;
 
-	//DebugPrint("fuck you");
-
 	if (!GameInstance.InitGame())
 	{
 		return(-1);
@@ -22,6 +20,7 @@ int main(void)
 
 	GameInstance.CleanUpGame();
 
+	system("pause");
 
 	return 0;
 }

@@ -20,7 +20,7 @@ bool Game::InitGame()
 	if (AM->GetDefaultFont() == nullptr)
 	{
 #ifndef PLAYABLE_BUILD
-		PrintToDebug("Error: ", "Failed To Load FPS Font");
+		DebugPrintF(AssetLog, L"Failed to load default font");
 #endif
 		return false;
 	}
@@ -91,14 +91,6 @@ bool Game::InitialiseWindow()
 	}
 
 	auto AM = AssetManager::GetInstance();
-	if (AM->GetDefaultFont() == nullptr)
-	{
-#ifndef PLAYABLE_BUILD
-		PrintToDebug("Error: ", "Failed To Load FPS Font");
-#endif
-		return false;
-	}
-
 	Texture* Tex = AM->LoadTexture("res//textures//splash.png");
 	if (Tex != nullptr)
 	{
