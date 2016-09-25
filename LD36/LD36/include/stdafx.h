@@ -27,4 +27,6 @@
 
 #define INDEX_NONE -1
 
+#define CHECK assert
+
 #include "DebugHelper.h"
