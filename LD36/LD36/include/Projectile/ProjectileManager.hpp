@@ -4,13 +4,6 @@
 #include "GameObject\GameObject.h"
 #include "GameVars.hpp"
 
-//Forward declerations
-
-enum BoatType;
-enum BoatControlState;
-enum ObjectType;
-
-class Boat;
 class World;
 
 //
@@ -19,25 +12,14 @@ struct ProjectileFireData
 {
 	Vector2f StartPos;
 	Vector2f Direction;
-	BoatControlState FiredBy;
-	BoatType BoatType;
 };
 
-enum ProjectileType
-{//Game projectile types
-	eRock,
-	eCannonball,
-	eMissile
-};
 
 //Projectile struct
 struct Projectile : public GameObject
 
 {
 	Projectile();
-	sf::Vector2f Velocity = sf::Vector2f(0.f, 0.f);
-	ProjectileType ProjectileType = eRock;
-	BoatControlState FiredFromState;
 };
 
 
@@ -64,11 +46,6 @@ public:
 
 private:
 
-	ProjectileType BoatTypeToProjectileType(BoatType Type) const;
-
-	Int32 GetSpareProjectileIndex(ProjectileType Type) const;
-
-	const Int32 ProjectileCount_ = (PROJECTILE_TYPE_COUNT * PROJECTILE_PER_TYPE);
 
 	std::vector<Projectile*> Projectiles_;
 

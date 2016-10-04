@@ -189,9 +189,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\GameObject\GameObject.h" />
-    <ClInclude Include="include\AI\AIController.h" />
-    <ClInclude Include="include\AI\AIBoatManager.hpp" />
-    <ClInclude Include="include\Boat\Boat.hpp" />
     <ClInclude Include="include\Asset\AssetManager.hpp" />
     <ClInclude Include="include\GameVars.hpp" />
     <ClInclude Include="include\Player\PlayerController.hpp" />
@@ -215,12 +212,9 @@
     <ClCompile Include="LD36.cpp" />
     <ClCompile Include="src\MeshCollider\MeshCollider.cpp" />
     <ClCompile Include="src\GameObject\GameObject.cpp" />
-    <ClCompile Include="src\AI\AIController.cpp" />
     <ClCompile Include="src\Player\PlayerController.cpp" />
     <ClCompile Include="src\Projectile\ProjectileManager.cpp" />
-    <ClCompile Include="src\AI\AIBoatManager.cpp" />
     <ClCompile Include="src\DerivedStates\MenuState.cpp" />
-    <ClCompile Include="src\Boat\Boat.cpp" />
     <ClCompile Include="src\Asset\AssetManager.cpp" />
     <ClCompile Include="src\DerivedStates\PlayState.cpp" />
     <ClCompile Include="src\States\State.cpp" />
