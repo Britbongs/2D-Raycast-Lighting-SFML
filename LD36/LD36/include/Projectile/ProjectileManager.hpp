@@ -4,9 +4,9 @@
 #include "GameObject\GameObject.h"
 #include "GameVars.hpp"
 
-class World;
 
-//
+//Forward decleration
+class World;
 
 struct ProjectileFireData
 {
@@ -52,7 +52,7 @@ private:
 	sf::Texture* Textures_[5];
 
 	float* ProjectileSpeeds_ = nullptr;
-
+		
 	AssetManager* AssetMgr_ = nullptr;
 
 	World* World_ = nullptr;

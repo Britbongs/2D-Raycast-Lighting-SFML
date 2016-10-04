@@ -2,7 +2,7 @@
 
 #include "States\State.hpp"
 #include "Asset\AssetManager.hpp"
-#include "TiledBackground\TiledBackground.hpp"
+#include "TiledMap\TiledMap.hpp"
 #include "Projectile\ProjectileManager.hpp"	
 #include "Player\PlayerController.hpp"
 #include "World\World.h"

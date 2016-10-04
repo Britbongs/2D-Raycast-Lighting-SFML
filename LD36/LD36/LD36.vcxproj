@@ -202,7 +202,7 @@
     <ClInclude Include="include\stdafx.h" />
     <ClInclude Include="include\targetver.h" />
     <ClInclude Include="include\DerivedStates\PlayState.hpp" />
-    <ClInclude Include="include\TiledBackground\TiledBackground.hpp" />
+    <ClInclude Include="include\TiledMap\TiledMap.hpp" />
     <ClInclude Include="include\DerivedStates\MenuState.hpp" />
     <ClInclude Include="include\Projectile\ProjectileManager.hpp" />
     <ClInclude Include="include\World\World.h" />
@@ -226,7 +226,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\TildBackground\TiledBackground.cpp" />
+    <ClCompile Include="src\TIledMap\TiledMap.cpp" />
     <ClCompile Include="src\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>

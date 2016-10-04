@@ -1,19 +1,19 @@
 #include "stdafx.h"
-#include "TiledBackground\TiledBackground.hpp"
+#include "TiledMap\TiledMap.hpp"
 
 using namespace sf;
 
-TiledBackground::TiledBackground(Uint32 TileSize, Vector2u Dimension)
+TiledMap::TiledMap(Uint32 TileSize, Vector2u Dimension)
 	: TileSize_(TileSize), Dimensions_(Dimension)
 {
 	SetupVetices();
 }
 
-TiledBackground::~TiledBackground()
+TiledMap::~TiledMap()
 {
 }
 
-void TiledBackground::SetTexture(sf::Texture * Tex)
+void TiledMap::SetTexture(sf::Texture * Tex)
 {
 	if (Tex == nullptr)
 	{
@@ -31,7 +31,7 @@ void TiledBackground::SetTexture(sf::Texture * Tex)
 	}
 }
 
-sf::Vector2f TiledBackground::GetSize() const
+sf::Vector2f TiledMap::GetSize() const
 {
 	Vector2f Size;
 
@@ -41,14 +41,14 @@ sf::Vector2f TiledBackground::GetSize() const
 	return sf::Vector2f(Size);
 }
 
-sf::FloatRect TiledBackground::GetGlobalBounds() const
+sf::FloatRect TiledMap::GetGlobalBounds() const
 {
 	return getTransform().transformRect(GetLocalBounds());
 }
 
 // private
 
-void TiledBackground::draw(sf::RenderTarget & RTarget, sf::RenderStates RStates) const
+void TiledMap::draw(sf::RenderTarget & RTarget, sf::RenderStates RStates) const
 {
 	RStates.transform *= getTransform();
 
@@ -60,7 +60,7 @@ void TiledBackground::draw(sf::RenderTarget & RTarget, sf::RenderStates RStates)
 	RTarget.draw(Map_, RStates);
 }
 
-sf::FloatRect TiledBackground::GetLocalBounds() const
+sf::FloatRect TiledMap::GetLocalBounds() const
 {
 	FloatRect R;
 
@@ -72,7 +72,7 @@ sf::FloatRect TiledBackground::GetLocalBounds() const
 	return R;
 }
 
-void TiledBackground::SetupVetices()
+void TiledMap::SetupVetices()
 {
 	Map_.setPrimitiveType(sf::Quads);
 	Map_.resize(Dimensions_.x * Dimensions_.y * 4);
@@ -91,7 +91,7 @@ void TiledBackground::SetupVetices()
 	}
 }
 
-void TiledBackground::SetTextureCoord(Vertex* Tile)
+void TiledMap::SetTextureCoord(Vertex* Tile)
 {
 	assert(Texture_);
 

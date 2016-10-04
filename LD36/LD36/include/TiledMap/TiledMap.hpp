@@ -1,13 +1,13 @@
 #pragma once
 
-class TiledBackground :
+class TiledMap :
 	public sf::Drawable, public sf::Transformable
 {
 public:
 
-	TiledBackground(sf::Uint32 TileSize, sf::Vector2u Dimensions);
+	TiledMap(sf::Uint32 TileSize, sf::Vector2u Dimensions);
 
-	~TiledBackground();
+	~TiledMap();
 
 	void SetTexture(sf::Texture* Tex);
 
