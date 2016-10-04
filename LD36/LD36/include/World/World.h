@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject\GameObject.h"
+#include "MeshCollider\MeshCollider.h"
 
 enum ObjectType
 {
@@ -15,7 +16,7 @@ enum ObjectType
 //did collide & owner
 struct CollisionData
 {
-	bool bDidCollide = false; 
+	bool bDidCollide = false;
 	ObjectType ObjType = ObjectType::eEmpty;
 };
 
@@ -33,8 +34,17 @@ public:
 
 private:
 	using AABB = FloatRect;
+
+	struct Projection
+	{
+		float Max = 0.f;
+		float Min = 0.f;
+	};
+
 	//TODO Implement sat collision here
 	void MeshCollisionCheck(const GameObject& SATColider);
+
+	Projection GetProjection(const MeshCollider& Collider, const Vector2f& EdgeNormal) const;
 
 	void AABBCollisionCheck(const GameObject& Object);
 

@@ -128,10 +128,10 @@
     <ClCompile Include="src\GameObject\GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LD36.cpp">
+    <ClCompile Include="src\MeshCollider\MeshCollider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\MeshCollider\MeshCollider.cpp">
+    <ClCompile Include="LD36.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

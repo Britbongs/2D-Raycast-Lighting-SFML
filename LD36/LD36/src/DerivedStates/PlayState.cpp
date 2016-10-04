@@ -11,20 +11,6 @@ PlayState::PlayState(sf::Int32 ID, sf::RenderWindow* RWindow, sf::RenderTexture*
 
 PlayState::~PlayState()
 {
-	delete BG_;
-	BG_ = nullptr;
-
-	delete ProjectileMgr_;
-	ProjectileMgr_ = nullptr;
-
-	delete Player_;
-	Player_ = nullptr;
-
-	for (auto& B : GameObjects_)
-	{
-		delete B;
-		B = nullptr;
-	}
 
 }
 
@@ -98,7 +84,7 @@ bool PlayState::Initialise()
 
 	//Game background init 
 	sf::Texture* T = AM->LoadTexture("res//textures//water.png");
-	if (T != nullptr)
+	if (T == nullptr)
 	{
 #ifndef PLAYABLE_BUILD
 		DebugPrintF(AssetLog, L"Failed to load texture at %s", L"res//textures//water.png");
@@ -122,6 +108,27 @@ bool PlayState::Initialise()
 	GetRenderTexture()->setView(V);
 
 	return false;
+}
+
+void PlayState::Deinitialise()
+{
+	delete BG_;
+	BG_ = nullptr;
+
+	delete ProjectileMgr_;
+	ProjectileMgr_ = nullptr;
+
+	delete Player_;
+	Player_ = nullptr;
+
+	for (Int32 i = 0; i < (Int32)GameObjects_.size(); ++i)
+	{
+		if (GameObjects_[i] != nullptr)
+		{
+			delete GameObjects_[i];
+			GameObjects_[i] = nullptr;
+		}
+	}
 }
 
 void PlayState::Update(float Delta)

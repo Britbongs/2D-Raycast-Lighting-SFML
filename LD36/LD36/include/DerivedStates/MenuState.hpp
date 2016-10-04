@@ -12,6 +12,8 @@ public:
 
 	virtual bool Initialise() override;
 
+	virtual void Deinitialise()	 override;
+
 	virtual void Update(float Delta) override;
 
 	virtual void Render() const override;

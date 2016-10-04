@@ -19,6 +19,8 @@ public:
 	~PlayState();
 
 	virtual bool Initialise() override;
+	
+	virtual void Deinitialise() override;
 
 	virtual void Update(float Delta) override;
 

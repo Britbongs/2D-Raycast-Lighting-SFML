@@ -10,7 +10,3 @@ State::State(const sf::String& StateName, Uint32 StateID, sf::RenderWindow* RWin
 State::~State()
 {
 }
-
-void State::Destroy()
-{
-}

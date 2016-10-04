@@ -86,6 +86,14 @@ public:
 	{
 		MeshCollider_->UpdateMesh(getTransform());
 	}
+
+	void SetColour(Color Col)
+	{
+		for (Int32 i = 0; i < VertArray_.getVertexCount(); ++i)
+		{
+			VertArray_[i].color = Col;
+		}
+	}
 private:
 
 	void Entity::draw(RenderTarget& RTarget, RenderStates RStates) const override
@@ -233,22 +241,21 @@ int main(int argc, char* argv[], char* envp[])
 	B.scale(100, 100);
 	B.setPosition(500, 600);
 
-	E.Update();
-	B.Update();
+	//E.Update();
+	//B.Update();
 
-	Clock C;
-	Time T;
-	for (int i = 0; i < REPETITIONS; ++i)
-	{
-		C.restart();
-		DoMeshsCollide(B.GetMeshCollider(), E.GetMeshCollider());
-		T += C.getElapsedTime();
-	}
+	//Clock C;
+	//Time T;
+	///*for (int i = 0; i < REPETITIONS; ++i)
+	//{
+	//	C.restart();
+	//	T += C.getElapsedTime();
+	//}*/
 
-	std::cout << "Overall Execution Time : " << T.asMilliseconds() << " ms\n";
-	std::cout << "Average Execution Time : " << T.asMicroseconds() / REPETITIONS << " microseconds\n";
-	system("PAUSE");
-	return 0;
+	//std::cout << "Overall Execution Time : " << T.asMilliseconds() << " ms\n";
+	//std::cout << "Average Execution Time : " << T.asMicroseconds() / REPETITIONS << " microseconds\n";
+	//system("PAUSE");
+	//return 0;
 
 	sf::Clock DeltaClock;
 	while (RWindow.isOpen())
@@ -302,8 +309,19 @@ int main(int argc, char* argv[], char* envp[])
 			B.rotate(10.f* Delta);
 		}
 
-
-		RWindow.close();
+		E.Update();
+		B.Update();
+		
+		if (DoMeshsCollide(B.GetMeshCollider(), E.GetMeshCollider()))
+		{
+			E.SetColour(Color::Red);
+			B.SetColour(Color::Red);
+		}
+		else
+		{
+			E.SetColour(Color::Green);
+			B.SetColour(Color::Green);
+		}
 
 		RWindow.clear();
 		RWindow.draw(E);

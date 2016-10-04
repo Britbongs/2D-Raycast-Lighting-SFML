@@ -4,7 +4,9 @@ class MeshCollider
 {
 public:
 
-	explicit MeshCollider(const std::vector<Vector2f>& VertArray);
+	MeshCollider();
+
+	MeshCollider(const std::vector<Vector2f>& VertArray);
 
 	~MeshCollider();
 
@@ -12,7 +14,13 @@ public:
 
 	Vector2f GetNormal(Int32 Index) const;
 
+	Vector2f GetTransformedPoint(Int32 Index) const;
+
+	Int32 GetPointCount() const;
+
 	Int32 GetNormalListSize() const;
+
+	void SetPointsList(const std::vector<Vector2f>& VertArray);
 
 private:
 

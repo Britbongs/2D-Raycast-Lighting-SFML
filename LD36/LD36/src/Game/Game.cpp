@@ -75,6 +75,7 @@ void Game::CleanUpGame()
 {
 	auto p = AssetManager::GetInstance();
 	delete p;
+	StateManager_.CleanupStates();
 }
 // Private Function
 
@@ -130,6 +131,13 @@ void Game::HandleEvents(sf::Event & Evnt, float Delta)
 		if (Evnt.key.code == sf::Keyboard::Escape)
 		{
 			RWindow_.close();
+		}
+		if (Evnt.type == Event::MouseButtonPressed)
+		{
+			if (Evnt.mouseButton.button == Mouse::Button::Middle)
+			{
+				printf("Middle mouse\n");
+			}
 		}
 	}
 #endif

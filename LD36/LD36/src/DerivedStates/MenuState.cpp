@@ -23,6 +23,10 @@ bool MenuState::Initialise()
 	return true;
 }
 
+void MenuState::Deinitialise()
+{
+}
+
 void MenuState::Update(float Delta)
 {
 	SplashTimer_ += Time(seconds(Delta));

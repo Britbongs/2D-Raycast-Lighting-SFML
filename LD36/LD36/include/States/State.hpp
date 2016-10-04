@@ -15,6 +15,8 @@ public:
 	virtual ~State();
 
 	virtual bool Initialise() = 0;
+	
+	virtual void Deinitialise() = 0;
 
 	virtual void Update(float Delta) = 0;
 
@@ -23,10 +25,6 @@ public:
 	virtual void PostRender() const = 0;
 
 	virtual void HandleEvents(sf::Event& Evnt, float Delta) = 0;
-
-	//virtual void UpdateFixed(float FixedDelta, sf::RenderWindow& RWindow);
-
-	virtual void Destroy();
 
 	void SetNextState(const sf::String& StateName) { NextState_ = StateName; }
 
