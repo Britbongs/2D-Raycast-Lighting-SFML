@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "Game\Game.hpp"
 #include "Asset\AssetManager.hpp"
 #include <future>

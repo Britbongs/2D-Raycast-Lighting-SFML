@@ -1,5 +1,5 @@
-#include "stdafx.h"
-#include "World\World.h"
+#include "stdafx.hpp"
+#include "World\World.hpp"
 
 
 World::World(std::vector<GameObject*>& Objects, RenderTexture* RTexture)

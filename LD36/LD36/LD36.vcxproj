@@ -109,6 +109,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>SFML_STATIC;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\SFML-2.3.2\include;$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,6 +139,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>SFML_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\SFML-2.3.2\include;$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -174,6 +176,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <EnablePREfast>false</EnablePREfast>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -199,19 +202,19 @@
     <ClInclude Include="include\States\State.hpp" />
     <ClInclude Include="include\States\StateManager.hpp" />
     <ClInclude Include="include\Game\Game.hpp" />
-    <ClInclude Include="include\DebugHelper.h" />
+    <ClInclude Include="include\DebugHelper.hpp" />
     <ClInclude Include="include\Maths\MathInclude.hpp" />
     <ClInclude Include="include\Maths\MathsUtilities.hpp" />
     <ClInclude Include="include\Maths\MathVector.hpp" />
-    <ClInclude Include="include\stdafx.h" />
+    <ClInclude Include="include\stdafx.hpp" />
     <ClInclude Include="include\targetver.h" />
     <ClInclude Include="include\DerivedStates\PlayState.hpp" />
     <ClInclude Include="include\TiledMap\TiledMap.hpp" />
     <ClInclude Include="include\DerivedStates\MenuState.hpp" />
     <ClInclude Include="include\Projectile\ProjectileManager.hpp" />
-    <ClInclude Include="include\World\World.h" />
+    <ClInclude Include="include\World\World.hpp" />
     <ClInclude Include="include\MeshCollider\MeshCollider.h" />
-    <ClInclude Include="include\TMXLoader\TMXLoader.h" />
+    <ClInclude Include="include\TMXLoader\TMXLoader.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LD36.cpp" />

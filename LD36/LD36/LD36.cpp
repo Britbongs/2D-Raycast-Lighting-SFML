@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "stdafx.hpp"
 
 #ifndef PLAYABLE_BUILD 
 #include <vld.h> //Visual Leak Detector include
@@ -7,6 +7,7 @@
 #endif 
 
 #include "Game\Game.hpp"
+
 
 #ifndef PLAYABLE_BUILD
 int main(void)
@@ -20,6 +21,7 @@ int WINAPI WinMain(
 )
 #endif
 {
+	
 	Game GameInstance;
 
 	if (!GameInstance.InitGame())
@@ -31,7 +33,7 @@ int WINAPI WinMain(
 	GameInstance.RunGame();
 
 	GameInstance.CleanUpGame();
-
+	
 	system("pause");
 
 	return EXIT_SUCCESS;

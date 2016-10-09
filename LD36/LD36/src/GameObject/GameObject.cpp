@@ -1,6 +1,6 @@
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "GameObject\GameObject.h"
-#include "World\World.h"
+#include "World\World.hpp"
 
 GameObject::GameObject(ObjectType Type = ObjectType::eEmpty)
 	: Type_(Type)

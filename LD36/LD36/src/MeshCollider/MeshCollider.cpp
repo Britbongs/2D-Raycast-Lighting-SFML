@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "MeshCollider/MeshCollider.h"
 
 MeshCollider::MeshCollider()

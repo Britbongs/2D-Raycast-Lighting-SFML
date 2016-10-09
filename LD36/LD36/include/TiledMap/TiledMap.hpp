@@ -1,11 +1,13 @@
 #pragma once
 
+#include "TMXLoader\TMXLoader.hpp"
+
 class TiledMap :
 	public sf::Drawable, public sf::Transformable
 {
 public:
 
-	TiledMap(sf::Uint32 TileSize, sf::Vector2u Dimensions);
+	TiledMap(sf::Uint32 TileSize);
 
 	~TiledMap();
 
@@ -15,13 +17,14 @@ public:
 
 	sf::FloatRect GetGlobalBounds() const;
 
+	void SetupVetices(const TMXLoader& Loader);
+
 private:
 
 	virtual void draw(sf::RenderTarget& RTarget, sf::RenderStates RStates) const;
 
 	sf::FloatRect GetLocalBounds() const;
 
-	void SetupVetices();
 
 	void SetTextureCoord(sf::Vertex* Tile, Int32 TileID);
 

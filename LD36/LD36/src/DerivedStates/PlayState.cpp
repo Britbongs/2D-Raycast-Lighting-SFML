@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "DerivedStates\PlayState.hpp"
 
 using namespace sf;
@@ -25,8 +25,10 @@ bool PlayState::Initialise()
 
 	World_ = new World(GameObjects_, GetRenderTexture());
 
-	TiledMap_ = new TiledMap(64, Vector2u(16, 12));
-
+	Loader_.LoadMap("res//test_map.tmx");
+	
+	TiledMap_ = new TiledMap(64);
+	
 	Texture *T = AM->LoadTexture("res//textures//tilesheet.png");
 	if (T != nullptr)
 	{
@@ -36,6 +38,7 @@ bool PlayState::Initialise()
 	{
 		return false;
 	}
+	TiledMap_->SetupVetices(Loader_);
 	//Player_ = new PlayerController(ProjectileMgr_, World_, Vector2f(GetRenderTexture()->getSize()));
 
 #ifndef PLAYABLE_BUILD

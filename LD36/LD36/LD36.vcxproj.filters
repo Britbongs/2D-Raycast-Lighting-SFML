@@ -24,13 +24,7 @@
     <ClInclude Include="include\Maths\MathVector.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DebugHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\States\State.hpp">
@@ -60,9 +54,6 @@
     <ClInclude Include="include\GameVars.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\World\World.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\GameObject\GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -84,7 +75,16 @@
     <ClInclude Include="include\RapidXML\rapidxml_utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\TMXLoader\TMXLoader.h">
+    <ClInclude Include="include\TMXLoader\TMXLoader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\World\World.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DebugHelper.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stdafx.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

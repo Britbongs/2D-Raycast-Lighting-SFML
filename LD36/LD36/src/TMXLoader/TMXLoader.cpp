@@ -1,20 +1,18 @@
-#include "stdafx.h"
-#include "TMXLoader\TMXLoader.h"
+#include "stdafx.hpp"
+#include "TMXLoader\TMXLoader.hpp"
 
 
 TMXLoader::~TMXLoader()
 {
 
-	for (size_t i(0); i < Tilesets_.size(); ++i)
-		delete Tilesets_[i];
-
-	for (size_t i(0); i < Layers_.size(); ++i)
-		delete Layers_[i];
+	CleanupLoadedMap();
 }
 
 bool TMXLoader::LoadMap(const string& filename)
 {
 	assert(filename.size() > 3);
+	
+	CleanupLoadedMap();
 
 	std::string map = TMXToString(filename);
 	if (map.size() < 1)
@@ -292,4 +290,32 @@ MObjectGroup TMXLoader::GetObjectGroup(Int32 id) const
 	assert(id >= 0 && id < static_cast<Int32>(ObjectGroups_.size()));
 
 	return(ObjectGroups_[id]);
+}
+
+void TMXLoader::CleanupLoadedMap()
+{
+
+	for (auto& Tileset : Tilesets_)
+	{
+		if (Tileset != nullptr)
+		{
+			delete Tileset;
+			Tileset = nullptr;
+		}
+	}
+
+	for (auto Layer : Layers_)
+	{
+		if (Layer != nullptr)
+		{
+			delete Layer;
+			Layer = nullptr;
+		}
+	}
+
+	Layers_.clear();
+	Tilesets_.clear();
+	ObjectGroups_.clear();
+	Doc_.clear();
+
 }

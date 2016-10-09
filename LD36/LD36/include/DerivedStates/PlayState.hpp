@@ -5,7 +5,8 @@
 #include "TiledMap\TiledMap.hpp"
 #include "Projectile\ProjectileManager.hpp"	
 #include "Player\PlayerController.hpp"
-#include "World\World.h"
+#include "World\World.hpp"
+#include "TMXLoader\TMXLoader.hpp"
 
 class PlayState : public State
 
@@ -40,5 +41,5 @@ private:
 	PlayerController* Player_ = nullptr;
 	TiledMap* TiledMap_ = nullptr;
 	World* World_ = nullptr;
-
+	TMXLoader Loader_; 
 };

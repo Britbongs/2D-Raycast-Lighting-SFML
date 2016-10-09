@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Projectile\ProjectileManager.hpp"
-#include "World\World.h"
+#include "World\World.hpp"
 
 enum PlayerMoveDirection
 {

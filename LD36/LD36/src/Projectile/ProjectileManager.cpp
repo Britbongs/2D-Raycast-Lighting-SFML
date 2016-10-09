@@ -1,6 +1,6 @@
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "Projectile\ProjectileManager.hpp"
-#include "World\World.h"
+#include "World\World.hpp"
 
 
 //PROJECTILE CTOR
