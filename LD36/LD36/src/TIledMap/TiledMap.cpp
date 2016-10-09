@@ -19,6 +19,7 @@ void TiledMap::SetTexture(sf::Texture * Tex)
 	{
 		return;
 	}
+
 	Texture_ = Tex;
 
 	for (Uint32 i = 0; i < Dimensions_.x; ++i)
@@ -26,7 +27,10 @@ void TiledMap::SetTexture(sf::Texture * Tex)
 		for (Uint32 j = 0; j < Dimensions_.y; ++j)
 		{
 			sf::Vertex* Tile = &Map_[(i + j * Dimensions_.x) * 4];
-			SetTextureCoord(Tile);
+
+			Int32 TileID = TileIDs_[i][j];
+
+			SetTextureCoord(Tile, TileID);
 		}
 	}
 }
@@ -87,20 +91,34 @@ void TiledMap::SetupVetices()
 			Tile[1].position = Vector2f((float)(i + 1) * TileSize_, (float)j * TileSize_);
 			Tile[2].position = Vector2f((float)(i + 1) * TileSize_, (float)(j + 1) * TileSize_);
 			Tile[3].position = Vector2f((float)i * TileSize_, (float)(j + 1)*TileSize_);
+
+			if (i == 0 || j == 0 || i == Dimensions_.x - 1 || j == Dimensions_.y - 1)
+			{
+				CollisionMap_.push_back(1);
+			}
+			else
+			{
+				CollisionMap_.push_back(0);
+			}
 		}
 	}
 }
 
-void TiledMap::SetTextureCoord(Vertex* Tile)
+void TiledMap::SetTextureCoord(Vertex* Tile, Int32 TileID)
 {
 	assert(Texture_);
 
 	Vector2f TexSize(Texture_->getSize());
 	Int32 TexId(rand() % 100);
-	TexId > 50 ? TexId = 0 : TexId = 1;
 
-	Tile[0].texCoords = Vector2f((float)TexId * TileSize_, 0.f);
-	Tile[1].texCoords = Vector2f(((float)TexId + 1)* TileSize_, 0.f);
-	Tile[2].texCoords = Vector2f(((float)TexId + 1) * TileSize_, (float)TileSize_);
-	Tile[3].texCoords = Vector2f((float)TexId * TileSize_, (float)TileSize_);
+	Vector2f TexPos;
+	TexPos.x = static_cast<float> (TileID % (Texture_->getSize().x / TileSize_));
+	TexPos.y = static_cast<float> (TileID / (Texture_->getSize().x/ TileSize_));
+
+	TexPos *= (float)TileSize_;
+
+	Tile[0].texCoords = Vector2f(TexPos.x, TexPos.y);
+	Tile[1].texCoords = Vector2f(TexPos.x + (float)TileSize_, TexPos.y);
+	Tile[2].texCoords = Vector2f(TexPos.x + (float)TileSize_, TexPos.y + (float)TileSize_);
+	Tile[3].texCoords = Vector2f(TexPos.x, TexPos.y + (float)TileSize_);
 }

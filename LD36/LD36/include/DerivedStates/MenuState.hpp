@@ -18,20 +18,11 @@ public:
 
 	virtual void Render() const override;
 
-	virtual void PostRender()const override;
+	virtual void PostRender() const override;
 
 	virtual void HandleEvents(sf::Event& Evnt, float Delta) override;
 
 private:
-
-	AssetManager* AssetMgr_ = AssetManager::GetInstance();
-
-	sf::Texture *SplashTex_ = nullptr, *TitleTex_ = nullptr;
-	sf::Sprite Splash_, Title_;
-
-	sf::Time SplashTimer_;
-
-	bool ShowSplash_ = true;
 
 };
 

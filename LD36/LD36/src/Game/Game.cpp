@@ -91,15 +91,6 @@ bool Game::InitialiseWindow()
 		return false;
 	}
 
-	auto AM = AssetManager::GetInstance();
-	Texture* Tex = AM->LoadTexture("res//textures//splash.png");
-	if (Tex != nullptr)
-	{
-		Image IconImage = Tex->copyToImage();
-
-		RWindow_.setIcon(IconImage.getSize().x, IconImage.getSize().y, IconImage.getPixelsPtr());
-
-	}
 	RWindow_.setFramerateLimit(60);
 	return true;
 }

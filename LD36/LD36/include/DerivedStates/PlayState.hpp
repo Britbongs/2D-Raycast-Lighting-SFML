@@ -17,7 +17,7 @@ public:
 	~PlayState();
 
 	virtual bool Initialise() override;
-	
+
 	virtual void Deinitialise() override;
 
 	virtual void Update(float Delta) override;
@@ -38,7 +38,7 @@ private:
 	AssetManager* AssetMgr_ = nullptr;
 	ProjectileManager* ProjectileMgr_ = nullptr;
 	PlayerController* Player_ = nullptr;
-	//TiledBackground* BG_ = nullptr;
+	TiledMap* TiledMap_ = nullptr;
 	World* World_ = nullptr;
 
 };

@@ -14,7 +14,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <tchar.h>
-
+#include <fstream>
+#include <sstream>
 //SFML Includes
 #include <SFML\Graphics.hpp>
 #include <SFML\System\Vector2.hpp>
