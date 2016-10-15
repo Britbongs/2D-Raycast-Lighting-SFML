@@ -81,7 +81,7 @@ void PlayState::Deinitialise()
 
 void PlayState::Update(float Delta)
 {
-
+	DebugPrintF(DebugLog, L"Delta: %f", Delta);
 }
 
 void PlayState::Render() const

@@ -31,10 +31,8 @@ int WINAPI WinMain(
 	}
 
 	GameInstance.RunGame();
-
-	GameInstance.CleanUpGame();
 	
-	system("pause");
+	GameInstance.CleanUpGame();
 
 	return EXIT_SUCCESS;
 }
