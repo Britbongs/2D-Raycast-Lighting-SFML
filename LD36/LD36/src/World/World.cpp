@@ -12,21 +12,21 @@ World::~World()
 }
 
 
-void World::SetupCollisionData(const TiledMap* _tiledMap)
+void World::SetupTileMeshColliders(const TiledMap* _tiledMap)
 {
 	Vector2f Size = _tiledMap->GetSize();
 
-	sf::Int32 TileSize = _tiledMap->GetTileSize();
+	Int32 TileSize = _tiledMap->GetTileSize();
 
 	std::vector<Vector2f> tempVertArray;
 	tempVertArray.resize(4);
 
-	for (int i{ 0 }; i < Size.x; ++i)
+	for (Int32 i{ 0 }; i < Size.x; ++i)
 	{
-		for (int j{ 0 }; j < Size.y; ++j)
+		for (Int32 j{ 0 }; j < Size.y; ++j)
 		{
 			//Get index in vector
-			sf::Int32 index = i + j * Size.x;
+			Int32 index = i + j * Size.x;
 
 			//If the tile is collideable
 			if (_tiledMap->GetCollideableAtIndex(index))

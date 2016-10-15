@@ -29,7 +29,7 @@ public:
 
 	~World();
 
-	void SetupCollisionData(const TiledMap* tiledMap_);
+	void SetupTileMeshColliders(const TiledMap* tiledMap_);
 
 	CollisionData CheckCollision(const GameObject& Collider);
 
