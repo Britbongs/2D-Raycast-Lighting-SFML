@@ -15,7 +15,11 @@ public:
 
 	sf::Vector2f GetSize() const;
 
+	sf::Uint32 GetTileSize() const;
+
 	sf::FloatRect GetGlobalBounds() const;
+
+	bool GetCollideableAtIndex(const int index) const;
 
 	void SetupVetices(const TMXLoader& Loader);
 

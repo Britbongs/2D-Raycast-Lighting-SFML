@@ -225,7 +225,7 @@ bool DoMeshsCollide(MeshCollider& MeshA, MeshCollider& MeshB)
 	return (true);
 }
 
-/*
+
 int main(int argc, char* argv[], char* envp[])
 {
 	RenderWindow RWindow(VideoMode(1024, 720), "SATTest", Style::Close);
@@ -334,24 +334,24 @@ int main(int argc, char* argv[], char* envp[])
 	
 	return 0;
 }
-*/
 
-int main()
-{
-	RenderWindow RWindow; 
-	RWindow.create(VideoMode(640, 480), "Hello", Style::Close);
 
-	while (RWindow.isOpen())
-	{
-		Event evnt; 
-		while (RWindow.pollEvent(evnt))
-		{
-			if (evnt.type == Event::Closed)
-			{
-				RWindow.close();
-			}
-		}
-	} 
-
-	return 0;
-}
+//int main()
+//{
+//	RenderWindow RWindow; 
+//	RWindow.create(VideoMode(640, 480), "Hello", Style::Close);
+//
+//	while (RWindow.isOpen())
+//	{
+//		Event evnt; 
+//		while (RWindow.pollEvent(evnt))
+//		{
+//			if (evnt.type == Event::Closed)
+//			{
+//				RWindow.close();
+//			}
+//		}
+//	} 
+//
+//	return 0;
+//}
