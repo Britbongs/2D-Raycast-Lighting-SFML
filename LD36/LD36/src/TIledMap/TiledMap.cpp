@@ -45,10 +45,24 @@ sf::Vector2f TiledMap::GetSize() const
 	return sf::Vector2f(Size);
 }
 
+sf::Uint32 TiledMap::GetTileSize() const
+{
+	return TileSize_;
+}
+
 sf::FloatRect TiledMap::GetGlobalBounds() const
 {
 	return getTransform().transformRect(GetLocalBounds());
 }
+
+bool TiledMap::GetCollideableAtIndex(const int index) const
+{
+	if (CollisionMap_[index] == 1)
+		return true;
+	else
+		return false;
+}
+
 
 // private
 
@@ -94,14 +108,16 @@ void TiledMap::SetupVetices(const TMXLoader& Loader)
 			Tile[2].position = Vector2f((float)(i + 1) * TileSize_, (float)(j + 1) * TileSize_);
 			Tile[3].position = Vector2f((float)i * TileSize_, (float)(j + 1)*TileSize_);
 
-			/*if (i == 0 || j == 0 || i == Dimensions_.x - 1 || j == Dimensions_.y - 1)
+			if (i == 0 || j == 0 || i == Dimensions_.x - 1 || j == Dimensions_.y - 1)
 			{
 				CollisionMap_.push_back(1);
 			}
 			else
 			{
 				CollisionMap_.push_back(0);
-			}*/
+			}
+
+
 			if (Texture_ == nullptr)
 			{
 				continue;
@@ -115,7 +131,6 @@ void TiledMap::SetupVetices(const TMXLoader& Loader)
 			Tile[1].texCoords = Vector2f((float)(texturePos.x + 1) * TileSize_, (float)texturePos.y* TileSize_);
 			Tile[2].texCoords = Vector2f((float)(texturePos.x + 1) * TileSize_, (float)(texturePos.y + 1) * TileSize_);
 			Tile[3].texCoords = Vector2f((float)texturePos.x* TileSize_, (float)(texturePos.y + 1)*TileSize_);
-
 		}
 	}
 }

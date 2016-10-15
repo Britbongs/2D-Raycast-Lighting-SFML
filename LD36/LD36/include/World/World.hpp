@@ -2,6 +2,7 @@
 
 #include "GameObject\GameObject.h"
 #include "MeshCollider\MeshCollider.h"
+#include "TiledMap\TiledMap.hpp"
 
 enum ObjectType
 {
@@ -28,6 +29,8 @@ public:
 
 	~World();
 
+	void SetupTileMeshColliders(const TiledMap* tiledMap_);
+
 	CollisionData CheckCollision(const GameObject& Collider);
 
 	bool IsInsideView(const FloatRect& AABB) const;
@@ -49,6 +52,8 @@ private:
 	void AABBCollisionCheck(const GameObject& Object);
 
 	std::vector<GameObject*> CollidersToCheck_;
+
+	std::vector<MeshCollider> TileMeshColliders_;
 
 	std::vector<GameObject*>& Objects_;
 

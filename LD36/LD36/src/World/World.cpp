@@ -11,6 +11,49 @@ World::~World()
 {
 }
 
+
+void World::SetupTileMeshColliders(const TiledMap* _tiledMap)
+{
+	Vector2f Size = _tiledMap->GetSize();
+
+	Int32 TileSize = _tiledMap->GetTileSize();
+
+	std::vector<Vector2f> tempVertArray;
+	tempVertArray.resize(4);
+
+	for (Int32 i{ 0 }; i < Size.x; ++i)
+	{
+		for (Int32 j{ 0 }; j < Size.y; ++j)
+		{
+			//Get index in vector
+			Int32 index = i + j * Size.x;
+
+			//If the tile is collideable
+			if (_tiledMap->GetCollideableAtIndex(index))
+			{
+				//Top left
+				tempVertArray[0].x = i * TileSize;
+				tempVertArray[0].y = j * TileSize;
+
+				//Top right
+				tempVertArray[1].x = (i + 1) * TileSize;
+				tempVertArray[1].y = j * TileSize;
+
+				//Bottom right
+				tempVertArray[2].x = (i + 1) * TileSize;
+				tempVertArray[2].y = (j + 1) * TileSize;
+
+				//Bottom left
+				tempVertArray[3].x = i * TileSize;
+				tempVertArray[3].y = (j + 1) * TileSize;
+
+				//Create the collider and push it into the vector
+				TileMeshColliders_.push_back(MeshCollider(tempVertArray));
+			}
+		}
+	}
+}
+
 CollisionData World::CheckCollision(const GameObject& Object)
 {
 	CollisionData Data;
