@@ -22,9 +22,9 @@ void TiledMap::SetTexture(sf::Texture * Tex)
 
 	Texture_ = Tex;
 
-	for (Uint32 i = 0; i < Dimensions_.x; ++i)
+	for (Int32 i = 0; i < Dimensions_.x; ++i)
 	{
-		for (Uint32 j = 0; j < Dimensions_.y; ++j)
+		for (Int32 j = 0; j < Dimensions_.y; ++j)
 		{
 			sf::Vertex* Tile = &Map_[(i + j * Dimensions_.x) * 4];
 
@@ -35,17 +35,22 @@ void TiledMap::SetTexture(sf::Texture * Tex)
 	}
 }
 
-sf::Vector2f TiledMap::GetSize() const
+Vector2f TiledMap::GetSize() const
 {
 	Vector2f Size;
 
 	Size.x = (float)(Dimensions_.x * TileSize_);
 	Size.y = (float)(Dimensions_.y * TileSize_);
 
-	return sf::Vector2f(Size);
+	return Size;
 }
 
-sf::Uint32 TiledMap::GetTileSize() const
+Vector2i TiledMap::GetGridSize() const
+{
+	return Dimensions_;
+}
+
+Int32 TiledMap::GetTileSize() const
 {
 	return TileSize_;
 }
@@ -55,14 +60,11 @@ sf::FloatRect TiledMap::GetGlobalBounds() const
 	return getTransform().transformRect(GetLocalBounds());
 }
 
-bool TiledMap::GetCollideableAtIndex(const int index) const
+bool TiledMap::GetCollideableAtIndex(Int32 index) const
 {
-	if (CollisionMap_[index] == 1)
-		return true;
-	else
-		return false;
+	assert(index >= 0 && index < (Int32)CollisionMap_.size());
+	return CollisionMap_[index];
 }
-
 
 // private
 
@@ -93,8 +95,8 @@ sf::FloatRect TiledMap::GetLocalBounds() const
 void TiledMap::SetupVetices(const TMXLoader& Loader)
 {
 	Map_.setPrimitiveType(sf::Quads);
-	//Map_.resize(Dimensions_.x * Dimensions_.y * 4);
 	const Vector2i Size(Loader.GetLayer()[0]->Width, Loader.GetLayer()[0]->Height);
+	Dimensions_ = Size;
 	Map_.resize(Size.x * Size.y * 4);
 
 	for (Int32 i = 0; i < (signed)Size.x; ++i)
@@ -116,8 +118,6 @@ void TiledMap::SetupVetices(const TMXLoader& Loader)
 			{
 				CollisionMap_.push_back(0);
 			}
-
-
 			if (Texture_ == nullptr)
 			{
 				continue;
@@ -131,6 +131,7 @@ void TiledMap::SetupVetices(const TMXLoader& Loader)
 			Tile[1].texCoords = Vector2f((float)(texturePos.x + 1) * TileSize_, (float)texturePos.y* TileSize_);
 			Tile[2].texCoords = Vector2f((float)(texturePos.x + 1) * TileSize_, (float)(texturePos.y + 1) * TileSize_);
 			Tile[3].texCoords = Vector2f((float)texturePos.x* TileSize_, (float)(texturePos.y + 1)*TileSize_);
+
 		}
 	}
 }

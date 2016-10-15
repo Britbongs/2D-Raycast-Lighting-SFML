@@ -36,7 +36,17 @@ public:
 	bool IsInsideView(const FloatRect& AABB) const;
 
 private:
+
 	using AABB = FloatRect;
+	
+	struct TileCollisionData
+	{
+		TileCollisionData(MeshCollider MeshColl , bool IsBlocked) 
+			: MCollider(MeshColl), bIsBlockedTile(IsBlocked)
+		{}
+		MeshCollider MCollider; 
+		bool bIsBlockedTile;
+	};
 
 	struct Projection
 	{
@@ -53,10 +63,9 @@ private:
 
 	std::vector<GameObject*> CollidersToCheck_;
 
-	std::vector<MeshCollider> TileMeshColliders_;
+	std::vector<TileCollisionData> TileMeshColliders_;
 
 	std::vector<GameObject*>& Objects_;
 
 	RenderTexture* RTexture_;
 };
-

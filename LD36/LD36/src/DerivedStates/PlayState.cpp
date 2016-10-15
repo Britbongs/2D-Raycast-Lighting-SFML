@@ -40,6 +40,9 @@ bool PlayState::Initialise()
 	}
 
 	TiledMap_->SetupVetices(Loader_);
+	
+	World_->SetupTileMeshColliders(TiledMap_);
+
 	//Player_ = new PlayerController(ProjectileMgr_, World_, Vector2f(GetRenderTexture()->getSize()));
 
 #ifndef PLAYABLE_BUILD
@@ -81,7 +84,6 @@ void PlayState::Deinitialise()
 
 void PlayState::Update(float Delta)
 {
-	DebugPrintF(DebugLog, L"Delta: %f", Delta);
 }
 
 void PlayState::Render() const
