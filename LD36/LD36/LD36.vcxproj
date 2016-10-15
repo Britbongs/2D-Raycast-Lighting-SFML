@@ -230,9 +230,11 @@
     <ClInclude Include="include\World\World.hpp" />
     <ClInclude Include="include\MeshCollider\MeshCollider.h" />
     <ClInclude Include="include\TMXLoader\TMXLoader.hpp" />
+    <ClInclude Include="include\Raycast\Raycast.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LD36.cpp" />
+    <ClCompile Include="src\Raycast\Raycast.cpp" />
     <ClCompile Include="src\MeshCollider\MeshCollider.cpp" />
     <ClCompile Include="src\GameObject\GameObject.cpp" />
     <ClCompile Include="src\Player\PlayerController.cpp" />

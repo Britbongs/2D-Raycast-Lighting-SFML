@@ -5,6 +5,7 @@
 #include "TiledMap\TiledMap.hpp"
 #include "Projectile\ProjectileManager.hpp"	
 #include "Player\PlayerController.hpp"
+#include "Raycast\Raycast.hpp"
 #include "World\World.hpp"
 #include "TMXLoader\TMXLoader.hpp"
 
@@ -35,6 +36,10 @@ private:
 	{	};
 
 	std::vector<GameObject*> GameObjects_;
+
+	sf::CircleShape Circle_;
+	Raycast RayTest_;
+	VertexArray RayTestLine_;
 
 	AssetManager* AssetMgr_ = nullptr;
 	ProjectileManager* ProjectileMgr_ = nullptr;

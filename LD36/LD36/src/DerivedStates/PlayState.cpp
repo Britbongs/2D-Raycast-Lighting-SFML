@@ -23,6 +23,17 @@ bool PlayState::Initialise()
 
 	auto AM = AssetManager::GetInstance();
 
+	//My test shit I need to remove
+	Circle_ = CircleShape(5, 30);
+	Circle_.setFillColor(Color::Red);
+
+	RayTestLine_.resize(2);
+	RayTestLine_.setPrimitiveType(Lines);
+	RayTestLine_[0].color = Color::Red;
+	RayTestLine_[1].color = Color::Red;
+
+	//---
+
 	World_ = new World(GameObjects_, GetRenderTexture());
 
 	Loader_.LoadMap("res//test_map.tmx");
@@ -84,11 +95,53 @@ void PlayState::Deinitialise()
 
 void PlayState::Update(float Delta)
 {
+	sf::Vector2i MousePos = Mouse::getPosition();
+	sf::Vector2f WorldMousePos = GetRenderTexture()->mapPixelToCoords(MousePos);
+	Circle_.setPosition(WorldMousePos);
+
+	Ray Ray{ Vector2f(400,400), WorldMousePos };
+
+	RayTestLine_[0].position =	Ray.GetOrigin();
+
+	std::vector<TileCollisionData>* Colliders = World_->GetTileMeshColliders();
+
+	Vector3f ClosestIntersection{ -5,-5,-5 };
+	for (int i{ 0 }; i < Colliders->size(); ++i)
+	{
+		TileCollisionData Data = Colliders->at(i);
+		//If the collider isn't blocked then continue the loop
+		if (!Data.bIsBlockedTile)
+			continue;
+
+		//Loop through every point in the mesh collider
+		for (int j{ 0 }; j < Data.MCollider.GetPointCount(); ++j)
+		{
+			//Point a of segment
+			Vector2f a = Data.MCollider.GetTransformedPoint(j);
+			//Point b of segment
+			Vector2f b = j + 1 < Data.MCollider.GetPointCount() ? Data.MCollider.GetTransformedPoint(j + 1) : Data.MCollider.GetTransformedPoint(0);
+
+			//Get the intersection point
+			Vector3f intersection = RayTest_.GetIntersection(Ray, a, b);
+
+			//If GetIntersection returned early then continue
+			if (intersection.z == -1)
+				continue;
+			if (ClosestIntersection.z < intersection.z)
+				ClosestIntersection = intersection;
+		}
+	}
+
+	cout << ClosestIntersection.x << "-" << ClosestIntersection.y << endl;
+
+	RayTestLine_[1].position = Vector2f(ClosestIntersection.x, ClosestIntersection.y);
 }
 
 void PlayState::Render() const
 {
 	GetRenderTexture()->draw(*TiledMap_);
+	GetRenderTexture()->draw(Circle_);
+	GetRenderTexture()->draw(RayTestLine_);
 
 	for (const auto& GO : GameObjects_)
 	{

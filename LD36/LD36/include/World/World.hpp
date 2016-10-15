@@ -21,6 +21,15 @@ struct CollisionData
 	ObjectType ObjType = ObjectType::eEmpty;
 };
 
+struct TileCollisionData
+{
+	TileCollisionData(MeshCollider MeshColl, bool IsBlocked)
+		: MCollider(MeshColl), bIsBlockedTile(IsBlocked)
+	{}
+	MeshCollider MCollider;
+	bool bIsBlockedTile;
+};
+
 class World
 {
 public:
@@ -35,18 +44,11 @@ public:
 
 	bool IsInsideView(const FloatRect& AABB) const;
 
+	std::vector<TileCollisionData>* GetTileMeshColliders() { return &TileMeshColliders_; }
+
 private:
 
 	using AABB = FloatRect;
-	
-	struct TileCollisionData
-	{
-		TileCollisionData(MeshCollider MeshColl , bool IsBlocked) 
-			: MCollider(MeshColl), bIsBlockedTile(IsBlocked)
-		{}
-		MeshCollider MCollider; 
-		bool bIsBlockedTile;
-	};
 
 	struct Projection
 	{

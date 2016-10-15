@@ -21,6 +21,7 @@ void World::SetupTileMeshColliders(const TiledMap* InTileMap)
 	std::vector<Vector2f> TempVertArray;
 	TempVertArray.resize(4);
 
+	cout << endl << endl ;
 	for (Int32 i{ 0 }; i < Size.x; ++i)
 	{
 		for (Int32 j{ 0 }; j < Size.y; ++j)
@@ -48,7 +49,9 @@ void World::SetupTileMeshColliders(const TiledMap* InTileMap)
 			//Create the collider and push it into the vector
 			TileCollisionData Data(MeshCollider(TempVertArray), InTileMap->GetCollideableAtIndex(Index));
 			TileMeshColliders_.push_back(Data);
+			cout << InTileMap->GetCollideableAtIndex(Index);
 		}
+		cout << endl;
 	}
 	DebugPrintF(DebugLog, L"Hello World");
 }
