@@ -13,13 +13,15 @@ public:
 
 	void SetTexture(sf::Texture* Tex);
 
-	sf::Vector2f GetSize() const;
+	Vector2f GetSize() const;
 
-	sf::Uint32 GetTileSize() const;
+	Vector2i GetGridSize() const;
+
+	Int32 GetTileSize() const;
 
 	sf::FloatRect GetGlobalBounds() const;
 
-	bool GetCollideableAtIndex(const int index) const;
+	bool GetCollideableAtIndex(Int32 index) const;
 
 	void SetupVetices(const TMXLoader& Loader);
 
@@ -34,7 +36,7 @@ private:
 
 	sf::VertexArray Map_;
 
-	std::vector<Int32> CollisionMap_;
+	std::vector<bool> CollisionMap_;
 
 	Int32 TileIDs_[16][12] =
 	{
@@ -58,7 +60,7 @@ private:
 
 	sf::Texture* Texture_ = nullptr;
 
-	const sf::Uint32 TileSize_;
-	const sf::Vector2u Dimensions_;
+	const Int32 TileSize_;
+	Vector2i Dimensions_;
 };
 

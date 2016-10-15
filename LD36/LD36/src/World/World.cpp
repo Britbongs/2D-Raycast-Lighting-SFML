@@ -12,46 +12,45 @@ World::~World()
 }
 
 
-void World::SetupTileMeshColliders(const TiledMap* _tiledMap)
+void World::SetupTileMeshColliders(const TiledMap* InTileMap)
 {
-	Vector2f Size = _tiledMap->GetSize();
+	Vector2i Size = InTileMap->GetGridSize();
 
-	Int32 TileSize = _tiledMap->GetTileSize();
+	Int32 TileSize = InTileMap->GetTileSize();
 
-	std::vector<Vector2f> tempVertArray;
-	tempVertArray.resize(4);
+	std::vector<Vector2f> TempVertArray;
+	TempVertArray.resize(4);
 
 	for (Int32 i{ 0 }; i < Size.x; ++i)
 	{
 		for (Int32 j{ 0 }; j < Size.y; ++j)
 		{
 			//Get index in vector
-			Int32 index = i + j * Size.x;
+			Int32 Index = i + j * Size.x;
 
 			//If the tile is collideable
-			if (_tiledMap->GetCollideableAtIndex(index))
-			{
-				//Top left
-				tempVertArray[0].x = i * TileSize;
-				tempVertArray[0].y = j * TileSize;
+			//Top left
+			TempVertArray[0].x = (float)i * TileSize;
+			TempVertArray[0].y = (float)j * TileSize;
 
-				//Top right
-				tempVertArray[1].x = (i + 1) * TileSize;
-				tempVertArray[1].y = j * TileSize;
+			//Top right
+			TempVertArray[1].x = (float)(i + 1) * TileSize;
+			TempVertArray[1].y = (float)j * TileSize;
 
-				//Bottom right
-				tempVertArray[2].x = (i + 1) * TileSize;
-				tempVertArray[2].y = (j + 1) * TileSize;
+			//Bottom right
+			TempVertArray[2].x = (float)(i + 1) * TileSize;
+			TempVertArray[2].y = (float)(j + 1) * TileSize;
 
-				//Bottom left
-				tempVertArray[3].x = i * TileSize;
-				tempVertArray[3].y = (j + 1) * TileSize;
+			//Bottom left
+			TempVertArray[3].x = (float)i * TileSize;
+			TempVertArray[3].y = (float)(j + 1) * TileSize;
 
-				//Create the collider and push it into the vector
-				TileMeshColliders_.push_back(MeshCollider(tempVertArray));
-			}
+			//Create the collider and push it into the vector
+			TileCollisionData Data(MeshCollider(TempVertArray), InTileMap->GetCollideableAtIndex(Index));
+			TileMeshColliders_.push_back(Data);
 		}
 	}
+	DebugPrintF(DebugLog, L"Hello World");
 }
 
 CollisionData World::CheckCollision(const GameObject& Object)
