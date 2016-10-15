@@ -22,36 +22,29 @@ sf::Texture * AssetManager::LoadTexture(const sf::String & FilePath)
 	}
 
 	TextureData Data;
-	Data.Filepath = FilePath;
+	Data.Filepath = FilePath.toWideString();
 	Data.Texture = new sf::Texture;
 	if (Data.Texture == nullptr)
 	{
-#if !PLAYABLE_BUILD
-		DebugPrintF(AssetLog, L"Failed to load texture at %s", FilePath.toWideString());
-#endif
+		DebugPrintF(AssetLog, L"Failed to load texture at %s", Data.Filepath);
 		return nullptr;
 	}
 	if (!Data.Texture->loadFromFile(FilePath))
 	{
-		DebugPrintF(AssetLog, L"Failed to load texture at %s", FilePath.toWideString());
+		DebugPrintF(AssetLog, L"Failed to load texture at %s", Data.Filepath);
 		return nullptr;
 	}
-	Textures_.push_back(Data);
-	return Textures_.back().Texture;
+
+	Textures_.emplace(Data.Filepath, nullptr);
+	Textures_[Data.Filepath] = Data.Texture;
+	return Textures_[Data.Filepath];
 }
 
 AssetManager::AssetManager()
 {
 }
 
-sf::Texture* AssetManager::AlreadyHaveTexture(const sf::String & FilePath)
+sf::Texture* AssetManager::AlreadyHaveTexture(const std::wstring & FilePath)
 {
-	for (TextureData& Data : Textures_)
-	{
-		if (Data.Filepath == FilePath)
-		{
-			return Data.Texture;
-		}
-	}
-	return nullptr;
+	return Textures_[FilePath];
 }
