@@ -128,10 +128,10 @@
     <ClCompile Include="src\TIledMap\TiledMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LD36.cpp">
+    <ClCompile Include="src\TMXLoader\TMXLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TMXLoader\TMXLoader.cpp">
+    <ClCompile Include="LD36.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

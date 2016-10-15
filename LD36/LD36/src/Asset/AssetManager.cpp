@@ -33,9 +33,7 @@ sf::Texture * AssetManager::LoadTexture(const sf::String & FilePath)
 	}
 	if (!Data.Texture->loadFromFile(FilePath))
 	{
-#ifndef PLAYABLE_BUILD
 		DebugPrintF(AssetLog, L"Failed to load texture at %s", FilePath.toWideString());
-#endif
 		return nullptr;
 	}
 	Textures_.push_back(Data);

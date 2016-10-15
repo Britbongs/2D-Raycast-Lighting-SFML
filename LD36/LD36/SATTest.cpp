@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include <iostream> 
 #include <vld.h>
 #define ASSERT assert

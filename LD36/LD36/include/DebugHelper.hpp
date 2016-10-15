@@ -8,33 +8,30 @@
 #endif 
 #include <Windows.h>
 
-#ifndef PLAYABLE_BUILD
 
 static const std::wstring DebugLog = L"Debug: ";
 static const std::wstring AssetLog = L"Asset: ";
 
-static int VDebugPrintF(const std::wstring& LogType, wchar_t* Format, va_list ArgList)
+static void VDebugPrintF(const std::wstring& LogType, wchar_t* Format, va_list ArgList)
 {
 	const Uint32 MAX_CHARS = 1024;
 	static wchar_t StrBuffer[MAX_CHARS];
 
 	int CharsWritten = _vsnwprintf_s(StrBuffer, MAX_CHARS, Format, ArgList);
+
 	OutputDebugString(LogType.c_str());
 	OutputDebugString(StrBuffer);
 	OutputDebugString(L"\n");
-	return CharsWritten;
+	std::wcout << std::wstring(StrBuffer) << L"\n";
 }
 
-static int DebugPrintF(const std::wstring& LogType, wchar_t* Format, ...)
+static void DebugPrintF(const std::wstring& LogType, wchar_t* Format, ...)
 {
+#ifndef PLAYABLE_BUILD
 	va_list ArgList;
 	va_start(ArgList, Format);
 
-	int CharsWritten = VDebugPrintF(LogType, Format, ArgList);
-
+	VDebugPrintF(LogType, Format, ArgList);
 	va_end(ArgList);
-
-	return CharsWritten;
-}
-
 #endif
+}
