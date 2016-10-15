@@ -1,2 +1,0 @@
-﻿  stdafx.cpp
-c:\users\joe\documents\github\the-dare-version-two\ld36\ld36\src\states\stdafx.cpp(9): error C2857: '#include' statement specified with the /Ycstdafx.h command-line option was not found in the source file
