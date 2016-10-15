@@ -13,7 +13,7 @@ class PlayState : public State
 {
 public:
 
-	PlayState(sf::Int32 ID, sf::RenderWindow* RWindow, sf::RenderTexture* RTexture);
+	PlayState(sf::Int32 ID, RenderWindow* RWindow, RenderTexture* RTexture);
 
 	~PlayState();
 
