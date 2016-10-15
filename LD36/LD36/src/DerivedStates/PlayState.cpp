@@ -38,6 +38,7 @@ bool PlayState::Initialise()
 	{
 		return false;
 	}
+
 	TiledMap_->SetupVetices(Loader_);
 	//Player_ = new PlayerController(ProjectileMgr_, World_, Vector2f(GetRenderTexture()->getSize()));
 
