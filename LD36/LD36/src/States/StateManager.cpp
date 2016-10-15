@@ -104,9 +104,8 @@ State* const StateManager::GetStateByName(const sf::String& StateName)
 		return(States_[StateID]);
 	}
 
-#ifndef PLAYABLE_BUILD
-	std::wcout << L"Error! Couldn't find state (named: " << StateName.toWideString() << L")" << std::endl;
-#endif
+	DebugPrintF(DebugLog, L"Error! Couldn't find state (named: %s L", StateName.toWideString());
+	
 	return(nullptr);
 }
 

@@ -39,4 +39,3 @@ private:
 	sf::Font DefaultFont_;
 	bool HasFontBeenLoaded = false;
 };
-

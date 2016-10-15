@@ -19,9 +19,7 @@ bool Game::InitGame()
 	auto AM = AssetManager::GetInstance();
 	if (AM->GetDefaultFont() == nullptr)
 	{
-#ifndef PLAYABLE_BUILD
 		DebugPrintF(AssetLog, L"Failed to load default font");
-#endif
 		return false;
 	}
 
@@ -37,10 +35,12 @@ bool Game::InitGame()
 	FPSText_.setPosition(WindowDimensions.x - (FPSText_.getGlobalBounds().width * 2.f), 10);
 
 	auto b = std::async(std::launch::async, &Game::InitialiseStates, this);
+	
 	if (!b.get())
 	{
 		return false;
 	}
+
 	return true;
 }
 
@@ -176,5 +176,4 @@ void Game::UpdateFPSCounter(float Delta)
 
 
 	FPSText_.setString("FPS: " + sf::String(std::to_string((int)FPS_)));
-
 }
