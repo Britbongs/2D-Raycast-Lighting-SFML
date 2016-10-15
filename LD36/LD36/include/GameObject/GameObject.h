@@ -4,13 +4,12 @@
 
 //TODO Create initialise collider function
 
-enum ObjectType;
 
 class GameObject : public Drawable, public Transformable
 {
 public:
 
-	GameObject(ObjectType);
+	GameObject();
 
 	~GameObject();
 
@@ -32,11 +31,11 @@ public:
 
 	void SetInActive() { IsActive_ = false; }
 
-	void SetObjectType(ObjectType Type) { Type_ = Type; }
+	void SetColour(Colour Col) { Shape_.setFillColor(Col); }
+
+	void ClearColour() { Shape_.setFillColor(Colour::White); }
 
 	bool IsActive() const { return IsActive_; }
-
-	ObjectType GetObjectType() const { return Type_; }
 
 	const MeshCollider& GetMeshCollider() const { return MeshCollider_; }
 
@@ -46,9 +45,7 @@ private:
 
 	RectangleShape Shape_;
 
-	bool IsActive_ = false;
-
-	ObjectType Type_;
+	bool IsActive_ = true;
 
 	MeshCollider MeshCollider_;
 

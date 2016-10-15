@@ -26,9 +26,9 @@ bool PlayState::Initialise()
 	World_ = new World(GameObjects_, GetRenderTexture());
 
 	Loader_.LoadMap("res//test_map.tmx");
-	
+
 	TiledMap_ = new TiledMap(64);
-	
+
 	Texture *T = AM->LoadTexture("res//textures//tilesheet.png");
 	if (T != nullptr)
 	{
@@ -40,10 +40,13 @@ bool PlayState::Initialise()
 	}
 
 	TiledMap_->SetupVetices(Loader_);
-	
-	World_->SetupTileMeshColliders(TiledMap_);
 
-	//Player_ = new PlayerController(ProjectileMgr_, World_, Vector2f(GetRenderTexture()->getSize()));
+	World_->SetupTileMeshColliders(TiledMap_);
+	GameObjects_.push_back(new GameObject());
+	GameObjects_.back()->SetSize(Vector2f(64.f, 64.f));
+	Player_ = new PlayerController(World_);
+	Player_->SetGameObject(GameObjects_[0]);
+	Player_->Initialise();
 
 #ifndef PLAYABLE_BUILD
 	assert(World_);
@@ -54,6 +57,7 @@ bool PlayState::Initialise()
 
 void PlayState::Deinitialise()
 {
+	Player_->Deinitialise();
 	if (ProjectileMgr_)
 	{
 		delete ProjectileMgr_;
@@ -84,6 +88,7 @@ void PlayState::Deinitialise()
 
 void PlayState::Update(float Delta)
 {
+	Player_->Update(Delta);
 }
 
 void PlayState::Render() const

@@ -2,8 +2,7 @@
 #include "GameObject\GameObject.h"
 #include "World\World.hpp"
 
-GameObject::GameObject(ObjectType Type = ObjectType::eEmpty)
-	: Type_(Type)
+GameObject::GameObject()
 {
 	Shape_.setSize(Vector2f(1.f, 1.f));
 

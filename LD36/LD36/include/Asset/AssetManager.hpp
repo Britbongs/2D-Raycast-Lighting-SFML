@@ -10,7 +10,7 @@ public:
 		for (auto & D : Textures_)
 		{
 			delete D.second;
-			D.second= nullptr;
+			D.second = nullptr;
 		}
 	}
 

@@ -114,6 +114,10 @@ void Game::Update(float Delta)
 
 }
 
+void Game::FixedUpdate()
+{
+}
+
 void Game::HandleEvents(sf::Event & Evnt, float Delta)
 {
 #ifndef PLAYABLE_BUILD

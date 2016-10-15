@@ -68,7 +68,7 @@ CollisionData World::CheckCollision(const GameObject& Object)
 		if (CollidersToCheck_.size() != 0)
 		{
 			Data.bDidCollide = true;
-			Data.ObjType = CollidersToCheck_[0]->GetObjectType();
+			//TOOD change object type in data struct to use new object types
 		}
 	}
 	return Data;
