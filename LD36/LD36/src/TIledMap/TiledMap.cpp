@@ -110,14 +110,14 @@ void TiledMap::SetupVetices(const TMXLoader& Loader)
 			Tile[2].position = Vector2f((float)(i + 1) * TileSize_, (float)(j + 1) * TileSize_);
 			Tile[3].position = Vector2f((float)i * TileSize_, (float)(j + 1)*TileSize_);
 			Int32 Index = i + j * Size.x;
-			
+
 			if (i == 0 || j == 0 || i == Dimensions_.x - 1 || j == Dimensions_.y - 1)
 			{
-				CollisionMap_[Index];
+				CollisionMap_[Index] = 1;
 			}
 			else
 			{
-				CollisionMap_[Index];
+				CollisionMap_[Index] = 0;
 			}
 
 			if (Texture_ == nullptr)
