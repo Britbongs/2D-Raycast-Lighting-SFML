@@ -50,14 +50,29 @@ void World::SetupTileMeshColliders(const TiledMap* InTileMap)
 			TileMeshColliders_.push_back(Data);
 		}
 	}
-	DebugPrintF(DebugLog, L"Hello World");
+	DebugPrintF(DebugLog, L"Tiled Map Collision Data Memory Footprint: %d Bytes", sizeof(TileCollisionData) * TileMeshColliders_.size());
+
+	for (Int32 i{ 0 }; i < Size.x; ++i)
+	{
+		for (Int32 j{ 0 }; j < Size.y; ++j)
+		{
+			Int32 Index = i + j * Size.x;
+
+			if (!InTileMap->GetCollideableAtIndex(Index))
+			{
+				std::wcout << L"0";
+			}
+			else
+			{
+				std::wcout << L"1";
+			}
+		}
+		std::wcout << endl;
+	}
 }
 
-CollisionData World::CheckCollision(const GameObject& Object)
+bool World::CheckCollision(const GameObject& Object)
 {
-	CollisionData Data;
-	Data.bDidCollide = false;
-	Data.ObjType = ObjectType::eEmpty;
 
 	AABBCollisionCheck(Object);
 
@@ -67,11 +82,11 @@ CollisionData World::CheckCollision(const GameObject& Object)
 
 		if (CollidersToCheck_.size() != 0)
 		{
-			Data.bDidCollide = true;
+			return true;
 			//TOOD change object type in data struct to use new object types
 		}
 	}
-	return Data;
+	return false;
 }
 
 void World::MeshCollisionCheck(const GameObject& ObjectA)
@@ -162,6 +177,19 @@ void World::AABBCollisionCheck(const GameObject& Object)
 		//add it to the list
 		CollidersToCheck_.push_back(o);
 	}
+}
+
+WorldIntersectionData World::CheckWorldIntersection(GameObject & Object, Vector2f& MovementVector)
+{
+	WorldIntersectionData IntersectData;
+	Vector2i PlayerTilePosition = Vector2i(Object.getPosition() / (float)TILE_SIZE);
+
+	for (Int32 i = 0; i < STATIC_CAST(Int32, TileSearchDirections::eTile_Search_Max); ++i)
+	{
+
+	}
+
+	return IntersectData;
 }
 
 bool World::IsInsideView(const FloatRect& AABB) const

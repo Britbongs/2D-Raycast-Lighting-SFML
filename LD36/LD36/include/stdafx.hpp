@@ -28,6 +28,12 @@
 
 #define CHECK assert
 
+#if defined(_MSC_VER)
+#define DEPRECATED(func) __declspec(deprecated) func
+#endif
+
+#define STATIC_CAST(type, data) static_cast<type>(data)
+
 using Colour = Color;
 
 #include "DebugHelper.hpp"

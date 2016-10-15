@@ -3,22 +3,12 @@
 #include "GameObject\GameObject.h"
 #include "MeshCollider\MeshCollider.h"
 #include "TiledMap\TiledMap.hpp"
+#include "GameVars.hpp"
 
-enum ObjectType
+struct WorldIntersectionData
 {
-	eEmpty,
-	eAIBoat,
-	ePlayerBoat,
-	eObstacle,
-	eProjectile,
-	eFollower
-};
-
-//did collide & owner
-struct CollisionData
-{
-	bool bDidCollide = false;
-	ObjectType ObjType = ObjectType::eEmpty;
+	bool bDidIntersect = false;
+	Vector2f CollisionResponse;
 };
 
 class World
@@ -31,30 +21,33 @@ public:
 
 	void SetupTileMeshColliders(const TiledMap* tiledMap_);
 
-	CollisionData CheckCollision(const GameObject& Collider);
+	bool DEPRECATED(CheckCollision(const GameObject& Collider));
+
+	WorldIntersectionData CheckWorldIntersection(GameObject& Object, Vector2f& MovementVector);
 
 	bool IsInsideView(const FloatRect& AABB) const;
 
 private:
 
 	using AABB = FloatRect;
-	
+
 	struct TileCollisionData
 	{
-		TileCollisionData(MeshCollider MeshColl , bool IsBlocked) 
+		//Mesh collider of the tile (can be queried for collision normals & for ray cast line segment data)
+		TileCollisionData(MeshCollider MeshColl, bool IsBlocked)
 			: MCollider(MeshColl), bIsBlockedTile(IsBlocked)
 		{}
-		MeshCollider MCollider; 
-		bool bIsBlockedTile;
+		MeshCollider MCollider;
+		bool bIsBlockedTile = false;
 	};
 
+	
 	struct Projection
-	{
-		float Max = 0.f;
-		float Min = 0.f;
+	{// Line Projection for Separating Axis Theorem 
+		float Max = 0.f; //maximum value
+		float Min = 0.f; //minimum value
 	};
 
-	//TODO Implement sat collision here
 	void MeshCollisionCheck(const GameObject& SATColider);
 
 	Projection GetProjection(const MeshCollider& Collider, const Vector2f& EdgeNormal) const;
@@ -68,4 +61,18 @@ private:
 	std::vector<GameObject*>& Objects_;
 
 	RenderTexture* RTexture_;
+
+
+	enum TileSearchDirections
+	{
+		eTile_Up_Left,
+		eTile_Up,
+		eTile_Up_Right,
+		eTile_Right,
+		eTile_Down_Right,
+		eTile_Down,
+		eTile_Down_Left,
+		eTile_Left,
+		eTile_Search_Max
+	};
 };
