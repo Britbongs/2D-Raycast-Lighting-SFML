@@ -98,7 +98,7 @@ void TiledMap::SetupVetices(const TMXLoader& Loader)
 	const Vector2i Size(Loader.GetLayer()[0]->Width, Loader.GetLayer()[0]->Height);
 	Dimensions_ = Size;
 	Map_.resize(Size.x * Size.y * 4);
-
+	CollisionMap_.resize(Size.x * Size.y);
 	for (Int32 i = 0; i < (signed)Size.x; ++i)
 	{
 		for (Int32 j = 0; j < (signed)Size.y; ++j)
@@ -109,15 +109,17 @@ void TiledMap::SetupVetices(const TMXLoader& Loader)
 			Tile[1].position = Vector2f((float)(i + 1) * TileSize_, (float)j * TileSize_);
 			Tile[2].position = Vector2f((float)(i + 1) * TileSize_, (float)(j + 1) * TileSize_);
 			Tile[3].position = Vector2f((float)i * TileSize_, (float)(j + 1)*TileSize_);
-
+			Int32 Index = i + j * Size.x;
+			
 			if (i == 0 || j == 0 || i == Dimensions_.x - 1 || j == Dimensions_.y - 1)
 			{
-				CollisionMap_.push_back(1);
+				CollisionMap_[Index];
 			}
 			else
 			{
-				CollisionMap_.push_back(0);
+				CollisionMap_[Index];
 			}
+
 			if (Texture_ == nullptr)
 			{
 				continue;
