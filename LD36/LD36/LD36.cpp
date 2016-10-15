@@ -1,35 +1,17 @@
-#include "stdafx.h"
+#include "stdafx.hpp"
 
-#if IN_DEVELOPMENT_BUILD 
-#include <vld.h> //Visual Leak Detector include1
+#ifndef PLAYABLE_BUILD 
+#include <vld.h> //Visual Leak Detector include
+#else
+#include <Windows.h>
 #endif 
 
 #include "Game\Game.hpp"
 
+
 #ifndef PLAYABLE_BUILD
 int main(void)
-{
-	Game GameInstance;
-
-	DebugPrint("fuck you");
-
-	if (!GameInstance.InitGame())
-	{
-		return(-1);
-	}
-
-	GameInstance.RunGame();
-
-	GameInstance.CleanUpGame();
-
-
-	return 0;
-}
-#endif
-
-#ifdef PLAYABLE_BUILD 
-#include <Windows.h>
-
+#else 
 // Winmain to hide console
 int WINAPI WinMain(
 	_In_ HINSTANCE hInstance,
@@ -37,20 +19,22 @@ int WINAPI WinMain(
 	_In_ LPSTR     lpCmdLine,
 	_In_ int       nCmdShow
 )
-
+#endif
 {
+	
 	Game GameInstance;
 
 	if (!GameInstance.InitGame())
 	{
+		GameInstance.CleanUpGame();
 		return(EXIT_FAILURE);
 	}
 
 	GameInstance.RunGame();
 
 	GameInstance.CleanUpGame();
+	
+	system("pause");
 
 	return EXIT_SUCCESS;
 }
-
-#endif

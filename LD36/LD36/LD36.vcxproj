@@ -109,6 +109,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>SFML_STATIC;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\SFML-2.3.2\include;$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,6 +139,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>SFML_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\SFML-2.3.2\include;$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -174,6 +176,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <EnablePREfast>false</EnablePREfast>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -189,36 +192,37 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\GameObject\GameObject.h" />
-    <ClInclude Include="include\AI\AIController.h" />
-    <ClInclude Include="include\AI\AIBoatManager.hpp" />
-    <ClInclude Include="include\Boat\Boat.hpp" />
     <ClInclude Include="include\Asset\AssetManager.hpp" />
     <ClInclude Include="include\GameVars.hpp" />
     <ClInclude Include="include\Player\PlayerController.hpp" />
+    <ClInclude Include="include\RapidXML\rapidxml.hpp" />
+    <ClInclude Include="include\RapidXML\rapidxml_iterators.hpp" />
+    <ClInclude Include="include\RapidXML\rapidxml_print.hpp" />
+    <ClInclude Include="include\RapidXML\rapidxml_utils.hpp" />
     <ClInclude Include="include\States\State.hpp" />
     <ClInclude Include="include\States\StateManager.hpp" />
     <ClInclude Include="include\Game\Game.hpp" />
-    <ClInclude Include="include\DebugHelper.h" />
+    <ClInclude Include="include\DebugHelper.hpp" />
     <ClInclude Include="include\Maths\MathInclude.hpp" />
     <ClInclude Include="include\Maths\MathsUtilities.hpp" />
     <ClInclude Include="include\Maths\MathVector.hpp" />
-    <ClInclude Include="include\stdafx.h" />
+    <ClInclude Include="include\stdafx.hpp" />
     <ClInclude Include="include\targetver.h" />
     <ClInclude Include="include\DerivedStates\PlayState.hpp" />
-    <ClInclude Include="include\TiledBackground\TiledBackground.hpp" />
+    <ClInclude Include="include\TiledMap\TiledMap.hpp" />
     <ClInclude Include="include\DerivedStates\MenuState.hpp" />
     <ClInclude Include="include\Projectile\ProjectileManager.hpp" />
-    <ClInclude Include="include\World\World.h" />
+    <ClInclude Include="include\World\World.hpp" />
+    <ClInclude Include="include\MeshCollider\MeshCollider.h" />
+    <ClInclude Include="include\TMXLoader\TMXLoader.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LD36.cpp" />
+    <ClCompile Include="src\MeshCollider\MeshCollider.cpp" />
     <ClCompile Include="src\GameObject\GameObject.cpp" />
-    <ClCompile Include="src\AI\AIController.cpp" />
     <ClCompile Include="src\Player\PlayerController.cpp" />
     <ClCompile Include="src\Projectile\ProjectileManager.cpp" />
-    <ClCompile Include="src\AI\AIBoatManager.cpp" />
     <ClCompile Include="src\DerivedStates\MenuState.cpp" />
-    <ClCompile Include="src\Boat\Boat.cpp" />
     <ClCompile Include="src\Asset\AssetManager.cpp" />
     <ClCompile Include="src\DerivedStates\PlayState.cpp" />
     <ClCompile Include="src\States\State.cpp" />
@@ -230,8 +234,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\TildBackground\TiledBackground.cpp" />
+    <ClCompile Include="src\TIledMap\TiledMap.cpp" />
     <ClCompile Include="src\World\World.cpp" />
+    <ClCompile Include="src\TMXLoader\TMXLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Maths\MathsUtilities.inl" />

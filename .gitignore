@@ -4,3 +4,4 @@ LD36/LD36/Playable Build/
 LD36/LD36.VC.VC.opendb
 *.obj
 *.exe
+*.pch

@@ -5,12 +5,12 @@
 template<typename T>
 inline T Degrees(T theta)
 {
-	return{ static_cast <T> (static_cast<double>(theta) * 180 / PI) };
+	return{ static_cast <T> (static_cast<double>(theta) * 180.0 / PI) };
 }
 template<typename T>
 inline T Radians(T theta)
 {
-	return{ static_cast <T> (static_cast<double>(theta) * 180 / PI) };
+	return{ static_cast <T> (static_cast<double>(theta) * 180.0 / PI) };
 }
 
 template<typename T>

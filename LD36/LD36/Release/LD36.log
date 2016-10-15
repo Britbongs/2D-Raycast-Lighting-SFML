@@ -1,2 +1,0 @@
-﻿LD36.obj : error LNK2001: unresolved external symbol "int __cdecl DebugPrint(char const *,...)" (?DebugPrint@@YAHPBDZZ)
-C:\Users\Mace\Documents\GitHub\Get-Dat-Boaty-Post-LD36-\LD36\Release\LD36.exe : fatal error LNK1120: 1 unresolved externals

@@ -50,7 +50,6 @@ private:
 	bool CompletedAverages_ = false; //Has completed 1 pass through the averages array 
 
 	const sf::String GameWindowTitle_ = "Get Dat Boaty - LD36";
-	//const sf::Vector2u WindowDimensions = sf::Vector2u(1280, 768);
-	const sf::Vector2u WindowDimensions = sf::Vector2u(640, 800);
+	const sf::Vector2u WindowDimensions = sf::Vector2u(1024, 768);
 };
 

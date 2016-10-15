@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "States\State.hpp"
 
 
@@ -8,9 +8,5 @@ State::State(const sf::String& StateName, Uint32 StateID, sf::RenderWindow* RWin
 }
 
 State::~State()
-{
-}
-
-void State::Destroy()
 {
 }

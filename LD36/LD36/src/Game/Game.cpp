@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "Game\Game.hpp"
 #include "Asset\AssetManager.hpp"
 #include <future>
@@ -20,7 +20,7 @@ bool Game::InitGame()
 	if (AM->GetDefaultFont() == nullptr)
 	{
 #ifndef PLAYABLE_BUILD
-		PrintToDebug("Error: ", "Failed To Load FPS Font");
+		DebugPrintF(AssetLog, L"Failed to load default font");
 #endif
 		return false;
 	}
@@ -75,6 +75,7 @@ void Game::CleanUpGame()
 {
 	auto p = AssetManager::GetInstance();
 	delete p;
+	StateManager_.CleanupStates();
 }
 // Private Function
 
@@ -90,23 +91,6 @@ bool Game::InitialiseWindow()
 		return false;
 	}
 
-	auto AM = AssetManager::GetInstance();
-	if (AM->GetDefaultFont() == nullptr)
-	{
-#ifndef PLAYABLE_BUILD
-		PrintToDebug("Error: ", "Failed To Load FPS Font");
-#endif
-		return false;
-	}
-
-	Texture* Tex = AM->LoadTexture("res//textures//splash.png");
-	if (Tex != nullptr)
-	{
-		Image IconImage = Tex->copyToImage();
-
-		RWindow_.setIcon(IconImage.getSize().x, IconImage.getSize().y, IconImage.getPixelsPtr());
-
-	}
 	RWindow_.setFramerateLimit(60);
 	return true;
 }
@@ -138,6 +122,13 @@ void Game::HandleEvents(sf::Event & Evnt, float Delta)
 		if (Evnt.key.code == sf::Keyboard::Escape)
 		{
 			RWindow_.close();
+		}
+		if (Evnt.type == Event::MouseButtonPressed)
+		{
+			if (Evnt.mouseButton.button == Mouse::Button::Middle)
+			{
+				printf("Middle mouse\n");
+			}
 		}
 	}
 #endif

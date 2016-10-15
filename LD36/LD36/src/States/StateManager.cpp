@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "States\StateManager.hpp"
 
 using namespace std;
@@ -9,19 +9,26 @@ StateManager::StateManager()
 
 StateManager::~StateManager()
 {
-	for (auto S : States_)
-	{
-		delete S;
-		S = nullptr;
-	}
 }
 
 void StateManager::InitialiseAllStates()
 {
 	for (auto S : States_)
 	{
+#ifndef PLAYABLE_BUILD
 		assert(S);
+#endif
 		S->Initialise();
+	}
+}
+
+void StateManager::CleanupStates()
+{
+	for (auto S : States_)
+	{
+		S->Deinitialise();
+		delete S;
+		S = nullptr;
 	}
 }
 
@@ -97,7 +104,7 @@ State* const StateManager::GetStateByName(const sf::String& StateName)
 		return(States_[StateID]);
 	}
 
-#if IN_DEVELOPMENT_BUILD
+#ifndef PLAYABLE_BUILD
 	std::wcout << L"Error! Couldn't find state (named: " << StateName.toWideString() << L")" << std::endl;
 #endif
 	return(nullptr);

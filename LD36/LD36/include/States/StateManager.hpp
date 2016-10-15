@@ -22,6 +22,8 @@ public:
 	//Initialises all states in the game 
 	void InitialiseAllStates();
 
+	void CleanupStates();
+
 	//Initialises a specific state
 	void InitialiseState(const sf::String& StateName);
 
@@ -43,9 +45,6 @@ public:
 	State* const GetActiveState();
 
 private:
-
-	State* StatePointer = nullptr;
-
 
 	bool IsValidStateID(Int32 StateID) const;
 

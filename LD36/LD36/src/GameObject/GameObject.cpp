@@ -1,11 +1,19 @@
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "GameObject\GameObject.h"
-#include "World\World.h"
+#include "World\World.hpp"
 
 GameObject::GameObject(ObjectType Type = ObjectType::eEmpty)
-	:Type_(Type)
+	: Type_(Type)
 {
 	Shape_.setSize(Vector2f(1.f, 1.f));
+
+	std::vector<Vector2f> PointsList(4);
+	PointsList[0] = Vector2f(0.f, 0.f);
+	PointsList[1] = Vector2f(1.f, 0.f);
+	PointsList[2] = Vector2f(1.f, 1.f);
+	PointsList[3] = Vector2f(0.f, 1.f);
+
+	MeshCollider_ = MeshCollider(PointsList);
 }
 
 GameObject::~GameObject()
@@ -27,6 +35,12 @@ void GameObject::SetTextureRect(const IntRect & Rect)
 void GameObject::SetSize(Vector2f Size)
 {
 	Shape_.setSize(Size);
+	std::vector<Vector2f> PointsList(4);
+	PointsList[0] = Vector2f(0.f, 0.f);
+	PointsList[1] = Vector2f(Shape_.getSize().x, 0.f);
+	PointsList[2] = Vector2f(Shape_.getSize().x, Shape_.getSize().y);
+	PointsList[3] = Vector2f(0.f, Shape_.getSize().y);
+
 }
 
 FloatRect GameObject::GetAABB() const
@@ -49,7 +63,3 @@ void GameObject::draw(RenderTarget & RTarget, RenderStates RStates) const
 	RTarget.draw(Shape_, RStates);
 }
 
-void GameObject::RefreshColliderData()
-{
-
-}
