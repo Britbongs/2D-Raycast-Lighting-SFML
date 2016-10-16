@@ -53,11 +53,7 @@ bool PlayState::Initialise()
 	SceneRenderer_.create((Uint32)TiledMap_->GetSize().x, (Uint32)TiledMap_->GetSize().y);
 	LightMap_.create(GetRenderTexture()->getSize().x, GetRenderTexture()->getSize().y);
 
-	if (!AmbientShader_.loadFromFile("res//shader//defaultVertShader.vert", "res//shader/ambientFragShader.frag"))
-	{
-		DebugPrintF(DebugLog, L"Failed to load ambient shader");
-	}
-
+	LoadShaders();
 	return false;
 }
 
@@ -172,6 +168,24 @@ void PlayState::DrawVisibilityPolygon(const Vector2f& Origin)
 
 }
 
+void PlayState::LoadShaders()
+{
+	if (!Shader::isAvailable())
+	{
+		DebugPrintF(DebugLog, L"Shaders not available!");
+	}
+
+	if (!AmbientShader_.loadFromFile("res//shader//defaultVertShader.vert", "res//shader/ambientFragShader.frag"))
+	{
+		DebugPrintF(DebugLog, L"Failed to load ambient shader");
+	}
+
+	if (!AttenuationShader_.loadFromFile("res//shader//defaultVertShader.vert", "res//shader//attenuationFragShader.frag"))
+	{
+		DebugPrintF(DebugLog, L"Failed to load attenuation shader");
+	}
+}
+
 void PlayState::Render()
 {
 
@@ -186,16 +200,27 @@ void PlayState::Render()
 	SceneRenderer_.display();
 
 	Sprite S(SceneRenderer_.getTexture());
+	RenderStates LightRenderState;
 
+	AttenuationShader_.setParameter("texture", Shader::CurrentTexture);
+	float Radius = Circle_.getRadius();
+	Vector2f Pos = Vector2f(GetRenderTexture()->mapCoordsToPixel(Circle_.getPosition()));
+	Pos.y = LightMap_.getSize().y - Pos.y + Radius; //Fix for inverted texture pos
+	Pos.x += Radius;
+	AttenuationShader_.setParameter("point", Pos);
+	AttenuationShader_.setParameter("attenuationConstant", 45.f);
+
+	LightRenderState.blendMode = BlendAdd;
+	LightRenderState.shader = &AttenuationShader_;
 	LightMap_.clear();
 	LightMap_.setView(GetRenderTexture()->getView());
-	LightMap_.draw(VisibilityPolygon_, BlendAdd);
+	LightMap_.draw(VisibilityPolygon_, LightRenderState);
 	LightMap_.display();
 
 	AmbientShader_.setParameter("ambientColour", 0.27f, 0.15f, 0.3f, 0.6f);
 	AmbientShader_.setParameter("lightMapTexture", LightMap_.getTexture());
-	AmbientShader_.setParameter("resolution", (float) GetRenderTexture()->getSize().x, (float)GetRenderTexture()->getSize().y);
-	
+	AmbientShader_.setParameter("resolution", (float)GetRenderTexture()->getSize().x, (float)GetRenderTexture()->getSize().y);
+
 	GetRenderTexture()->draw(S, RStates);//, RStates);
 
 	/*for (const auto& GO : GameObjects_)
@@ -220,6 +245,10 @@ void PlayState::HandleEvents(sf::Event& Evnt, float Delta)
 {
 	if (Evnt.type == sf::Event::KeyPressed)
 	{
+		if (Evnt.key.code == sf::Keyboard::R)
+		{
+			LoadShaders();
+		}
 	}
 }
 

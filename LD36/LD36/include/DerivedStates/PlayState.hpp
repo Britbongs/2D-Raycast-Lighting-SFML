@@ -31,13 +31,11 @@ public:
 	virtual void HandleEvents(sf::Event& Evnt, float Delta) override;
 
 private:
-
+	
 	void CalculateUniquePoints();
 	std::vector<float> CalculateUniqueAngles(const Vector2f origin);
 	void DrawVisibilityPolygon(const Vector2f& origin);
-
-private:
-
+	void LoadShaders();
 	struct PlayerData
 	{	};
 
@@ -59,5 +57,7 @@ private:
 	RenderTexture SceneRenderer_;
 	RenderTexture LightMap_;
 	TMXLoader Loader_;
+	// TODO Move Shaders to shader manager 
 	Shader AmbientShader_;
+	Shader AttenuationShader_;
 };
