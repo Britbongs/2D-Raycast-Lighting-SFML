@@ -50,6 +50,14 @@ bool PlayState::Initialise()
 	World_->SetupTileMeshColliders(TiledMap_);
 	CalculateUniquePoints();
 
+	SceneRenderer_.create((Uint32)TiledMap_->GetSize().x, (Uint32)TiledMap_->GetSize().y);
+	LightMap_.create(GetRenderTexture()->getSize().x, GetRenderTexture()->getSize().y);
+
+	if (!AmbientShader_.loadFromFile("res//shader//defaultVertShader.vert", "res//shader/ambientFragShader.frag"))
+	{
+		DebugPrintF(DebugLog, L"Failed to load ambient shader");
+	}
+
 	return false;
 }
 
@@ -89,8 +97,6 @@ void PlayState::Update(float Delta)
 	sf::Vector2f WorldMousePos = GetRenderTexture()->mapPixelToCoords(MousePos);
 	Circle_.setPosition(WorldMousePos - Vector2f(Circle_.getRadius(), Circle_.getRadius()));
 	DrawVisibilityPolygon(WorldMousePos);
-
-
 }
 
 void PlayState::DrawVisibilityPolygon(const Vector2f& Origin)
@@ -146,6 +152,8 @@ void PlayState::DrawVisibilityPolygon(const Vector2f& Origin)
 
 
 	//Sort intersections by angle
+	Color Col = Color::White;
+	Col.a = 85;
 	sort(Intersections.begin(), Intersections.end(), [](Vector3f const& a, Vector3f const& b) { return a.z < b.z; });
 
 	VisibilityPolygon_.resize(Intersections.size() + 2);
@@ -154,35 +162,58 @@ void PlayState::DrawVisibilityPolygon(const Vector2f& Origin)
 	for (Int32 i = 0; i < (Int32)Intersections.size(); ++i)
 	{
 		VisibilityPolygon_[i + 1].position = Vector2f(Intersections[i].x, Intersections[i].y);
-		VisibilityPolygon_[i + 1].color = Color::Green;
+		VisibilityPolygon_[i + 1].color = Col;
 	}
 
 	VisibilityPolygon_[0].position = Origin;
-	VisibilityPolygon_[0].color = Color::Green;
+	VisibilityPolygon_[0].color = Col;
 	VisibilityPolygon_[VisibilityPolygon_.getVertexCount() - 1].position = VisibilityPolygon_[1].position;
-	VisibilityPolygon_[VisibilityPolygon_.getVertexCount() - 1].color = Color::Green;
+	VisibilityPolygon_[VisibilityPolygon_.getVertexCount() - 1].color = Col;
 
 }
 
-void PlayState::Render() const
+void PlayState::Render()
 {
-	GetRenderTexture()->draw(*TiledMap_);
-	GetRenderTexture()->draw(VisibilityPolygon_);
-	GetRenderTexture()->draw(Circle_);
 
-	for (const auto& GO : GameObjects_)
+	Sprite Empty;
+	RenderStates RStates;
+	RStates.shader = &AmbientShader_;
+	RStates.blendMode = BlendAlpha;
+
+	SceneRenderer_.clear(Color::Black);
+	SceneRenderer_.draw(*TiledMap_);
+	SceneRenderer_.draw(Circle_);
+	SceneRenderer_.display();
+
+	Sprite S(SceneRenderer_.getTexture());
+
+	LightMap_.clear();
+	LightMap_.setView(GetRenderTexture()->getView());
+	LightMap_.draw(VisibilityPolygon_, BlendAdd);
+	LightMap_.display();
+
+	AmbientShader_.setParameter("ambientColour", 0.27f, 0.15f, 0.3f, 0.6f);
+	AmbientShader_.setParameter("lightMapTexture", LightMap_.getTexture());
+	AmbientShader_.setParameter("resolution", (float) GetRenderTexture()->getSize().x, (float)GetRenderTexture()->getSize().y);
+	
+	GetRenderTexture()->draw(S, RStates);//, RStates);
+
+	/*for (const auto& GO : GameObjects_)
 	{
 		if (GO->IsActive() == true)
 		{
 			GetRenderTexture()->draw(*GO);
 		}
-	}
+	}*/
 
 }
 
 void PlayState::PostRender() const
 {
-
+	RenderStates Blend;
+	//Blend.blendMode = BlendAlpha;
+	//Blend.shader = &AmbientShader_;
+	//GetRenderWindow()->draw(VisibilityPolygon_, Blend);
 }
 
 void PlayState::HandleEvents(sf::Event& Evnt, float Delta)
@@ -197,7 +228,7 @@ void PlayState::CalculateUniquePoints()
 	auto& Colliders = World_->GetTileMeshCollidersBlocked();
 
 	std::vector<Vector2f> Points;
-	for (int i{ 0 }; i < Colliders.size(); ++i)
+	for (int i{ 0 }; i < (Int32)Colliders.size(); ++i)
 	{
 		for (int j{ 0 }; j < Colliders[i].MCollider.GetPointCount(); ++j)
 		{
@@ -205,7 +236,7 @@ void PlayState::CalculateUniquePoints()
 		}
 	}
 
-	for (int i{ 0 }; i < Points.size(); ++i)
+	for (int i{ 0 }; i < (Int32)Points.size(); ++i)
 	{
 		if (find(UniquePoints_.begin(), UniquePoints_.end(), Points[i]) != UniquePoints_.end())
 		{
@@ -222,12 +253,12 @@ std::vector<float> PlayState::CalculateUniqueAngles(const Vector2f origin)
 {
 	std::vector<float> UniqueAngles;
 
-	for (int i{ 0 }; i < UniquePoints_.size(); ++i)
+	for (int i{ 0 }; i < (Int32)UniquePoints_.size(); ++i)
 	{
 		float angle = atan2(UniquePoints_[i].y - origin.y, UniquePoints_[i].x - origin.x);
-		UniqueAngles.push_back(angle - 0.0001);
+		UniqueAngles.push_back(angle - 0.0001f);
 		UniqueAngles.push_back(angle);
-		UniqueAngles.push_back(angle + 0.0001);
+		UniqueAngles.push_back(angle + 0.0001f);
 	}
 
 	return UniqueAngles;

@@ -258,6 +258,8 @@
   <ItemGroup>
     <None Include="include\Maths\MathsUtilities.inl" />
     <None Include="include\Maths\MathVector.inl" />
+    <None Include="res\shader\ambientFragShader.frag" />
+    <None Include="res\shader\defaultVertShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

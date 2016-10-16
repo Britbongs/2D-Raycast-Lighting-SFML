@@ -24,7 +24,7 @@ public:
 
 	virtual void Update(float Delta) override;
 
-	virtual void Render() const override;
+	virtual void Render() override;
 
 	virtual void PostRender() const override;
 
@@ -47,7 +47,6 @@ private:
 
 	sf::CircleShape Circle_;
 	Raycast RayTest_;
-	std::vector<VertexArray> RayLines_;
 	std::vector<Vector2f> UniquePoints_;
 	VertexArray VisibilityPolygon_;
 
@@ -56,5 +55,9 @@ private:
 	PlayerController* Player_ = nullptr;
 	TiledMap* TiledMap_ = nullptr;
 	World* World_ = nullptr;
+	
+	RenderTexture SceneRenderer_;
+	RenderTexture LightMap_;
 	TMXLoader Loader_;
+	Shader AmbientShader_;
 };

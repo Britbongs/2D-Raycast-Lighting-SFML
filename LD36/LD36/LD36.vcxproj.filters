@@ -148,5 +148,7 @@
     <None Include="include\Maths\MathVector.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="res\shader\ambientFragShader.frag" />
+    <None Include="res\shader\defaultVertShader.vert" />
   </ItemGroup>
 </Project>
