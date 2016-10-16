@@ -13,8 +13,10 @@ void main()
     float distance = 0.0;
 
     distance = length(point - gl_FragCoord.xy);
-    //distance *= (distance*distance); 
+    
     //distance *= distance; //ENABLE FOR QUADRATIC FALLOFF
+    //distance *= (distance*distance); //ENABLE FOR CUBIC DROP OFF
+    
     vec4 Col; 
     Col.x = gl_Color.x;
     Col.y = gl_Color.y;
