@@ -35,6 +35,8 @@ private:
 	struct PlayerData
 	{	};
 
+	const Int32 RayCount = 20;
+	
 	std::vector<GameObject*> GameObjects_;
 
 	sf::CircleShape Circle_;
@@ -46,5 +48,5 @@ private:
 	PlayerController* Player_ = nullptr;
 	TiledMap* TiledMap_ = nullptr;
 	World* World_ = nullptr;
-	TMXLoader Loader_; 
+	TMXLoader Loader_;
 };

@@ -91,7 +91,7 @@ bool Game::InitialiseWindow()
 		return false;
 	}
 
-	RWindow_.setFramerateLimit(60);
+	//RWindow_.setFramerateLimit(60);
 	return true;
 }
 

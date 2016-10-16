@@ -24,12 +24,12 @@ bool PlayState::Initialise()
 	auto AM = AssetManager::GetInstance();
 
 	//My test shit I need to remove
-	Circle_ = CircleShape(5, 30);
+	Circle_ = CircleShape(2);
 	Circle_.setFillColor(Color::Red);
 
 
-	RayLines_.resize(50);
-	for (int i = 0; i < RayLines_.size(); ++i)
+	RayLines_.resize(RayCount);
+	for (Int32 i = 0; i < (Int32)RayLines_.size(); ++i)
 	{
 		RayLines_.at(i).resize(2);
 		RayLines_.at(i).setPrimitiveType(Lines);
@@ -43,9 +43,9 @@ bool PlayState::Initialise()
 	World_ = new World(GameObjects_, GetRenderTexture());
 
 	Loader_.LoadMap("res//test_map.tmx");
-	
+
 	TiledMap_ = new TiledMap(64);
-	
+
 	Texture *T = AM->LoadTexture("res//textures//tilesheet.png");
 	if (T != nullptr)
 	{
@@ -57,14 +57,8 @@ bool PlayState::Initialise()
 	}
 
 	TiledMap_->SetupVetices(Loader_);
-	
+
 	World_->SetupTileMeshColliders(TiledMap_);
-
-	//Player_ = new PlayerController(ProjectileMgr_, World_, Vector2f(GetRenderTexture()->getSize()));
-
-#ifndef PLAYABLE_BUILD
-	assert(World_);
-#endif 
 
 	return false;
 }
@@ -101,55 +95,59 @@ void PlayState::Deinitialise()
 
 void PlayState::Update(float Delta)
 {
-	sf::Vector2i MousePos = Mouse::getPosition();
+	sf::Vector2i MousePos = Mouse::getPosition(*GetRenderWindow());
 	sf::Vector2f WorldMousePos = GetRenderTexture()->mapPixelToCoords(MousePos);
-	std::vector<TileCollisionData>* Colliders = World_->GetTileMeshCollidersBlocked();
+	auto& Colliders = World_->GetTileMeshCollidersBlocked();
 
-	Circle_.setPosition(WorldMousePos);
+	Circle_.setPosition(WorldMousePos - Vector2f(Circle_.getRadius(), Circle_.getRadius()));
 
 
 	std::vector<Vector2f> Intersections;
-	for (int angle = 0; angle < PI*2; angle+=(PI*2)/7)
+	float angle = 0.f;
+
+	Vector2f A(0.f, 0.f), B(0.f, 0.f);
+	Vector3f Intersection(0.f, 0.f, 0.f);
+	while (angle < PI * 2)
 	{
-		float dx = cos(angle);
-		float dy = sin(angle);
-		Ray Ray{ WorldMousePos, Vector2f(WorldMousePos.x + dx, WorldMousePos.y + dy )};
+		Vector2f DirectionVector(cosf(angle), sinf(angle));
+		Ray Ray{ WorldMousePos, WorldMousePos + DirectionVector };
 
 		Vector3f ClosestIntersection{ -5,-5,-5 };
-		for (int i{ 0 }; i < Colliders->size(); ++i)
+		for (Int32 i{ 0 }; i < (Int32)Colliders.size(); ++i)
 		{
-			TileCollisionData Data = Colliders->at(i);
+			TileCollisionData& Data = Colliders[i];
 			//If the collider isn't blocked then continue the loop
 			if (!Data.bIsBlockedTile)
 				continue;
 
 			//Loop through every point in the mesh collider
-			for (int j{ 0 }; j < Data.MCollider.GetPointCount(); ++j)
+			for (Int32 j{ 0 }; j < Data.MCollider.GetPointCount(); ++j)
 			{
 				//Point a of segment
-				Vector2f a = Data.MCollider.GetTransformedPoint(j);
+				A = Data.MCollider.GetTransformedPoint(j);
 				//Point b of segment
-				Vector2f b = j + 1 < Data.MCollider.GetPointCount() ? Data.MCollider.GetTransformedPoint(j + 1) : Data.MCollider.GetTransformedPoint(0);
+				B = j + 1 < Data.MCollider.GetPointCount() ? Data.MCollider.GetTransformedPoint(j + 1) : Data.MCollider.GetTransformedPoint(0);
 
 				//Create ray
 				//Get the intersection point
-				Vector3f intersection = RayTest_.GetIntersection(Ray, a, b);
+				Intersection = RayTest_.GetIntersection(Ray, A, B);
 
 				//If GetIntersection returned early then continue
-				if (intersection.z == -1)
+				if (Intersection.z == -1)
 					continue;
 
-				if (ClosestIntersection.z == -5 || intersection.z < ClosestIntersection.z)
+				if (ClosestIntersection.z == -5 || Intersection.z < ClosestIntersection.z)
 				{
-					ClosestIntersection = intersection;
+					ClosestIntersection = Intersection;
 				}
 
 			}
 		}
 		Intersections.push_back(Vector2f(ClosestIntersection.x, ClosestIntersection.y));
+		angle += PI_BY_2 / (float) RayCount;
 	}
 
-	for (int i = 0; i < Intersections.size(); ++i)
+	for (Int32 i = 0; i < (Int32)Intersections.size(); ++i)
 	{
 		RayLines_.at(i)[0].position = WorldMousePos;
 		RayLines_.at(i)[1].position = Intersections[i];
@@ -161,7 +159,7 @@ void PlayState::Render() const
 	GetRenderTexture()->draw(*TiledMap_);
 	GetRenderTexture()->draw(Circle_);
 
-	for (int i = 0; i < RayLines_.size(); ++i)
+	for (int i = 0; i < (Int32)RayLines_.size(); ++i)
 	{
 		GetRenderTexture()->draw(RayLines_[i]);
 	}
