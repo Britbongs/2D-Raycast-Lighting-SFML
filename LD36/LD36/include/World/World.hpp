@@ -45,6 +45,7 @@ public:
 	bool IsInsideView(const FloatRect& AABB) const;
 
 	std::vector<TileCollisionData>* GetTileMeshColliders() { return &TileMeshColliders_; }
+	std::vector<TileCollisionData>* GetTileMeshCollidersBlocked() { return &TileMeshCollidersBlocked_; }
 
 private:
 
@@ -66,6 +67,7 @@ private:
 	std::vector<GameObject*> CollidersToCheck_;
 
 	std::vector<TileCollisionData> TileMeshColliders_;
+	std::vector<TileCollisionData> TileMeshCollidersBlocked_;
 
 	std::vector<GameObject*>& Objects_;
 

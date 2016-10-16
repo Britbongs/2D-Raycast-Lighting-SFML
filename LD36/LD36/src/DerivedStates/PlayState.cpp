@@ -27,10 +27,16 @@ bool PlayState::Initialise()
 	Circle_ = CircleShape(5, 30);
 	Circle_.setFillColor(Color::Red);
 
-	RayTestLine_.resize(2);
-	RayTestLine_.setPrimitiveType(Lines);
-	RayTestLine_[0].color = Color::Red;
-	RayTestLine_[1].color = Color::Red;
+
+	RayLines_.resize(50);
+	for (int i = 0; i < RayLines_.size(); ++i)
+	{
+		RayLines_.at(i).resize(2);
+		RayLines_.at(i).setPrimitiveType(Lines);
+		RayLines_.at(i)[0].color = Color::Red;
+		RayLines_.at(i)[1].color = Color::Red;
+	}
+
 
 	//---
 
@@ -97,51 +103,68 @@ void PlayState::Update(float Delta)
 {
 	sf::Vector2i MousePos = Mouse::getPosition();
 	sf::Vector2f WorldMousePos = GetRenderTexture()->mapPixelToCoords(MousePos);
+	std::vector<TileCollisionData>* Colliders = World_->GetTileMeshCollidersBlocked();
+
 	Circle_.setPosition(WorldMousePos);
 
-	Ray Ray{ Vector2f(400,400), WorldMousePos };
 
-	RayTestLine_[0].position =	Ray.GetOrigin();
-
-	std::vector<TileCollisionData>* Colliders = World_->GetTileMeshColliders();
-
-	Vector3f ClosestIntersection{ -5,-5,-5 };
-	for (int i{ 0 }; i < Colliders->size(); ++i)
+	std::vector<Vector2f> Intersections;
+	for (int angle = 0; angle < PI*2; angle+=(PI*2)/7)
 	{
-		TileCollisionData Data = Colliders->at(i);
-		//If the collider isn't blocked then continue the loop
-		if (!Data.bIsBlockedTile)
-			continue;
+		float dx = cos(angle);
+		float dy = sin(angle);
+		Ray Ray{ WorldMousePos, Vector2f(WorldMousePos.x + dx, WorldMousePos.y + dy )};
 
-		//Loop through every point in the mesh collider
-		for (int j{ 0 }; j < Data.MCollider.GetPointCount(); ++j)
+		Vector3f ClosestIntersection{ -5,-5,-5 };
+		for (int i{ 0 }; i < Colliders->size(); ++i)
 		{
-			//Point a of segment
-			Vector2f a = Data.MCollider.GetTransformedPoint(j);
-			//Point b of segment
-			Vector2f b = j + 1 < Data.MCollider.GetPointCount() ? Data.MCollider.GetTransformedPoint(j + 1) : Data.MCollider.GetTransformedPoint(0);
-
-			//Get the intersection point
-			Vector3f intersection = RayTest_.GetIntersection(Ray, a, b);
-
-			//If GetIntersection returned early then continue
-			if (intersection.z == -1)
+			TileCollisionData Data = Colliders->at(i);
+			//If the collider isn't blocked then continue the loop
+			if (!Data.bIsBlockedTile)
 				continue;
-			if (ClosestIntersection.z < intersection.z)
-				ClosestIntersection = intersection;
+
+			//Loop through every point in the mesh collider
+			for (int j{ 0 }; j < Data.MCollider.GetPointCount(); ++j)
+			{
+				//Point a of segment
+				Vector2f a = Data.MCollider.GetTransformedPoint(j);
+				//Point b of segment
+				Vector2f b = j + 1 < Data.MCollider.GetPointCount() ? Data.MCollider.GetTransformedPoint(j + 1) : Data.MCollider.GetTransformedPoint(0);
+
+				//Create ray
+				//Get the intersection point
+				Vector3f intersection = RayTest_.GetIntersection(Ray, a, b);
+
+				//If GetIntersection returned early then continue
+				if (intersection.z == -1)
+					continue;
+
+				if (ClosestIntersection.z == -5 || intersection.z < ClosestIntersection.z)
+				{
+					ClosestIntersection = intersection;
+				}
+
+			}
 		}
+		Intersections.push_back(Vector2f(ClosestIntersection.x, ClosestIntersection.y));
 	}
 
-	cout << ClosestIntersection.x << "-" << ClosestIntersection.y << endl;
-
-	RayTestLine_[1].position = Vector2f(ClosestIntersection.x, ClosestIntersection.y);
+	for (int i = 0; i < Intersections.size(); ++i)
+	{
+		RayLines_.at(i)[0].position = WorldMousePos;
+		RayLines_.at(i)[1].position = Intersections[i];
+	}
 }
 
 void PlayState::Render() const
 {
 	GetRenderTexture()->draw(*TiledMap_);
 	GetRenderTexture()->draw(Circle_);
-	GetRenderTexture()->draw(RayTestLine_);
+
+	for (int i = 0; i < RayLines_.size(); ++i)
+	{
+		GetRenderTexture()->draw(RayLines_[i]);
+	}
 
 	for (const auto& GO : GameObjects_)
 	{

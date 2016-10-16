@@ -16,7 +16,7 @@ Vector3f Raycast::GetIntersection(Ray ray, Vector2f a, Vector2f b)
 	float r_px = ray.Origin_.x;
 	float r_py = ray.Origin_.y;
 	float r_dx = ray.Direction_.x - ray.Origin_.x;
-	float r_dy = ray.Direction_.y - ray.Origin_.x;
+	float r_dy = ray.Direction_.y - ray.Origin_.y;
 
 	// SEGMENT in parametric: Point + Direction*T2
 	float s_px = a.x;
@@ -33,8 +33,12 @@ Vector3f Raycast::GetIntersection(Ray ray, Vector2f a, Vector2f b)
 		return Vector3f(-1,-1,-1);
 	}
 
-	float T2 = (r_dx*(s_py - r_py) + r_dy * (r_px - s_px)) / (s_dx * r_dy - s_dy * r_dx);
-	float T1 = (s_px + s_dx * T2 - r_px) / r_dx;
+	r_dx = r_dx / r_mag;
+	r_dy = r_dy / r_mag;
+
+	float T2 = (r_dx*(s_py - r_py) + r_dy*(r_px - s_px)) / (s_dx*r_dy - s_dy*r_dx);
+	float T1 = (s_px + s_dx*T2 - r_px) / r_dx;
+
 
 	// Must be within parametic whatevers for RAY/SEGMENT
 	if (T1 < 0) return Vector3f(-1, -1, -1);

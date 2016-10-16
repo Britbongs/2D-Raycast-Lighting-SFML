@@ -49,6 +49,9 @@ void World::SetupTileMeshColliders(const TiledMap* InTileMap)
 			//Create the collider and push it into the vector
 			TileCollisionData Data(MeshCollider(TempVertArray), InTileMap->GetCollideableAtIndex(Index));
 			TileMeshColliders_.push_back(Data);
+
+			if (Data.bIsBlockedTile)
+				TileMeshCollidersBlocked_.push_back(Data);
 			cout << InTileMap->GetCollideableAtIndex(Index);
 		}
 		cout << endl;
@@ -179,3 +182,4 @@ bool World::IsInsideView(const FloatRect& AABB) const
 
 	return Collider.contains(AABB.left, AABB.top);
 }
+

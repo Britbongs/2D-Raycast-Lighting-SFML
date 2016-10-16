@@ -37,7 +37,7 @@ Vector2f MeshCollider::GetNormal(Int32 Index) const
 
 Vector2f MeshCollider::GetTransformedPoint(Int32 Index) const
 {
-	if (Index > 0 && Index < (Int32)TransformedPoints_.size())
+	if (Index >= 0 && Index < (Int32)TransformedPoints_.size())
 	{
 		return TransformedPoints_[Index];
 	}

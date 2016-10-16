@@ -39,7 +39,7 @@ private:
 
 	sf::CircleShape Circle_;
 	Raycast RayTest_;
-	VertexArray RayTestLine_;
+	std::vector<VertexArray> RayLines_;
 
 	AssetManager* AssetMgr_ = nullptr;
 	ProjectileManager* ProjectileMgr_ = nullptr;
