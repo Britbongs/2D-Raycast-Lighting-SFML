@@ -24,19 +24,8 @@ bool PlayState::Initialise()
 	auto AM = AssetManager::GetInstance();
 
 	//My test shit I need to remove
-	Circle_ = CircleShape(2);
+	Circle_ = CircleShape(10);
 	Circle_.setFillColor(Color::Red);
-
-
-	RayLines_.resize(RayCount);
-	for (Int32 i = 0; i < (Int32)RayLines_.size(); ++i)
-	{
-		RayLines_.at(i).resize(2);
-		RayLines_.at(i).setPrimitiveType(Lines);
-		RayLines_.at(i)[0].color = Color::Red;
-		RayLines_.at(i)[1].color = Color::Red;
-	}
-
 
 	//---
 
@@ -59,6 +48,7 @@ bool PlayState::Initialise()
 	TiledMap_->SetupVetices(Loader_);
 
 	World_->SetupTileMeshColliders(TiledMap_);
+	CalculateUniquePoints();
 
 	return false;
 }
@@ -97,20 +87,28 @@ void PlayState::Update(float Delta)
 {
 	sf::Vector2i MousePos = Mouse::getPosition(*GetRenderWindow());
 	sf::Vector2f WorldMousePos = GetRenderTexture()->mapPixelToCoords(MousePos);
+	Circle_.setPosition(WorldMousePos - Vector2f(Circle_.getRadius(), Circle_.getRadius()));
+	DrawVisibilityPolygon(WorldMousePos);
+
+
+}
+
+void PlayState::DrawVisibilityPolygon(const Vector2f& Origin)
+{
 	auto& Colliders = World_->GetTileMeshCollidersBlocked();
 
-	Circle_.setPosition(WorldMousePos - Vector2f(Circle_.getRadius(), Circle_.getRadius()));
 
+	std::vector<float> UniqueAngles = CalculateUniqueAngles(Origin);
 
-	std::vector<Vector2f> Intersections;
-	float angle = 0.f;
+	std::vector<Vector3f> Intersections;
 
 	Vector2f A(0.f, 0.f), B(0.f, 0.f);
 	Vector3f Intersection(0.f, 0.f, 0.f);
-	while (angle < PI * 2)
+
+	for (Int32 k{ 0 }; k < (Int32)UniqueAngles.size(); ++k)
 	{
-		Vector2f DirectionVector(cosf(angle), sinf(angle));
-		Ray Ray{ WorldMousePos, WorldMousePos + DirectionVector };
+		Vector2f DirectionVector(cosf(UniqueAngles[k]), sinf(UniqueAngles[k]));
+		Ray Ray{ Origin, Vector2f(Origin.x + DirectionVector.x, Origin.y + DirectionVector.y) };
 
 		Vector3f ClosestIntersection{ -5,-5,-5 };
 		for (Int32 i{ 0 }; i < (Int32)Colliders.size(); ++i)
@@ -143,26 +141,34 @@ void PlayState::Update(float Delta)
 
 			}
 		}
-		Intersections.push_back(Vector2f(ClosestIntersection.x, ClosestIntersection.y));
-		angle += PI_BY_2 / (float) RayCount;
+		Intersections.push_back(Vector3f(ClosestIntersection.x, ClosestIntersection.y, UniqueAngles[k]));
 	}
+
+
+	//Sort intersections by angle
+	sort(Intersections.begin(), Intersections.end(), [](Vector3f const& a, Vector3f const& b) { return a.z < b.z; });
+
+	VisibilityPolygon_.resize(Intersections.size() + 2);
+	VisibilityPolygon_.setPrimitiveType(TrianglesFan);
 
 	for (Int32 i = 0; i < (Int32)Intersections.size(); ++i)
 	{
-		RayLines_.at(i)[0].position = WorldMousePos;
-		RayLines_.at(i)[1].position = Intersections[i];
+		VisibilityPolygon_[i + 1].position = Vector2f(Intersections[i].x, Intersections[i].y);
+		VisibilityPolygon_[i + 1].color = Color::Green;
 	}
+
+	VisibilityPolygon_[0].position = Origin;
+	VisibilityPolygon_[0].color = Color::Green;
+	VisibilityPolygon_[VisibilityPolygon_.getVertexCount() - 1].position = VisibilityPolygon_[1].position;
+	VisibilityPolygon_[VisibilityPolygon_.getVertexCount() - 1].color = Color::Green;
+
 }
 
 void PlayState::Render() const
 {
 	GetRenderTexture()->draw(*TiledMap_);
+	GetRenderTexture()->draw(VisibilityPolygon_);
 	GetRenderTexture()->draw(Circle_);
-
-	for (int i = 0; i < (Int32)RayLines_.size(); ++i)
-	{
-		GetRenderTexture()->draw(RayLines_[i]);
-	}
 
 	for (const auto& GO : GameObjects_)
 	{
@@ -185,3 +191,45 @@ void PlayState::HandleEvents(sf::Event& Evnt, float Delta)
 	{
 	}
 }
+
+void PlayState::CalculateUniquePoints()
+{
+	auto& Colliders = World_->GetTileMeshCollidersBlocked();
+
+	std::vector<Vector2f> Points;
+	for (int i{ 0 }; i < Colliders.size(); ++i)
+	{
+		for (int j{ 0 }; j < Colliders[i].MCollider.GetPointCount(); ++j)
+		{
+			Points.push_back(Colliders[i].MCollider.GetTransformedPoint(j));
+		}
+	}
+
+	for (int i{ 0 }; i < Points.size(); ++i)
+	{
+		if (find(UniquePoints_.begin(), UniquePoints_.end(), Points[i]) != UniquePoints_.end())
+		{
+
+		}
+		else
+		{
+			UniquePoints_.push_back(Points[i]);
+		}
+	}
+}
+
+std::vector<float> PlayState::CalculateUniqueAngles(const Vector2f origin)
+{
+	std::vector<float> UniqueAngles;
+
+	for (int i{ 0 }; i < UniquePoints_.size(); ++i)
+	{
+		float angle = atan2(UniquePoints_[i].y - origin.y, UniquePoints_[i].x - origin.x);
+		UniqueAngles.push_back(angle - 0.0001);
+		UniqueAngles.push_back(angle);
+		UniqueAngles.push_back(angle + 0.0001);
+	}
+
+	return UniqueAngles;
+}
+

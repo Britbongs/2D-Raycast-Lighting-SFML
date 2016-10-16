@@ -32,6 +32,12 @@ public:
 
 private:
 
+	void CalculateUniquePoints();
+	std::vector<float> CalculateUniqueAngles(const Vector2f origin);
+	void DrawVisibilityPolygon(const Vector2f& origin);
+
+private:
+
 	struct PlayerData
 	{	};
 
@@ -42,6 +48,8 @@ private:
 	sf::CircleShape Circle_;
 	Raycast RayTest_;
 	std::vector<VertexArray> RayLines_;
+	std::vector<Vector2f> UniquePoints_;
+	VertexArray VisibilityPolygon_;
 
 	AssetManager* AssetMgr_ = nullptr;
 	ProjectileManager* ProjectileMgr_ = nullptr;
