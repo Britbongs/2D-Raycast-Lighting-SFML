@@ -54,7 +54,11 @@ void PlayerController::Update(float Delta)
 
 	}
 
-	MovementVector = Normalise(MovementVector);
-
-	Obj->move(Delta * MovementVector * PLAYER_MOVE_SPEED);
+	MovementVector = Normalise(MovementVector) * PLAYER_MOVE_SPEED* Delta;
+	WorldIntersectionData IntersectionData = GetWorld()->CheckWorldIntersection(*GetGameObject(), MovementVector);
+	if (IntersectionData.bDidIntersect)
+	{
+		MovementVector = IntersectionData.CollisionResponse;
+	}
+	Obj->move(MovementVector);
 }

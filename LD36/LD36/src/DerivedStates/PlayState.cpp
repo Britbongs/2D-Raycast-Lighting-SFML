@@ -25,7 +25,10 @@ bool PlayState::Initialise()
 
 	World_ = new World(GameObjects_, GetRenderTexture());
 
-	Loader_.LoadMap("res//test_map.tmx");
+	if (!Loader_.LoadMap("res//movement_test_map.tmx"))
+	{
+		return false;
+	}
 
 	TiledMap_ = new TiledMap(64);
 
