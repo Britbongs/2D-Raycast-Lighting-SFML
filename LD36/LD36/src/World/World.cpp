@@ -14,19 +14,20 @@ World::~World()
 
 void World::SetupTileMeshColliders(const TiledMap* InTileMap)
 {
-	Vector2i Size = InTileMap->GetGridSize();
+	MapDimension_ = InTileMap->GetGridSize();
 
 	Int32 TileSize = InTileMap->GetTileSize();
 
 	std::vector<Vector2f> TempVertArray;
 	TempVertArray.resize(4);
 
-	for (Int32 i{ 0 }; i < Size.x; ++i)
+
+	for (Int32 i{ 0 }; i < MapDimension_.x; ++i)
 	{
-		for (Int32 j{ 0 }; j < Size.y; ++j)
+		for (Int32 j{ 0 }; j < MapDimension_.y; ++j)
 		{
 			//Get index in vector
-			Int32 Index = i + j * Size.x;
+			Int32 Index = i + j * MapDimension_.x;
 
 			//If the tile is collideable
 			//Top left
@@ -52,44 +53,9 @@ void World::SetupTileMeshColliders(const TiledMap* InTileMap)
 	}
 	DebugPrintF(DebugLog, L"Tiled Map Collision Data Memory Footprint: %d Bytes", sizeof(TileCollisionData) * TileMeshColliders_.size());
 
-	for (Int32 i{ 0 }; i < Size.x; ++i)
-	{
-		for (Int32 j{ 0 }; j < Size.y; ++j)
-		{
-			Int32 Index = i + j * Size.x;
-
-			if (!InTileMap->GetCollideableAtIndex(Index))
-			{
-				std::wcout << L"0";
-			}
-			else
-			{
-				std::wcout << L"1";
-			}
-		}
-		std::wcout << endl;
-	}
 }
 
-bool World::CheckCollision(const GameObject& Object)
-{
-
-	AABBCollisionCheck(Object);
-
-	if (CollidersToCheck_.size() != 0)
-	{
-		MeshCollisionCheck(Object);
-
-		if (CollidersToCheck_.size() != 0)
-		{
-			return true;
-			//TOOD change object type in data struct to use new object types
-		}
-	}
-	return false;
-}
-
-void World::MeshCollisionCheck(const GameObject& ObjectA)
+bool World::DoMeshCollidersIntersect(const MeshCollider& MeshA, const MeshCollider& MeshB) const
 {
 	//TODO catch multiple collision resolution 
 	//-----------------------------------------
@@ -98,46 +64,33 @@ void World::MeshCollisionCheck(const GameObject& ObjectA)
 		return ProjB.Max >= ProjA.Min && ProjB.Min <= ProjA.Max;
 	};
 	std::vector<GameObject*> TempColliderVector = CollidersToCheck_;
-	CollidersToCheck_.clear();
 
 	Projection ProjectionA, ProjectionB;
-	for (auto ObjectB : TempColliderVector)
+
+
+	for (Int32 i = 0; i < MeshA.GetNormalListSize(); ++i)
 	{
-		bool EarlyOut = false;
-		Int32 i = 0;
-		while (i < ObjectA.GetMeshCollider().GetNormalListSize() && !EarlyOut)
+		ProjectionA = GetProjection(MeshA, MeshA.GetNormal(i));
+		ProjectionB = GetProjection(MeshB, MeshA.GetNormal(i));
+		if (!DoProjectionsOverlap(ProjectionA, ProjectionB))
 		{
-			ProjectionA = GetProjection(ObjectA.GetMeshCollider(), ObjectA.GetMeshCollider().GetNormal(i));
-			ProjectionB = GetProjection((*ObjectB).GetMeshCollider(), ObjectA.GetMeshCollider().GetNormal(i));
-			if (!DoProjectionsOverlap(ProjectionA, ProjectionB))
-			{
-				EarlyOut = true;
-			}
-			++i;
+			return false;
 		}
-
-		if (EarlyOut)
-			continue;
-		i = 0;
-
-		while (i < ObjectA.GetMeshCollider().GetNormalListSize() && !EarlyOut)
-		{
-			ProjectionA = GetProjection(ObjectA.GetMeshCollider(), ObjectB->GetMeshCollider().GetNormal(i));
-			ProjectionB = GetProjection((*ObjectB).GetMeshCollider(), ObjectB->GetMeshCollider().GetNormal(i));
-			if (!DoProjectionsOverlap(ProjectionA, ProjectionB))
-			{
-				EarlyOut = true;
-			}
-			++i;
-		}
-
-		if (EarlyOut)
-			continue;
-
-		CollidersToCheck_.push_back(ObjectB);
+		++i;
 	}
 
-	return;
+	for (Int32 i = 0; i < MeshA.GetNormalListSize(); ++i)
+	{
+		ProjectionA = GetProjection(MeshA, MeshB.GetNormal(i));
+		ProjectionB = GetProjection(MeshB, MeshB.GetNormal(i));
+		if (!DoProjectionsOverlap(ProjectionA, ProjectionB))
+		{
+			return false;
+		}
+		++i;
+	}
+
+	return true;
 }
 
 World::Projection World::GetProjection(const MeshCollider & Collider, const Vector2f & EdgeNormal) const
@@ -156,37 +109,135 @@ World::Projection World::GetProjection(const MeshCollider & Collider, const Vect
 	return Proj;
 }
 
-void World::AABBCollisionCheck(const GameObject& Object)
+bool World::AABBCollisionCheck(const sf::FloatRect& RectA, const sf::FloatRect& RectB) const
 {
-	CollidersToCheck_.clear();
+	return RectA.intersects(RectB);
+}
 
-	for (auto o : Objects_)
+FloatRect World::GetSearchTileAABB(TileSearchDirections Direction, const Vector2i & GridLoc) const
+{
+	/*
+		-Function which when passed which of the 8 tiles surrounding the player you would like the AABB for
+		it will return it. When using check for an x & y value < 0 which will indicate you're out of bounds with an enum value
+	*/
+	FloatRect TileAABB(-1.f, -1.f, TILE_SIZE, TILE_SIZE);
+	switch (Direction)
 	{
+	case eTile_Up_Left:
+		TileAABB.left = STATIC_CAST(float, (GridLoc.x - 1) * TILE_SIZE);
+		TileAABB.top = STATIC_CAST(float, (GridLoc.y - 1) * TILE_SIZE);
+		break;
 
-		if (o == &Object)
-		{//Same object, continue 
-			continue;
-		}
+	case eTile_Up:
+		TileAABB.left = STATIC_CAST(float, GridLoc.x * TILE_SIZE);
+		TileAABB.top = STATIC_CAST(float, (GridLoc.y - 1) * TILE_SIZE);
+		break;
 
+	case eTile_Up_Right:
+		TileAABB.left = STATIC_CAST(float, (GridLoc.x + 1) * TILE_SIZE);
+		TileAABB.top = STATIC_CAST(float, (GridLoc.y - 1) * TILE_SIZE);
+		break;
 
-		if (!o->GetAABB().intersects(Object.GetAABB()))
-		{//No intersection, continue 
-			continue;
-		}
+	case eTile_Right:
+		TileAABB.left = STATIC_CAST(float, (GridLoc.x + 1)* TILE_SIZE);
+		TileAABB.top = STATIC_CAST(float, GridLoc.y * TILE_SIZE);
+		break;
 
-		//add it to the list
-		CollidersToCheck_.push_back(o);
+	case eTile_Down_Right:
+		TileAABB.left = STATIC_CAST(float, (GridLoc.x + 1)* TILE_SIZE);
+		TileAABB.top = STATIC_CAST(float, (GridLoc.y + 1)* TILE_SIZE);
+		break;
+
+	case eTile_Down:
+		TileAABB.left = STATIC_CAST(float, GridLoc.x * TILE_SIZE);
+		TileAABB.top = STATIC_CAST(float, (GridLoc.y + 1)* TILE_SIZE);
+		break;
+
+	case eTile_Down_Left:
+		TileAABB.left = STATIC_CAST(float, (GridLoc.x - 1)* TILE_SIZE);
+		TileAABB.top = STATIC_CAST(float, (GridLoc.y + 1) * TILE_SIZE);
+		break;
+
+	case eTile_Left:
+		TileAABB.left = STATIC_CAST(float, (GridLoc.x - 1) * TILE_SIZE);
+		TileAABB.top = STATIC_CAST(float, GridLoc.y * TILE_SIZE);
+		break;
+
 	}
+
+	return TileAABB;
+}
+
+bool World::IsSearchTileBlocked(TileSearchDirections Direction, const Vector2i& GridLoc) const
+{
+	Int32 Index = INDEX_NONE;
+	switch (Direction)
+	{
+	case eTile_Up_Left:
+		Index = (GridLoc.x - 1) + (GridLoc.y - 1) * MapDimension_.x;
+		break;
+
+	case eTile_Up:
+		Index = GridLoc.x + (GridLoc.y - 1) * MapDimension_.x;
+		break;
+
+	case eTile_Up_Right:
+		Index = (GridLoc.x + 1) + (GridLoc.y - 1) * MapDimension_.x;
+		break;
+
+	case eTile_Right:
+		Index = (GridLoc.x + 1) + GridLoc.y * MapDimension_.x;
+		break;
+
+	case eTile_Down_Right:
+		Index = (GridLoc.x + 1) + (GridLoc.y + 1)* MapDimension_.x;
+		break;
+
+	case eTile_Down:
+		Index = GridLoc.x + (GridLoc.y + 1)* MapDimension_.x;
+		break;
+
+	case eTile_Down_Left:
+		Index = (GridLoc.x - 1) + (GridLoc.y + 1)* MapDimension_.x;
+		break;
+
+	case eTile_Left:
+		Index = (GridLoc.x - 1) + GridLoc.y* MapDimension_.x;
+		break;
+
+	}
+
+	if (Index != INDEX_NONE)
+	{
+		return TileMeshColliders_[Index].bIsBlockedTile;
+	}
+
+	return false;
 }
 
 WorldIntersectionData World::CheckWorldIntersection(GameObject & Object, Vector2f& MovementVector)
 {
 	WorldIntersectionData IntersectData;
 	Vector2i PlayerTilePosition = Vector2i(Object.getPosition() / (float)TILE_SIZE);
-
-	for (Int32 i = 0; i < STATIC_CAST(Int32, TileSearchDirections::eTile_Search_Max); ++i)
+	Int32 i = 0;
+	bool bEarlyOut = false;
+	//for (Int32 i = 0; i < STATIC_CAST(Int32, TileSearchDirections::eTile_Search_Max); ++i)
+	while (i < STATIC_CAST(Int32, TileSearchDirections::eTile_Search_Max) && !bEarlyOut)
 	{
+		//If the players AABB intersects with a tile AABB 
+		/*
+		if (IsSearchTileBlocked(STATIC_CAST(TileSearchDirections, i), PlayerTilePosition))
+		{
+			if (AABBCollisionCheck(Object.GetAABB(), GetSearchTileAABB(STATIC_CAST(TileSearchDirections, i), PlayerTilePosition)))
+			{
 
+				bEarlyOut = true;
+				IntersectData.bDidIntersect = true;
+				IntersectData.CollisionResponse = MovementVector*-1.f;
+			}
+		}
+		*/
+		++i;
 	}
 
 	return IntersectData;
