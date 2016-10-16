@@ -91,6 +91,10 @@ void PlayState::Deinitialise()
 
 void PlayState::Update(float Delta)
 {
+	for (const auto& GO : GameObjects_)
+	{
+		GO->UpdateCollider();
+	}
 	Player_->Update(Delta);
 }
 

@@ -39,6 +39,8 @@ public:
 
 	const MeshCollider& GetMeshCollider() const { return MeshCollider_; }
 
+	void UpdateCollider();
+
 private:
 
 	virtual void draw(RenderTarget& RTarget, RenderStates RStates) const;

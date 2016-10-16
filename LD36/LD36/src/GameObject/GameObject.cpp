@@ -56,6 +56,11 @@ void GameObject::SetCollider()
 {
 }
 
+void GameObject::UpdateCollider()
+{
+	MeshCollider_.UpdatMeshCollider(getTransform());
+}
+
 void GameObject::draw(RenderTarget & RTarget, RenderStates RStates) const
 {
 	RStates.transform *= getTransform();

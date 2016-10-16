@@ -63,7 +63,6 @@ bool World::DoMeshCollidersIntersect(const MeshCollider& MeshA, const MeshCollid
 	{
 		return ProjB.Max >= ProjA.Min && ProjB.Min <= ProjA.Max;
 	};
-	std::vector<GameObject*> TempColliderVector = CollidersToCheck_;
 
 	Projection ProjectionA, ProjectionB;
 
@@ -76,7 +75,6 @@ bool World::DoMeshCollidersIntersect(const MeshCollider& MeshA, const MeshCollid
 		{
 			return false;
 		}
-		++i;
 	}
 
 	for (Int32 i = 0; i < MeshA.GetNormalListSize(); ++i)
@@ -87,7 +85,6 @@ bool World::DoMeshCollidersIntersect(const MeshCollider& MeshA, const MeshCollid
 		{
 			return false;
 		}
-		++i;
 	}
 
 	return true;
@@ -109,6 +106,67 @@ World::Projection World::GetProjection(const MeshCollider & Collider, const Vect
 	return Proj;
 }
 
+WorldIntersectionData World::CheckWorldIntersection(GameObject & Object, Vector2f& MovementVector)
+{
+	WorldIntersectionData IntersectData;
+	IntersectData.bDidIntersect = false;
+	IntersectData.CollisionResponse = MovementVector;
+
+	Vector2i PlayerGridPos = Vector2i(Object.getPosition() / (float)TILE_SIZE);
+	Int32 i = 0;
+	bool bEarlyOut = false;
+	AABBIntersectedTileColliders_.clear();
+
+	auto MoveAABB = [](FloatRect& Rect, const Vector2f& MoveVector)
+	{//Lambda to return a moved floatrect 
+
+		return FloatRect(Vector2f(Rect.left, Rect.top) + MoveVector, Vector2f(Rect.width, Rect.height));
+	};
+
+	//Loop through all search directions 
+	//If the search tile is not a valid index, early out
+	//if the players aabb moving in the movement direction is found to be colliding 
+	//add the intersecting tile to a vector which will be iterated over with more precise MeshCollider
+	for (Int32 i = 0; i < STATIC_CAST(Int32, TileSearchDirections::eTile_Search_Max); ++i)
+	{
+		TileSearchDirections Direction = STATIC_CAST(TileSearchDirections, i);
+		Int32 TileIndex = GetSearchTileIndex(Direction, PlayerGridPos);
+		if (TileIndex == INDEX_NONE)
+		{
+			continue;
+		}
+
+		if (!IsSearchTileBlocked(Direction, PlayerGridPos))
+		{
+			continue;
+		}
+
+		FloatRect TransformedAABB = Object.GetAABB();// (MoveAABB(Object.GetAABB(), MovementVector));
+
+		// if search tile is classed as a blocked tile 
+		if (AABBCollisionCheck(TransformedAABB, GetSearchTileAABB(Direction, PlayerGridPos)))
+		{
+			AABBIntersectedTileColliders_.push_back(&TileMeshColliders_[TileIndex].MCollider);
+		}
+	}
+
+	DebugPrintF(DebugLog, L"Number of found intersected tiles: %d", AABBIntersectedTileColliders_.size());
+
+	Int32 RealIntersectCount = 0;
+
+	for (auto Collider : AABBIntersectedTileColliders_)
+	{
+		if (DoMeshCollidersIntersect(Object.GetMeshCollider(), *Collider))
+		{
+			++RealIntersectCount;
+		}
+	}
+
+	DebugPrintF(DebugLog, L"Number of real intersections: %d", RealIntersectCount);
+
+	return IntersectData;
+}
+
 bool World::AABBCollisionCheck(const sf::FloatRect& RectA, const sf::FloatRect& RectB) const
 {
 	return RectA.intersects(RectB);
@@ -120,7 +178,7 @@ FloatRect World::GetSearchTileAABB(TileSearchDirections Direction, const Vector2
 		-Function which when passed which of the 8 tiles surrounding the player you would like the AABB for
 		it will return it. When using check for an x & y value < 0 which will indicate you're out of bounds with an enum value
 	*/
-	FloatRect TileAABB(-1.f, -1.f, TILE_SIZE, TILE_SIZE);
+	FloatRect TileAABB(-1.f, -1.f, STATIC_CAST(float, TILE_SIZE), STATIC_CAST(float, TILE_SIZE));
 	switch (Direction)
 	{
 	case eTile_Up_Left:
@@ -170,7 +228,22 @@ FloatRect World::GetSearchTileAABB(TileSearchDirections Direction, const Vector2
 
 bool World::IsSearchTileBlocked(TileSearchDirections Direction, const Vector2i& GridLoc) const
 {
+	// may cause unexpected behaviour for grid locations outside the map 
+	// but presently staves off a vector subscript out of range error (still in progress of fixing) 
+	Int32 Index = GetSearchTileIndex(Direction, GridLoc);
+
+	if (Index != INDEX_NONE && Index >= 0 && Index < STATIC_CAST(Int32, TileMeshColliders_.size()))
+	{
+		return TileMeshColliders_[Index].bIsBlockedTile;
+	}
+
+	return false;
+}
+
+Int32 World::GetSearchTileIndex(TileSearchDirections Direction, Vector2i GridLoc) const
+{
 	Int32 Index = INDEX_NONE;
+
 	switch (Direction)
 	{
 	case eTile_Up_Left:
@@ -206,41 +279,7 @@ bool World::IsSearchTileBlocked(TileSearchDirections Direction, const Vector2i& 
 		break;
 
 	}
-
-	if (Index != INDEX_NONE)
-	{
-		return TileMeshColliders_[Index].bIsBlockedTile;
-	}
-
-	return false;
-}
-
-WorldIntersectionData World::CheckWorldIntersection(GameObject & Object, Vector2f& MovementVector)
-{
-	WorldIntersectionData IntersectData;
-	Vector2i PlayerTilePosition = Vector2i(Object.getPosition() / (float)TILE_SIZE);
-	Int32 i = 0;
-	bool bEarlyOut = false;
-	//for (Int32 i = 0; i < STATIC_CAST(Int32, TileSearchDirections::eTile_Search_Max); ++i)
-	while (i < STATIC_CAST(Int32, TileSearchDirections::eTile_Search_Max) && !bEarlyOut)
-	{
-		//If the players AABB intersects with a tile AABB 
-		/*
-		if (IsSearchTileBlocked(STATIC_CAST(TileSearchDirections, i), PlayerTilePosition))
-		{
-			if (AABBCollisionCheck(Object.GetAABB(), GetSearchTileAABB(STATIC_CAST(TileSearchDirections, i), PlayerTilePosition)))
-			{
-
-				bEarlyOut = true;
-				IntersectData.bDidIntersect = true;
-				IntersectData.CollisionResponse = MovementVector*-1.f;
-			}
-		}
-		*/
-		++i;
-	}
-
-	return IntersectData;
+	return Index;
 }
 
 bool World::IsInsideView(const FloatRect& AABB) const

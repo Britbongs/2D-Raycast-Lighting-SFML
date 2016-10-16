@@ -29,7 +29,7 @@ void PlayerController::Deinitialise()
 void PlayerController::Update(float Delta)
 {
 	auto Obj = GetGameObject();
-
+	
 	Vector2f MovementVector(0.f, 0.f);
 
 	if (Keyboard::isKeyPressed(Keyboard::Key::A))
@@ -54,7 +54,7 @@ void PlayerController::Update(float Delta)
 
 	}
 
-	MovementVector = Normalise(MovementVector) * PLAYER_MOVE_SPEED* Delta;
+	MovementVector = Normalise(MovementVector) * PLAYER_MOVE_SPEED * Delta;
 	WorldIntersectionData IntersectionData = GetWorld()->CheckWorldIntersection(*GetGameObject(), MovementVector);
 	if (IntersectionData.bDidIntersect)
 	{

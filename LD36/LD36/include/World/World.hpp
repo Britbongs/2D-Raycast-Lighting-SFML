@@ -52,8 +52,7 @@ private:
 
 	bool AABBCollisionCheck(const sf::FloatRect& RectA, const sf::FloatRect& RectB) const;
 
-
-	std::vector<GameObject*> CollidersToCheck_;
+	std::vector<const MeshCollider*> AABBIntersectedTileColliders_; // List of mesh colliders from tiles which the player may be intersecting with (via AABB test) 
 
 	std::vector<TileCollisionData> TileMeshColliders_;
 
@@ -75,8 +74,10 @@ private:
 		eTile_Left,
 		eTile_Search_Max
 	};
-	
+
 	FloatRect GetSearchTileAABB(TileSearchDirections Direction, const Vector2i& GridLoc) const;
-	
+
 	bool IsSearchTileBlocked(TileSearchDirections Direction, const Vector2i& GridLoc) const;
+
+	Int32 GetSearchTileIndex(TileSearchDirections Direction, Vector2i GridLoc) const;
 };
