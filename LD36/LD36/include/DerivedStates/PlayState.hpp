@@ -46,7 +46,8 @@ private:
 	sf::CircleShape Circle_;
 	Raycast RayTest_;
 	std::vector<Vector2f> UniquePoints_;
-	VertexArray VisibilityPolygon_;
+	std::vector<VertexArray> VisibilityPolygons_;
+	std::vector<RenderStates> LightShaders_;
 
 	AssetManager* AssetMgr_ = nullptr;
 	ProjectileManager* ProjectileMgr_ = nullptr;

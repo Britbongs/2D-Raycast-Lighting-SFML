@@ -92,7 +92,6 @@ void PlayState::Update(float Delta)
 	sf::Vector2i MousePos = Mouse::getPosition(*GetRenderWindow());
 	sf::Vector2f WorldMousePos = GetRenderTexture()->mapPixelToCoords(MousePos);
 	Circle_.setPosition(WorldMousePos - Vector2f(Circle_.getRadius(), Circle_.getRadius()));
-	DrawVisibilityPolygon(WorldMousePos);
 }
 
 void PlayState::DrawVisibilityPolygon(const Vector2f& Origin)
@@ -148,23 +147,26 @@ void PlayState::DrawVisibilityPolygon(const Vector2f& Origin)
 
 
 	//Sort intersections by angle
-	Color Col = Color::White;
+	Color Col = Color::Cyan;
 	Col.a = 85;
 	sort(Intersections.begin(), Intersections.end(), [](Vector3f const& a, Vector3f const& b) { return a.z < b.z; });
 
-	VisibilityPolygon_.resize(Intersections.size() + 2);
-	VisibilityPolygon_.setPrimitiveType(TrianglesFan);
+
+	VertexArray VisibilityPolygon = VertexArray(TrianglesFan, Intersections.size() + 2);
 
 	for (Int32 i = 0; i < (Int32)Intersections.size(); ++i)
 	{
-		VisibilityPolygon_[i + 1].position = Vector2f(Intersections[i].x, Intersections[i].y);
-		VisibilityPolygon_[i + 1].color = Col;
+		VisibilityPolygon[i + 1].position = Vector2f(Intersections[i].x, Intersections[i].y);
+		VisibilityPolygon[i + 1].color = Col;
 	}
 
-	VisibilityPolygon_[0].position = Origin;
-	VisibilityPolygon_[0].color = Col;
-	VisibilityPolygon_[VisibilityPolygon_.getVertexCount() - 1].position = VisibilityPolygon_[1].position;
-	VisibilityPolygon_[VisibilityPolygon_.getVertexCount() - 1].color = Col;
+	VisibilityPolygon[0].position = Origin;
+	VisibilityPolygon[0].color = Col;
+	VisibilityPolygon[VisibilityPolygon.getVertexCount() - 1].position = VisibilityPolygon[1].position;
+	VisibilityPolygon[VisibilityPolygon.getVertexCount() - 1].color = Col;
+
+
+	VisibilityPolygons_.push_back(VisibilityPolygon);
 
 }
 
@@ -208,13 +210,21 @@ void PlayState::Render()
 	Pos.y = LightMap_.getSize().y - Pos.y + Radius; //Fix for inverted texture pos
 	Pos.x += Radius;
 	AttenuationShader_.setParameter("point", Pos);
-	AttenuationShader_.setParameter("attenuationConstant", 45.f);
+	AttenuationShader_.setParameter("attenuationConstant", 10.f);
 
-	LightRenderState.blendMode = BlendAdd;
+	LightRenderState.blendMode = BlendAlpha;
 	LightRenderState.shader = &AttenuationShader_;
 	LightMap_.clear();
 	LightMap_.setView(GetRenderTexture()->getView());
-	LightMap_.draw(VisibilityPolygon_, LightRenderState);
+
+	for (Int32 i = 0; i < VisibilityPolygons_.size(); ++i)
+	{
+		Vector2f Pos = Vector2f(GetRenderTexture()->mapCoordsToPixel(VisibilityPolygons_[i][0].position));
+		Pos.y = LightMap_.getSize().y - Pos.y + Radius; //Fix for inverted texture pos
+		AttenuationShader_.setParameter("point", Pos);
+
+		LightMap_.draw(VisibilityPolygons_[i], LightRenderState);
+	}
 	LightMap_.display();
 
 	AmbientShader_.setParameter("ambientColour", 0.27f, 0.15f, 0.3f, 0.6f);
@@ -249,6 +259,13 @@ void PlayState::HandleEvents(sf::Event& Evnt, float Delta)
 		{
 			LoadShaders();
 		}
+	}
+
+	if (Evnt.type == sf::Event::MouseButtonReleased && Evnt.mouseButton.button == sf::Mouse::Left)
+	{
+		sf::Vector2i MousePos = Mouse::getPosition(*GetRenderWindow());
+		sf::Vector2f WorldMousePos = GetRenderTexture()->mapPixelToCoords(MousePos);
+		DrawVisibilityPolygon(WorldMousePos);
 	}
 }
 
