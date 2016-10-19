@@ -204,13 +204,13 @@ void PlayState::Render()
 	Sprite S(SceneRenderer_.getTexture());
 	RenderStates LightRenderState;
 
-	AttenuationShader_.setParameter("texture", Shader::CurrentTexture);
+	AttenuationShader_.setUniform("texture", Shader::CurrentTexture);
 	float Radius = Circle_.getRadius();
 	Vector2f Pos = Vector2f(GetRenderTexture()->mapCoordsToPixel(Circle_.getPosition()));
 	Pos.y = LightMap_.getSize().y - Pos.y + Radius; //Fix for inverted texture pos
 	Pos.x += Radius;
-	AttenuationShader_.setParameter("point", Pos);
-	AttenuationShader_.setParameter("attenuationConstant", 10.f);
+	AttenuationShader_.setUniform("point", Pos);
+	AttenuationShader_.setUniform("attenuationConstant", 10.f);
 
 	LightRenderState.blendMode = BlendAlpha;
 	LightRenderState.shader = &AttenuationShader_;
@@ -221,15 +221,15 @@ void PlayState::Render()
 	{
 		Vector2f Pos = Vector2f(GetRenderTexture()->mapCoordsToPixel(VisibilityPolygons_[i][0].position));
 		Pos.y = LightMap_.getSize().y - Pos.y + Radius; //Fix for inverted texture pos
-		AttenuationShader_.setParameter("point", Pos);
+		AttenuationShader_.setUniform("point", Pos);
 
 		LightMap_.draw(VisibilityPolygons_[i], LightRenderState);
 	}
 	LightMap_.display();
 
-	AmbientShader_.setParameter("ambientColour", 0.27f, 0.15f, 0.3f, 0.6f);
-	AmbientShader_.setParameter("lightMapTexture", LightMap_.getTexture());
-	AmbientShader_.setParameter("resolution", (float)GetRenderTexture()->getSize().x, (float)GetRenderTexture()->getSize().y);
+	AmbientShader_.setUniform("ambientColour", Glsl::Vec4(0.27f, 0.15f, 0.3f, 0.6f));
+	AmbientShader_.setUniform("lightMapTexture", LightMap_.getTexture());
+	AmbientShader_.setUniform("resolution", Glsl::Vec2(GetRenderTexture()->getSize()));
 
 	GetRenderTexture()->draw(S, RStates);//, RStates);
 

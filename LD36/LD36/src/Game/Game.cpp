@@ -34,13 +34,16 @@ bool Game::InitGame()
 	FPSText_.setString(L"FPS:  ");
 	FPSText_.setPosition(WindowDimensions.x - (FPSText_.getGlobalBounds().width * 2.f), 10);
 
-	auto b = std::async(std::launch::async, &Game::InitialiseStates, this);
+	/*auto b = std::async(std::launch::async, &Game::InitialiseStates, this);
 	
-	if (!b.get())
+	if (b.valid())
 	{
-		return false;
-	}
-
+		if (!b.get())
+		{
+			return false;
+		}
+	}*/
+	InitialiseStates();
 	return true;
 }
 

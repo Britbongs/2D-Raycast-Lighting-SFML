@@ -14,7 +14,7 @@ void main()
 
     distance = length(point - gl_FragCoord.xy);
     
-    //distance *= distance; //ENABLE FOR QUADRATIC FALLOFF
+    // distance *= distance; //ENABLE FOR QUADRATIC FALLOFF
     //distance *= (distance*distance); //ENABLE FOR CUBIC DROP OFF
     
     vec4 Col; 
@@ -22,7 +22,7 @@ void main()
     Col.y = gl_Color.y;
     Col.z = gl_Color.z;
     Col.w = gl_Color.w;
-    Col.w = (1.f / distance) * attenuationConstant;
-
+    Col.w = ((1.f / distance) * 1.f - pixel.x) * attenuationConstant;
+    // Col.w = pixel.w;
     gl_FragColor = Col;
 }
