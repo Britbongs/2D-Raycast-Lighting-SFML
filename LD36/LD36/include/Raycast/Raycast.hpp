@@ -1,5 +1,5 @@
 #pragma once
-
+// TODO rename file
 struct Ray {
 	Vector2f Origin_;
 	Vector2f Direction_;
@@ -9,13 +9,15 @@ struct Ray {
 	{
 	}
 
-	Vector2f GetDirection() { return Direction_;  }
+	Vector2f GetDirection() { return Direction_; }
 
-	Vector2f GetOrigin(){ return Origin_; }
+	Vector2f GetOrigin() { return Origin_; }
 
-	void SetOrigin(const Vector2f& o){ Origin_ = o; }
+	void SetOrigin(const Vector2f& o) { Origin_ = o; }
 
-	void SetDirection(const Vector2f& d){ Direction_ = d; }
+	void SetDirection(const Vector2f& d) { Direction_ = d; }
+	Vector3f NO_INLINE GetIntersection(const Vector2f& PointA, const Vector2f& PointB)const;
+
 };
 
 class Raycast
@@ -23,9 +25,8 @@ class Raycast
 public:
 
 	Raycast();
-	~Raycast();	
+	~Raycast();
 
-	Vector3f GetIntersection(Ray ray, Vector2f a, Vector2f b);
 
 private:
 

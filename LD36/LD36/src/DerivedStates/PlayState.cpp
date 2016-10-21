@@ -1,6 +1,6 @@
 #include "stdafx.hpp"
+#include <future>
 #include "DerivedStates\PlayState.hpp"
-
 using namespace sf;
 
 PlayState::PlayState(sf::Int32 ID, sf::RenderWindow* RWindow, sf::RenderTexture* RTexture)
@@ -129,7 +129,7 @@ void PlayState::DrawVisibilityPolygon(const Vector2f& Origin)
 
 				//Create ray
 				//Get the intersection point
-				Intersection = RayTest_.GetIntersection(Ray, A, B);
+				Intersection = Ray.GetIntersection(A, B);
 
 				//If GetIntersection returned early then continue
 				if (Intersection.z == -1)
@@ -147,8 +147,10 @@ void PlayState::DrawVisibilityPolygon(const Vector2f& Origin)
 
 
 	//Sort intersections by angle
-	Color Col = Color::Cyan;
-	Col.a = 85;
+	Color Col = Color::Yellow;
+	Col.a = 255;
+	//Col.a = (rand() % 255) + 10;
+	DebugPrintF(DebugLog, L"Col - %i", Col.a);
 	sort(Intersections.begin(), Intersections.end(), [](Vector3f const& a, Vector3f const& b) { return a.z < b.z; });
 
 
@@ -182,7 +184,7 @@ void PlayState::LoadShaders()
 		DebugPrintF(DebugLog, L"Failed to load ambient shader");
 	}
 
-	if (!AttenuationShader_.loadFromFile("res//shader//defaultVertShader.vert", "res//shader//attenuationFragShader.frag"))
+	if (!AttenuationShader_.loadFromFile("res//shader//attenuationVertexShader.vert", "res//shader//attenuationFragShader.frag"))
 	{
 		DebugPrintF(DebugLog, L"Failed to load attenuation shader");
 	}
@@ -194,7 +196,7 @@ void PlayState::Render()
 	Sprite Empty;
 	RenderStates RStates;
 	RStates.shader = &AmbientShader_;
-	RStates.blendMode = BlendAlpha;
+	RStates.blendMode = BlendAdd;
 
 	SceneRenderer_.clear(Color::Black);
 	SceneRenderer_.draw(*TiledMap_);
@@ -202,6 +204,7 @@ void PlayState::Render()
 	SceneRenderer_.display();
 
 	Sprite S(SceneRenderer_.getTexture());
+#pragma region LightRender
 	RenderStates LightRenderState;
 
 	AttenuationShader_.setUniform("texture", Shader::CurrentTexture);
@@ -210,14 +213,14 @@ void PlayState::Render()
 	Pos.y = LightMap_.getSize().y - Pos.y + Radius; //Fix for inverted texture pos
 	Pos.x += Radius;
 	AttenuationShader_.setUniform("point", Pos);
-	AttenuationShader_.setUniform("attenuationConstant", 10.f);
+	AttenuationShader_.setUniform("lightIntensity", 100.f);
 
-	LightRenderState.blendMode = BlendAlpha;
+	LightRenderState.blendMode = BlendAdd;
 	LightRenderState.shader = &AttenuationShader_;
 	LightMap_.clear();
 	LightMap_.setView(GetRenderTexture()->getView());
 
-	for (Int32 i = 0; i < VisibilityPolygons_.size(); ++i)
+	for (Int32 i = 0; i < (Int32)VisibilityPolygons_.size(); ++i)
 	{
 		Vector2f Pos = Vector2f(GetRenderTexture()->mapCoordsToPixel(VisibilityPolygons_[i][0].position));
 		Pos.y = LightMap_.getSize().y - Pos.y + Radius; //Fix for inverted texture pos
@@ -230,25 +233,24 @@ void PlayState::Render()
 	AmbientShader_.setUniform("ambientColour", Glsl::Vec4(0.27f, 0.15f, 0.3f, 0.6f));
 	AmbientShader_.setUniform("lightMapTexture", LightMap_.getTexture());
 	AmbientShader_.setUniform("resolution", Glsl::Vec2(GetRenderTexture()->getSize()));
-
+#pragma endregion Light Render
 	GetRenderTexture()->draw(S, RStates);//, RStates);
 
-	/*for (const auto& GO : GameObjects_)
+	/*
+	for (const auto& GO : GameObjects_)
 	{
 		if (GO->IsActive() == true)
 		{
 			GetRenderTexture()->draw(*GO);
 		}
-	}*/
+	}
+	*/
 
 }
 
 void PlayState::PostRender() const
 {
 	RenderStates Blend;
-	//Blend.blendMode = BlendAlpha;
-	//Blend.shader = &AmbientShader_;
-	//GetRenderWindow()->draw(VisibilityPolygon_, Blend);
 }
 
 void PlayState::HandleEvents(sf::Event& Evnt, float Delta)
@@ -259,13 +261,39 @@ void PlayState::HandleEvents(sf::Event& Evnt, float Delta)
 		{
 			LoadShaders();
 		}
+
+		if (Evnt.key.code == Keyboard::C)
+		{
+			VisibilityPolygons_.clear();
+		}
+		if (Evnt.key.code == Keyboard::X)
+		{
+			Image Img = LightMap_.getTexture().copyToImage();
+			Img.saveToFile("Rendered_Light_Map.png");
+		}
 	}
 
-	if (Evnt.type == sf::Event::MouseButtonReleased && Evnt.mouseButton.button == sf::Mouse::Left)
+	if (Evnt.type == Event::MouseButtonPressed)
 	{
-		sf::Vector2i MousePos = Mouse::getPosition(*GetRenderWindow());
-		sf::Vector2f WorldMousePos = GetRenderTexture()->mapPixelToCoords(MousePos);
-		DrawVisibilityPolygon(WorldMousePos);
+		if (Evnt.mouseButton.button == Mouse::Left)
+		{
+			sf::Vector2i MousePos = Mouse::getPosition(*GetRenderWindow());
+			sf::Vector2f WorldMousePos = GetRenderTexture()->mapPixelToCoords(MousePos);
+			//DrawVisibilityPolygon(WorldMousePos);
+#pragma region VisibilityAsync
+			/*auto AsyncVisibilityCreate =
+				std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos);*/
+			sf::Clock C;
+			C.restart();
+			DrawVisibilityPolygon(WorldMousePos);
+			Time T = C.getElapsedTime();
+			float Seconds = T.asSeconds();
+			Int32 Milliseconds = T.asMilliseconds();
+			Int64 Microseconds = T.asMicroseconds();
+			DebugPrintF(DebugLog, L"Time taken to execute: %f Seconds \n%i Milliseconds \n%li Microseconds", Seconds, Milliseconds, Microseconds);
+#pragma endregion VisibilityAsync
+		}
+
 	}
 }
 

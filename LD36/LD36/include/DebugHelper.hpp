@@ -35,3 +35,5 @@ static void DebugPrintF(const std::wstring& LogType, wchar_t* Format, ...)
 	va_end(ArgList);
 #endif
 }
+
+#define NO_INLINE __declspec(noinline)

@@ -27,10 +27,12 @@ bool Game::InitGame()
 	{
 		return false;
 	}
+	InitRand(); 
 
 	FPSText_.setFont(*AM->GetDefaultFont());
 	FPSText_.setCharacterSize(12u);
-	FPSText_.setColor(sf::Color::Yellow);
+	//FPSText_.setColor(sf::Color::Yellow);
+	FPSText_.setFillColor(Color::Yellow);
 	FPSText_.setString(L"FPS:  ");
 	FPSText_.setPosition(WindowDimensions.x - (FPSText_.getGlobalBounds().width * 2.f), 10);
 
