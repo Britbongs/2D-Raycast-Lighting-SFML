@@ -1,39 +1,32 @@
 #version 110
 
-// varying float attenuation;
+varying vec4 vertColor;
 uniform sampler2D texture;
+uniform vec2 point;
+float lightIntensity;
 
-//Shader parameters
-//uniform vec2 point;
-uniform float lightIntensity;
+float calculateAttenuation() 
+{ 
+    //TODO: move values to C++ and store in header to allow changes
+    float constAtten = 0.0f; 
+    float linearAtten = 0.2f; 
+    float quadraticAtten = 0.002f;
+    
+    float distance = length(gl_FragCoord.xy - point);
+    float distanceSquared = distance * distance;
+ 
+    // return clamp(1.f / (constAtten + (linearAtten * distance) + (quadraticAtten * distanceSquared)), 0.0f, 1.0f);
+    return clamp ((1.f / (distance + distanceSquared)) * attenVal , 0.0, 1.f);
+}
 
-void main()
+void main(void)
 {
-
     vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);
-    //float bug = 100.0;
-
-    //float distance = 0.0;
-
-    //distance = length(point - gl_FragCoord.xy);
-    //float atten; 
+    vec4 col = vec4(vertColor);
     
-    //distance *= distance; //ENABLE FOR QUADRATIC FALLOFF
-    //distance *= (distance*distance); //ENABLE FOR CUBIC DROP OFF
+    col.xyz += pixel.xyz;
+    col.w *= calculateAttenuation();
+    col.w + pixel.w;
     
-    // vec4 col; 
-    
-    // pixel.w *= 1.f / attenuation;
-    
-    // col = vec4(gl_Color);
-    // col += pixel;
-    // col.w *= attenuation;
-
-    // if (col.w > 0.1f)
-    // { 
-    //     col.y *= bug;
-    // }
-    // col.w = ((1.f / distance) * pixel.w) * attenuationConstant;
-    
-     gl_FragColor = gl_Color * pixel;
+    gl_FragColor = col;
 }

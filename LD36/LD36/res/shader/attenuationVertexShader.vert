@@ -1,11 +1,9 @@
 #version 110 
 
-varying vec4 vColour; //Pixel colour passed to fragment shader
+varying vec4 vertColor; //Pixel colour passed to fragment shader 
+uniform vec2 point; 
 
-varying float attenuation;
-vec2 Point;
-
-void main()
+void main(void)
 {
     // transform the vertex position
     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
@@ -15,6 +13,6 @@ void main()
 
     // forward the vertex color
     gl_FrontColor = gl_Color;
-
-    float attenuation = 1.f / length(gl_Position - Point);
+    
+    vertColor = vec4(gl_Color);
 }

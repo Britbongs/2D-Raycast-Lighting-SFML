@@ -61,4 +61,6 @@ private:
 	// TODO Move Shaders to shader manager 
 	Shader AmbientShader_;
 	Shader AttenuationShader_;
+	BlendMode LightRenderBlendMode_ = BlendAdd;
+
 };

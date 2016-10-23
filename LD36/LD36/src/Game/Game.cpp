@@ -88,6 +88,9 @@ void Game::CleanUpGame()
 bool Game::InitialiseWindow()
 {
 	//Initialise RenderWindow
+	ContextSettings Settings; 
+	Settings.antialiasingLevel = 4;
+
 	RWindow_.create(sf::VideoMode(WindowDimensions.x, WindowDimensions.y), GameWindowTitle_, sf::Style::Close);
 
 	//Initialise RenderTexture

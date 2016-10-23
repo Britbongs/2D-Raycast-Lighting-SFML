@@ -52,7 +52,7 @@ bool PlayState::Initialise()
 
 	SceneRenderer_.create((Uint32)TiledMap_->GetSize().x, (Uint32)TiledMap_->GetSize().y);
 	LightMap_.create(GetRenderTexture()->getSize().x, GetRenderTexture()->getSize().y);
-
+	LightMap_.setSmooth(true);
 	LoadShaders();
 	return false;
 }
@@ -97,7 +97,6 @@ void PlayState::Update(float Delta)
 void PlayState::DrawVisibilityPolygon(const Vector2f& Origin)
 {
 	auto& Colliders = World_->GetTileMeshCollidersBlocked();
-
 
 	std::vector<float> UniqueAngles = CalculateUniqueAngles(Origin);
 
@@ -147,9 +146,9 @@ void PlayState::DrawVisibilityPolygon(const Vector2f& Origin)
 
 
 	//Sort intersections by angle
-	Color Col = Color::Yellow;
-	Col.a = 255;
-	//Col.a = (rand() % 255) + 10;
+	Color Col = Color::Cyan;
+	//Col.a = 10;
+	Col.a = (rand() % 255) + 10;
 	DebugPrintF(DebugLog, L"Col - %i", Col.a);
 	sort(Intersections.begin(), Intersections.end(), [](Vector3f const& a, Vector3f const& b) { return a.z < b.z; });
 
@@ -196,7 +195,7 @@ void PlayState::Render()
 	Sprite Empty;
 	RenderStates RStates;
 	RStates.shader = &AmbientShader_;
-	RStates.blendMode = BlendAdd;
+	RStates.blendMode = BlendAlpha;
 
 	SceneRenderer_.clear(Color::Black);
 	SceneRenderer_.draw(*TiledMap_);
@@ -204,10 +203,10 @@ void PlayState::Render()
 	SceneRenderer_.display();
 
 	Sprite S(SceneRenderer_.getTexture());
+
 #pragma region LightRender
 	RenderStates LightRenderState;
 
-	AttenuationShader_.setUniform("texture", Shader::CurrentTexture);
 	float Radius = Circle_.getRadius();
 	Vector2f Pos = Vector2f(GetRenderTexture()->mapCoordsToPixel(Circle_.getPosition()));
 	Pos.y = LightMap_.getSize().y - Pos.y + Radius; //Fix for inverted texture pos
@@ -215,18 +214,25 @@ void PlayState::Render()
 	AttenuationShader_.setUniform("point", Pos);
 	AttenuationShader_.setUniform("lightIntensity", 100.f);
 
-	LightRenderState.blendMode = BlendAdd;
+	LightRenderState.blendMode = BlendAlpha;
 	LightRenderState.shader = &AttenuationShader_;
 	LightMap_.clear();
 	LightMap_.setView(GetRenderTexture()->getView());
 
 	for (Int32 i = 0; i < (Int32)VisibilityPolygons_.size(); ++i)
 	{
+#pragma region FragmentShaderAttenuation 
+		AttenuationShader_.setUniform("texture", LightMap_.getTexture());
 		Vector2f Pos = Vector2f(GetRenderTexture()->mapCoordsToPixel(VisibilityPolygons_[i][0].position));
 		Pos.y = LightMap_.getSize().y - Pos.y + Radius; //Fix for inverted texture pos
 		AttenuationShader_.setUniform("point", Pos);
+#pragma endregion Fragment Shader Attenuation 
 
+#pragma region VertexShaderAttenuation
+		//AttenuationShader_.setUniform("point", VisibilityPolygons_[i][0].position);
+#pragma endregion Vertex Shader Attenuation
 		LightMap_.draw(VisibilityPolygons_[i], LightRenderState);
+
 	}
 	LightMap_.display();
 
@@ -234,6 +240,7 @@ void PlayState::Render()
 	AmbientShader_.setUniform("lightMapTexture", LightMap_.getTexture());
 	AmbientShader_.setUniform("resolution", Glsl::Vec2(GetRenderTexture()->getSize()));
 #pragma endregion Light Render
+
 	GetRenderTexture()->draw(S, RStates);//, RStates);
 
 	/*
@@ -279,18 +286,45 @@ void PlayState::HandleEvents(sf::Event& Evnt, float Delta)
 		{
 			sf::Vector2i MousePos = Mouse::getPosition(*GetRenderWindow());
 			sf::Vector2f WorldMousePos = GetRenderTexture()->mapPixelToCoords(MousePos);
-			//DrawVisibilityPolygon(WorldMousePos);
+
 #pragma region VisibilityAsync
 			/*auto AsyncVisibilityCreate =
 				std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos);*/
 			sf::Clock C;
 			C.restart();
+
+			const float Offset = 5.f;
+
+			std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos);
+			std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos + Vector2f(Offset, 0));
+			std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos + Vector2f(Offset, Offset));
+			std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos + Vector2f(0.f, Offset));
+			std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos + Vector2f(Offset, -Offset));
+			std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos + Vector2f(-Offset, 0));
+			std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos + Vector2f(-Offset, Offset));
+			std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos + Vector2f(-Offset, -Offset));
+			std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos + Vector2f(0.f, -Offset));
+
+
+			/*
 			DrawVisibilityPolygon(WorldMousePos);
+			DrawVisibilityPolygon(WorldMousePos + Vector2f(Offset, 0));
+			DrawVisibilityPolygon(WorldMousePos + Vector2f(Offset, Offset));
+			DrawVisibilityPolygon(WorldMousePos + Vector2f(0.f, Offset));
+			DrawVisibilityPolygon(WorldMousePos + Vector2f(Offset, -Offset));
+
+			DrawVisibilityPolygon(WorldMousePos + Vector2f(-Offset, 0));
+			DrawVisibilityPolygon(WorldMousePos + Vector2f(-Offset, Offset));
+			DrawVisibilityPolygon(WorldMousePos + Vector2f(-Offset, -Offset));
+			DrawVisibilityPolygon(WorldMousePos + Vector2f(0.f, -Offset));
+			*/
+
 			Time T = C.getElapsedTime();
 			float Seconds = T.asSeconds();
 			Int32 Milliseconds = T.asMilliseconds();
 			Int64 Microseconds = T.asMicroseconds();
 			DebugPrintF(DebugLog, L"Time taken to execute: %f Seconds \n%i Milliseconds \n%li Microseconds", Seconds, Milliseconds, Microseconds);
+
 #pragma endregion VisibilityAsync
 		}
 
@@ -302,6 +336,7 @@ void PlayState::CalculateUniquePoints()
 	auto& Colliders = World_->GetTileMeshCollidersBlocked();
 
 	std::vector<Vector2f> Points;
+
 	for (int i{ 0 }; i < (Int32)Colliders.size(); ++i)
 	{
 		for (int j{ 0 }; j < Colliders[i].MCollider.GetPointCount(); ++j)
@@ -337,4 +372,3 @@ std::vector<float> PlayState::CalculateUniqueAngles(const Vector2f origin)
 
 	return UniqueAngles;
 }
-
