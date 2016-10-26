@@ -8,15 +8,15 @@ float lightIntensity;
 float calculateAttenuation() 
 { 
     //TODO: move values to C++ and store in header to allow changes
-    float constAtten = 0.0f; 
-    float linearAtten = 0.2f; 
-    float quadraticAtten = 0.002f;
+    float constAtten = 0.0; 
+    float linearAtten = 0.0; 
+    float quadraticAtten = 0.002;
     
     float distance = length(gl_FragCoord.xy - point);
     float distanceSquared = distance * distance;
- 
+    float attenVal = 200.0;
     // return clamp(1.f / (constAtten + (linearAtten * distance) + (quadraticAtten * distanceSquared)), 0.0f, 1.0f);
-    return clamp ((1.f / (distance + distanceSquared)) * attenVal , 0.0, 1.f);
+    return clamp ((1.0 / (distance + distanceSquared)) * attenVal , 0.0, 1.0);
 }
 
 void main(void)
@@ -26,7 +26,6 @@ void main(void)
     
     col.xyz += pixel.xyz;
     col.w *= calculateAttenuation();
-    col.w + pixel.w;
     
     gl_FragColor = col;
 }

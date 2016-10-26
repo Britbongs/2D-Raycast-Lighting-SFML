@@ -54,7 +54,11 @@ bool PlayState::Initialise()
 	LightMap_.create(GetRenderTexture()->getSize().x, GetRenderTexture()->getSize().y);
 	LightMap_.setSmooth(true);
 	LoadShaders();
-	return false;
+	if (!Shader::isAvailable())
+	{
+		DebugPrintF(DebugLog, L"ERORR! Shaders aren't available");
+	}
+	return true;
 }
 
 void PlayState::Deinitialise()
@@ -231,7 +235,7 @@ void PlayState::Render()
 #pragma region VertexShaderAttenuation
 		//AttenuationShader_.setUniform("point", VisibilityPolygons_[i][0].position);
 #pragma endregion Vertex Shader Attenuation
-		LightMap_.draw(VisibilityPolygons_[i], LightRenderState);
+	LightMap_.draw(VisibilityPolygons_[i], LightRenderState);
 
 	}
 	LightMap_.display();
