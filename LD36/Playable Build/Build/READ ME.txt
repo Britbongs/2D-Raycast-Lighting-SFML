@@ -1,6 +1,0 @@
-Instructions: 
-
-Left mouse : Place light
-C : clear all lights
-X : export lightmap to png (will save to same folder as .exe)
-R : reload shader
