@@ -21,6 +21,7 @@ struct CollisionData
 	ObjectType ObjType = ObjectType::eEmpty;
 };
 
+//SAT collider for tile 
 struct TileCollisionData
 {
 	TileCollisionData(MeshCollider MeshColl, bool IsBlocked)
@@ -45,7 +46,10 @@ public:
 	bool IsInsideView(const FloatRect& AABB) const;
 
 	std::vector<TileCollisionData>* GetTileMeshColliders() { return &TileMeshColliders_; }
+
 	std::vector<TileCollisionData>& GetTileMeshCollidersBlocked() { return TileMeshCollidersBlocked_; }
+	
+	std::vector<Vector2f>& GetUniqueTiledMapPoints() { return UniqueTiledMapPoints_; }
 
 private:
 
@@ -57,12 +61,13 @@ private:
 		float Min = 0.f;
 	};
 
-	//TODO Implement sat collision here
 	void MeshCollisionCheck(const GameObject& SATColider);
 
 	Projection GetProjection(const MeshCollider& Collider, const Vector2f& EdgeNormal) const;
 
 	void AABBCollisionCheck(const GameObject& Object);
+	
+	void CalculateUniqueTilemapPoints();
 
 	std::vector<GameObject*> CollidersToCheck_;
 
@@ -70,6 +75,8 @@ private:
 	std::vector<TileCollisionData> TileMeshCollidersBlocked_;
 
 	std::vector<GameObject*>& Objects_;
+
+	std::vector<Vector2f> UniqueTiledMapPoints_;
 
 	RenderTexture* RTexture_;
 };

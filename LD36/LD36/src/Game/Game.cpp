@@ -87,7 +87,7 @@ void Game::CleanUpGame()
 
 bool Game::InitialiseWindow()
 {
-	//Initialise RenderWindow
+	//Initialise RenderWindow 
 	ContextSettings Settings; 
 	Settings.antialiasingLevel = 4;
 

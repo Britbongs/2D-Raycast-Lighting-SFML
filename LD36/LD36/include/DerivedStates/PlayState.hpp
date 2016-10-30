@@ -5,7 +5,7 @@
 #include "TiledMap\TiledMap.hpp"
 #include "Projectile\ProjectileManager.hpp"	
 #include "Player\PlayerController.hpp"
-#include "Raycast\Raycast.hpp"
+#include "Ray\Ray.hpp"
 #include "World\World.hpp"
 #include "TMXLoader\TMXLoader.hpp"
 
@@ -44,7 +44,7 @@ private:
 	std::vector<GameObject*> GameObjects_;
 
 	sf::CircleShape Circle_;
-	Raycast RayTest_;
+
 	std::vector<Vector2f> UniquePoints_;
 	std::vector<VertexArray> VisibilityPolygons_;
 	std::vector<RenderStates> LightShaders_;

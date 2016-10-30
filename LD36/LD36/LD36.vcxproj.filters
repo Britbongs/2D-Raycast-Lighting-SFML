@@ -87,7 +87,10 @@
     <ClInclude Include="include\stdafx.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Raycast\Raycast.hpp">
+    <ClInclude Include="include\Ray\Ray.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Light\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -137,7 +140,10 @@
     <ClCompile Include="LD36.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Raycast\Raycast.cpp">
+    <ClCompile Include="src\Ray\Ray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Light\Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

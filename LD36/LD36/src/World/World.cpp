@@ -21,7 +21,8 @@ void World::SetupTileMeshColliders(const TiledMap* InTileMap)
 	std::vector<Vector2f> TempVertArray;
 	TempVertArray.resize(4);
 
-	cout << endl << endl ;
+	cout << endl << endl;
+
 	for (Int32 i{ 0 }; i < Size.x; ++i)
 	{
 		for (Int32 j{ 0 }; j < Size.y; ++j)
@@ -51,12 +52,15 @@ void World::SetupTileMeshColliders(const TiledMap* InTileMap)
 			TileMeshColliders_.push_back(Data);
 
 			if (Data.bIsBlockedTile)
+			{
 				TileMeshCollidersBlocked_.push_back(Data);
+			}
+
 			cout << InTileMap->GetCollideableAtIndex(Index);
 		}
 		cout << endl;
 	}
-	DebugPrintF(DebugLog, L"Hello World");
+	CalculateUniqueTilemapPoints();
 }
 
 CollisionData World::CheckCollision(const GameObject& Object)
@@ -170,6 +174,31 @@ void World::AABBCollisionCheck(const GameObject& Object)
 	}
 }
 
+void World::CalculateUniqueTilemapPoints()
+{
+	std::vector<TileCollisionData> Colliders = GetTileMeshCollidersBlocked();
+
+	std::vector<Vector2f> Points;
+
+	for (int i{ 0 }; i < (Int32)Colliders.size(); ++i)
+	{
+		for (int j{ 0 }; j < Colliders[i].MCollider.GetPointCount(); ++j)
+		{
+			Points.push_back(Colliders[i].MCollider.GetTransformedPoint(j));
+		}
+	}
+
+	for (int i{ 0 }; i < (Int32)Points.size(); ++i)
+	{
+		if (find(UniqueTiledMapPoints_.begin(), UniqueTiledMapPoints_.end(), Points[i]) != UniqueTiledMapPoints_.end())
+		{
+			continue;
+		}
+
+		UniqueTiledMapPoints_.push_back(Points[i]);
+	}
+}
+
 bool World::IsInsideView(const FloatRect& AABB) const
 {
 	View V = RTexture_->getView();
@@ -182,4 +211,3 @@ bool World::IsInsideView(const FloatRect& AABB) const
 
 	return Collider.contains(AABB.left, AABB.top);
 }
-
