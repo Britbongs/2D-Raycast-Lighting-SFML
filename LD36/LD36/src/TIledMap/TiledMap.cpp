@@ -99,6 +99,7 @@ void TiledMap::SetupVetices(const TMXLoader& Loader)
 	Dimensions_ = Size;
 	Map_.resize(Size.x * Size.y * 4);
 	CollisionMap_.resize(Size.x * Size.y);
+
 	for (Int32 i = 0; i < (signed)Size.x; ++i)
 	{
 		for (Int32 j = 0; j < (signed)Size.y; ++j)
@@ -110,13 +111,24 @@ void TiledMap::SetupVetices(const TMXLoader& Loader)
 			Tile[2].position = Vector2f((float)(i + 1) * TileSize_, (float)(j + 1) * TileSize_);
 			Tile[3].position = Vector2f((float)i * TileSize_, (float)(j + 1)*TileSize_);
 			Int32 Index = i + j * Size.x;
-	
+
 			if (Texture_ == nullptr)
 			{
 				continue;
 			}
-			Int32 TilesetID = 0;
+			
+			Int32 tilesetID = 0;
 			Int32 TileID = Loader.GetLayer()[0]->Data[j][i] - Loader.GetTileSet()[0]->FirstGID_;
+
+			if (Loader.GetTileSet()[0]->GetTilePropertyName(TileID) == "blocked" && Loader.GetTileSet()[0]->GetTilePropertyValue(TileID) == "true")
+			{
+				CollisionMap_[Index] = 1;
+			}
+			else
+			{
+				CollisionMap_[Index] = 0;
+			}
+
 
 			Vector2i texturePos(TileID % (Texture_->getSize().x / TileSize_), TileID / (Texture_->getSize().x / TileSize_));
 

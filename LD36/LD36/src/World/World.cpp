@@ -21,7 +21,6 @@ void World::SetupTileMeshColliders(const TiledMap* InTileMap)
 	std::vector<Vector2f> TempVertArray;
 	TempVertArray.resize(4);
 
-
 	for (Int32 i{ 0 }; i < MapDimension_.x; ++i)
 	{
 		for (Int32 j{ 0 }; j < MapDimension_.y; ++j)
@@ -49,10 +48,16 @@ void World::SetupTileMeshColliders(const TiledMap* InTileMap)
 			//Create the collider and push it into the vector
 			TileCollisionData Data(MeshCollider(TempVertArray), InTileMap->GetCollideableAtIndex(Index));
 			TileMeshColliders_.push_back(Data);
+
+			if (Data.bIsBlockedTile)
+			{
+				TileMeshCollidersBlocked_.push_back(Data);
+			}
+
 		}
 	}
 	DebugPrintF(DebugLog, L"Tiled Map Collision Data Memory Footprint: %d Bytes", sizeof(TileCollisionData) * TileMeshColliders_.size());
-
+	CalculateUniqueTilemapPoints();
 }
 
 bool World::DoMeshCollidersIntersect(const MeshCollider& MeshA, const MeshCollider& MeshB) const
@@ -150,7 +155,7 @@ WorldIntersectionData World::CheckWorldIntersection(GameObject & Object, Vector2
 		}
 	}
 
-	DebugPrintF(DebugLog, L"Number of found intersected tiles: %d", AABBIntersectedTileColliders_.size());
+	//DebugPrintF(DebugLog, L"Number of found intersected tiles: %d", AABBIntersectedTileColliders_.size());
 
 	Int32 RealIntersectCount = 0;
 
@@ -162,7 +167,7 @@ WorldIntersectionData World::CheckWorldIntersection(GameObject & Object, Vector2
 		}
 	}
 
-	DebugPrintF(DebugLog, L"Number of real intersections: %d", RealIntersectCount);
+	//DebugPrintF(DebugLog, L"Number of real intersections: %d", RealIntersectCount);
 
 	return IntersectData;
 }
@@ -280,6 +285,31 @@ Int32 World::GetSearchTileIndex(TileSearchDirections Direction, Vector2i GridLoc
 
 	}
 	return Index;
+}
+
+void World::CalculateUniqueTilemapPoints()
+{
+	std::vector<TileCollisionData> Colliders = GetTileMeshCollidersBlocked();
+
+	std::vector<Vector2f> Points;
+
+	for (int i{ 0 }; i < (Int32)Colliders.size(); ++i)
+	{
+		for (int j{ 0 }; j < Colliders[i].MCollider.GetPointCount(); ++j)
+		{
+			Points.push_back(Colliders[i].MCollider.GetTransformedPoint(j));
+		}
+	}
+
+	for (int i{ 0 }; i < (Int32)Points.size(); ++i)
+	{
+		if (find(UniqueTiledMapPoints_.begin(), UniqueTiledMapPoints_.end(), Points[i]) != UniqueTiledMapPoints_.end())
+		{
+			continue;
+		}
+
+		UniqueTiledMapPoints_.push_back(Points[i]);
+	}
 }
 
 bool World::IsInsideView(const FloatRect& AABB) const

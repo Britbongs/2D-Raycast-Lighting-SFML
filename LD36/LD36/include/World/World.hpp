@@ -11,6 +11,16 @@ struct WorldIntersectionData
 	Vector2f CollisionResponse;
 };
 
+//SAT collider for tile 
+struct TileCollisionData
+{
+	TileCollisionData(MeshCollider MeshColl, bool IsBlocked)
+		: MCollider(MeshColl), bIsBlockedTile(IsBlocked)
+	{}
+	MeshCollider MCollider;
+	bool bIsBlockedTile;
+};
+
 class World
 {
 public:
@@ -25,20 +35,15 @@ public:
 
 	bool IsInsideView(const FloatRect& AABB) const;
 
+	std::vector<TileCollisionData>* GetTileMeshColliders() { return &TileMeshColliders_; }
+
+	std::vector<TileCollisionData>& GetTileMeshCollidersBlocked() { return TileMeshCollidersBlocked_; }
+	
+	std::vector<Vector2f>& GetUniqueTiledMapPoints() { return UniqueTiledMapPoints_; }
+
 private:
 
 	using AABB = FloatRect;
-
-	struct TileCollisionData
-	{
-		//Mesh collider of the tile (can be queried for collision normals & for ray cast line segment data)
-		TileCollisionData(MeshCollider MeshColl, bool IsBlocked)
-			: MCollider(MeshColl), bIsBlockedTile(IsBlocked)
-		{}
-		MeshCollider MCollider;
-		bool bIsBlockedTile = false;
-	};
-
 
 	struct Projection
 	{// Line Projection for Separating Axis Theorem 
@@ -51,12 +56,17 @@ private:
 	Projection GetProjection(const MeshCollider& Collider, const Vector2f& EdgeNormal) const;
 
 	bool AABBCollisionCheck(const sf::FloatRect& RectA, const sf::FloatRect& RectB) const;
+	
+	void CalculateUniqueTilemapPoints();
 
 	std::vector<const MeshCollider*> AABBIntersectedTileColliders_; // List of mesh colliders from tiles which the player may be intersecting with (via AABB test) 
 
 	std::vector<TileCollisionData> TileMeshColliders_;
+	std::vector<TileCollisionData> TileMeshCollidersBlocked_;
 
 	std::vector<GameObject*>& Objects_;
+
+	std::vector<Vector2f> UniqueTiledMapPoints_;
 
 	RenderTexture* RTexture_;
 

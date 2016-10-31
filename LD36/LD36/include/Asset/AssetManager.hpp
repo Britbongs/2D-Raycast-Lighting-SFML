@@ -1,18 +1,13 @@
 #pragma once
 
 #include <unordered_map>
-
+/*
+	TODO Convert vector of textures to map
+*/
 class AssetManager
 {
 public:
-	~AssetManager()
-	{
-		for (auto & D : Textures_)
-		{
-			delete D.second;
-			D.second = nullptr;
-		}
-	}
+	~AssetManager();
 
 	static AssetManager* GetInstance()
 	{
@@ -20,25 +15,22 @@ public:
 		return Instance;
 	}
 
-	sf::Font* GetDefaultFont();
+	Font* GetDefaultFont();
 
-	sf::Texture* LoadTexture(const sf::String& FilePath);
+	Texture* LoadTexture(const String& FilePath);
+
+	Shader* LoadShader(const String& VertFilepath, const String& FragFilepath);
 
 private:
 
-	struct TextureData
-	{
-		std::wstring Filepath = L"";
-		Texture* Texture = nullptr;
-	};
-
 	AssetManager();
 
-	sf::Texture* AlreadyHaveTexture(const std::wstring& FilePath);
+	Texture* AlreadyHaveTexture(const std::wstring& FilePath);
 
-	//std::vector<TextureData> Textures_;
-	std::unordered_map<std::wstring, Texture*>Textures_;
+	std::map<std::wstring, Texture*>Textures_;
+	std::map<std::pair<String, String>, Shader*> Shaders_;
 
-	sf::Font DefaultFont_;
+	Font DefaultFont_;
+
 	bool HasFontBeenLoaded = false;
 };

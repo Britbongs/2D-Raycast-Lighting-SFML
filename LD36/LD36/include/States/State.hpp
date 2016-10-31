@@ -15,12 +15,12 @@ public:
 	virtual ~State();
 
 	virtual bool Initialise() = 0;
-	
+
 	virtual void Deinitialise() = 0;
 
 	virtual void Update(float Delta) = 0;
 
-	virtual void Render() const = 0;
+	virtual void Render() = 0;
 
 	virtual void PostRender() const = 0;
 
