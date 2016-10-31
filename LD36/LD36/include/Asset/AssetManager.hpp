@@ -1,16 +1,11 @@
 #pragma once
-
+/*
+	TODO Convert vector of textures to map
+*/
 class AssetManager
 {
 public:
-	~AssetManager()
-	{
-		for (TextureData& D : Textures_)
-		{
-			delete D.Texture;
-			D.Texture = nullptr;
-		}
-	}
+	~AssetManager();
 
 	static AssetManager* GetInstance()
 	{
@@ -18,24 +13,30 @@ public:
 		return Instance;
 	}
 
-	sf::Font* GetDefaultFont();
+	Font* GetDefaultFont();
 
-	sf::Texture* LoadTexture(const sf::String& FilePath);
+	Texture* LoadTexture(const String& FilePath);
+
+	Shader* LoadShader(const String& VertFilepath, const String& FragFilepath);
 
 private:
 
 	struct TextureData
 	{
-		sf::String Filepath = "";
-		sf::Texture* Texture = nullptr;
+		String Filepath = "";
+		Texture* Texture = nullptr;
 	};
 
 	AssetManager();
 
-	sf::Texture* AlreadyHaveTexture(const sf::String& FilePath);
+	Texture* AlreadyHaveTexture(const sf::String& FilePath);
 
 	std::vector<TextureData> Textures_;
 
-	sf::Font DefaultFont_;
+	std::map<std::pair<String, String>, Shader*> Shaders_;
+	//std::map<String, Texture*> TexturesMap_;
+
+	Font DefaultFont_;
+
 	bool HasFontBeenLoaded = false;
 };

@@ -8,7 +8,7 @@
 		for each light
 */
 
-class Light : public Drawable, public Transformable
+class Light
 {
 
 public:
@@ -23,19 +23,22 @@ public:
 
 	bool IsOn() const { return IsLightOn_; }
 
-private:
+	Vector2f GetLightPosition() const { Position_; }
 
-	virtual void draw(RenderTarget& RTarget, RenderStates RStates);
+	void draw(RenderTarget& RTarget, RenderStates RStates) const;
+
+private:
 
 	void CreateVisibilityPolygon(Vector2f Origin);
 
 	void CalculateUniqueAngles(Vector2f Origin);
 
 	std::vector<VertexArray> VisibilityPolygons_;
-	std::vector<float> UniqueAngles_; 
+	std::vector<float> UniqueAngles_;
 
 	World* World_ = nullptr;
-	Vector2f Position_;
+
+	Vector2f Position_ = Vector2f(0.f,0.f);
 
 	bool IsLightOn_ = true;
 };

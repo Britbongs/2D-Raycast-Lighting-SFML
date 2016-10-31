@@ -238,6 +238,7 @@ void PlayState::Render()
 	LightMap_.draw(VisibilityPolygons_[i], LightRenderState);
 
 	}
+
 	LightMap_.display();
 
 	AmbientShader_.setUniform("ambientColour", Glsl::Vec4(0.27f, 0.15f, 0.3f, 0.6f));
@@ -292,12 +293,10 @@ void PlayState::HandleEvents(sf::Event& Evnt, float Delta)
 			sf::Vector2f WorldMousePos = GetRenderTexture()->mapPixelToCoords(MousePos);
 
 #pragma region VisibilityAsync
-			/*auto AsyncVisibilityCreate =
-				std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos);*/
 			sf::Clock C;
 			C.restart();
-
-			const float Offset = 5.f;
+			TempLights_.push_back(Light(WorldMousePos, World_));
+			/*const float Offset = 5.f;
 
 			std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos);
 			std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos + Vector2f(Offset, 0));
@@ -307,8 +306,7 @@ void PlayState::HandleEvents(sf::Event& Evnt, float Delta)
 			std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos + Vector2f(-Offset, 0));
 			std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos + Vector2f(-Offset, Offset));
 			std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos + Vector2f(-Offset, -Offset));
-			std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos + Vector2f(0.f, -Offset));
-
+			std::async(std::launch::async, &PlayState::DrawVisibilityPolygon, this, WorldMousePos + Vector2f(0.f, -Offset));*/
 
 			/*
 			DrawVisibilityPolygon(WorldMousePos);

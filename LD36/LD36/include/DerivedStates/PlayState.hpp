@@ -8,6 +8,7 @@
 #include "Ray\Ray.hpp"
 #include "World\World.hpp"
 #include "TMXLoader\TMXLoader.hpp"
+#include "Light\Light.h"
 
 class PlayState : public State
 
@@ -48,6 +49,7 @@ private:
 	std::vector<Vector2f> UniquePoints_;
 	std::vector<VertexArray> VisibilityPolygons_;
 	std::vector<RenderStates> LightShaders_;
+	std::vector<Light> TempLights_;
 
 	AssetManager* AssetMgr_ = nullptr;
 	ProjectileManager* ProjectileMgr_ = nullptr;

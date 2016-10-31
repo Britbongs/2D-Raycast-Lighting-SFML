@@ -2,6 +2,25 @@
 #include "Asset\AssetManager.hpp"
 
 
+AssetManager::~AssetManager()
+{
+	for (TextureData& D : Textures_)
+	{
+		delete D.Texture;
+		D.Texture = nullptr;
+	}
+
+	Textures_.clear();
+
+	for (auto& ShaderMapPair : Shaders_)
+	{
+		delete ShaderMapPair.second;
+		ShaderMapPair.second = nullptr;
+	}
+
+	Shaders_.clear();
+}
+
 sf::Font* AssetManager::GetDefaultFont()
 {
 	if (!HasFontBeenLoaded)
@@ -38,6 +57,27 @@ sf::Texture * AssetManager::LoadTexture(const sf::String & FilePath)
 	}
 	Textures_.push_back(Data);
 	return Textures_.back().Texture;
+}
+
+Shader* AssetManager::LoadShader(const String& VertFilepath, const String& FragFilepath)
+{
+	std::pair<String, String> Key(FragFilepath, VertFilepath);
+	//If no shader exists in the map with the two file paths passed 
+	if (Shaders_.find(Key) == Shaders_.end())
+	{
+		Shaders_.emplace(Key, new Shader());
+
+		if (!Shaders_[Key]->loadFromFile(Key.first, Key.second))
+		{ //Failed to load the shader, free the memory and return a nullptr 
+			delete Shaders_[Key];
+			Shaders_[Key] = nullptr;
+			Shaders_.erase(Key);
+			DebugPrintF(ErrorLog, L"Failed to load shader: Vert =  %s : Frag = %s!", VertFilepath.toWideString(), FragFilepath.toWideString());
+			return nullptr;
+		}
+	}
+
+	return Shaders_[Key];
 }
 
 AssetManager::AssetManager()

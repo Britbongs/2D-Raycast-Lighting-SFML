@@ -1,6 +1,7 @@
 #include "stdafx.hpp"
 #include "Light\Light.h"
 #include <future>
+
 Light::Light(Vector2f Pos, World* pWorld)
 	: Position_(Pos), World_(pWorld)
 {
@@ -20,7 +21,7 @@ Light::~Light()
 {
 }
 
-void Light::draw(RenderTarget & RTarget, RenderStates RStates)
+void Light::draw(RenderTarget & RTarget, RenderStates RStates) const
 {
 	if (!IsLightOn_)
 	{
