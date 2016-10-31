@@ -26,6 +26,8 @@ private:
 
 	void Update(float Delta);
 
+	void FixedUpdate();
+
 	void HandleEvents(sf::Event& Evnt, float Delta);
 
 	void Render(float Delta);

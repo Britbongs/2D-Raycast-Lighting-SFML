@@ -2,6 +2,7 @@ Debug/
 Release/
 Playable Build/
 LD36/LD36.VC.VC.opendb
+LD36/ipch/
 *.obj
 *.exe
 *.pch

@@ -206,10 +206,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Controller\Controller.h" />
     <ClInclude Include="include\GameObject\GameObject.h" />
     <ClInclude Include="include\Asset\AssetManager.hpp" />
     <ClInclude Include="include\GameVars.hpp" />
-    <ClInclude Include="include\Player\PlayerController.hpp" />
+    <ClInclude Include="include\PlayerController\PlayerController.hpp" />
     <ClInclude Include="include\RapidXML\rapidxml.hpp" />
     <ClInclude Include="include\RapidXML\rapidxml_iterators.hpp" />
     <ClInclude Include="include\RapidXML\rapidxml_print.hpp" />
@@ -234,12 +235,13 @@
     <ClInclude Include="include\Light\Light.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Controller\Controller.cpp" />
     <ClCompile Include="LD36.cpp" />
     <ClCompile Include="src\Light\Light.cpp" />
     <ClCompile Include="src\Ray\Ray.cpp" />
     <ClCompile Include="src\MeshCollider\MeshCollider.cpp" />
     <ClCompile Include="src\GameObject\GameObject.cpp" />
-    <ClCompile Include="src\Player\PlayerController.cpp" />
+    <ClCompile Include="src\PlayerController\PlayerController.cpp" />
     <ClCompile Include="src\Projectile\ProjectileManager.cpp" />
     <ClCompile Include="src\DerivedStates\MenuState.cpp" />
     <ClCompile Include="src\Asset\AssetManager.cpp" />

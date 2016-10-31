@@ -116,6 +116,7 @@ void TiledMap::SetupVetices(const TMXLoader& Loader)
 			{
 				continue;
 			}
+			
 			Int32 tilesetID = 0;
 			Int32 TileID = Loader.GetLayer()[0]->Data[j][i] - Loader.GetTileSet()[0]->FirstGID_;
 
@@ -128,12 +129,22 @@ void TiledMap::SetupVetices(const TMXLoader& Loader)
 				CollisionMap_[Index] = 0;
 			}
 
+
 			Vector2i texturePos(TileID % (Texture_->getSize().x / TileSize_), TileID / (Texture_->getSize().x / TileSize_));
 
 			Tile[0].texCoords = Vector2f((float)texturePos.x* TileSize_, (float)texturePos.y * TileSize_);
 			Tile[1].texCoords = Vector2f((float)(texturePos.x + 1) * TileSize_, (float)texturePos.y* TileSize_);
 			Tile[2].texCoords = Vector2f((float)(texturePos.x + 1) * TileSize_, (float)(texturePos.y + 1) * TileSize_);
 			Tile[3].texCoords = Vector2f((float)texturePos.x* TileSize_, (float)(texturePos.y + 1)*TileSize_);
+
+			if (Loader.GetTileSet()[0]->GetTilePropertyName(TileID) == "blocked" && Loader.GetTileSet()[0]->GetTilePropertyValue(TileID) == "true")
+			{
+				CollisionMap_[Index] = true;
+			}
+			else
+			{
+				CollisionMap_[Index] = false;
+			}
 
 		}
 	}

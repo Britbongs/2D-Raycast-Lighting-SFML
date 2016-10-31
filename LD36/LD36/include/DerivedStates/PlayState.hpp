@@ -4,7 +4,7 @@
 #include "Asset\AssetManager.hpp"
 #include "TiledMap\TiledMap.hpp"
 #include "Projectile\ProjectileManager.hpp"	
-#include "Player\PlayerController.hpp"
+#include "PlayerController\PlayerController.hpp"
 #include "Ray\Ray.hpp"
 #include "World\World.hpp"
 #include "TMXLoader\TMXLoader.hpp"

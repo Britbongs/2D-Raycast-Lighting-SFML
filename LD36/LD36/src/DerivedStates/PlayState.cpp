@@ -30,8 +30,16 @@ bool PlayState::Initialise()
 	//---
 
 	World_ = new World(GameObjects_, GetRenderTexture());
-
-	Loader_.LoadMap("res//test_map.tmx");
+	/* 
+	if (!Loader_.LoadMap("res//movement_test_map.tmx"))
+	{
+		return false;
+	}
+	*/
+	if (!Loader_.LoadMap("res//test_map.tmx"))
+	{
+		return false;
+	}
 
 	TiledMap_ = new TiledMap(64);
 
@@ -46,6 +54,13 @@ bool PlayState::Initialise()
 	}
 
 	TiledMap_->SetupVetices(Loader_);
+
+	World_->SetupTileMeshColliders(TiledMap_);
+	GameObjects_.push_back(new GameObject());
+	GameObjects_.back()->SetSize(Vector2f(64.f, 64.f));
+	Player_ = new PlayerController(World_);
+	Player_->SetGameObject(GameObjects_[0]);
+	Player_->Initialise();
 
 	World_->SetupTileMeshColliders(TiledMap_);
 	CalculateUniquePoints();
@@ -63,6 +78,7 @@ bool PlayState::Initialise()
 
 void PlayState::Deinitialise()
 {
+	Player_->Deinitialise();
 	if (ProjectileMgr_)
 	{
 		delete ProjectileMgr_;
@@ -93,6 +109,12 @@ void PlayState::Deinitialise()
 
 void PlayState::Update(float Delta)
 {
+	for (const auto& GO : GameObjects_)
+	{
+		GO->UpdateCollider();
+	}
+	Player_->Update(Delta);
+
 	sf::Vector2i MousePos = Mouse::getPosition(*GetRenderWindow());
 	sf::Vector2f WorldMousePos = GetRenderTexture()->mapPixelToCoords(MousePos);
 	Circle_.setPosition(WorldMousePos - Vector2f(Circle_.getRadius(), Circle_.getRadius()));
@@ -248,7 +270,7 @@ void PlayState::Render()
 
 	GetRenderTexture()->draw(S, RStates);//, RStates);
 
-	/*
+	
 	for (const auto& GO : GameObjects_)
 	{
 		if (GO->IsActive() == true)
@@ -256,7 +278,7 @@ void PlayState::Render()
 			GetRenderTexture()->draw(*GO);
 		}
 	}
-	*/
+	
 
 }
 

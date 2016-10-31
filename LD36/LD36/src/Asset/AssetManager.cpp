@@ -4,10 +4,10 @@
 
 AssetManager::~AssetManager()
 {
-	for (TextureData& D : Textures_)
+	for (auto& TexMapPair : Textures_)
 	{
-		delete D.Texture;
-		D.Texture = nullptr;
+		delete TexMapPair.second;
+		TexMapPair.second = nullptr;
 	}
 
 	Textures_.clear();
@@ -33,30 +33,19 @@ sf::Font* AssetManager::GetDefaultFont()
 
 sf::Texture * AssetManager::LoadTexture(const sf::String & FilePath)
 {
-	sf::Texture* Tex = AlreadyHaveTexture(FilePath);
-
-	if (Tex != nullptr)
+	if (Textures_.find(FilePath) == Textures_.end())
 	{
-		return Tex;
+		Textures_.emplace(FilePath, new Texture());
+		if (!Textures_[FilePath]->loadFromFile(FilePath))
+		{
+			delete Textures_[FilePath];
+			Textures_[FilePath] = nullptr;
+			Textures_.erase(FilePath);
+			DebugPrintF(ErrorLog, L"Failed to load texture at path: %s !", FilePath.toWideString());
+			return nullptr;
+		}
 	}
-
-	TextureData Data;
-	Data.Filepath = FilePath;
-	Data.Texture = new sf::Texture;
-	if (Data.Texture == nullptr)
-	{
-#if !PLAYABLE_BUILD
-		DebugPrintF(AssetLog, L"Failed to load texture at %s", FilePath.toWideString());
-#endif
-		return nullptr;
-	}
-	if (!Data.Texture->loadFromFile(FilePath))
-	{
-		DebugPrintF(AssetLog, L"Failed to load texture at %s", FilePath.toWideString());
-		return nullptr;
-	}
-	Textures_.push_back(Data);
-	return Textures_.back().Texture;
+	return Textures_[FilePath];
 }
 
 Shader* AssetManager::LoadShader(const String& VertFilepath, const String& FragFilepath)
@@ -84,14 +73,7 @@ AssetManager::AssetManager()
 {
 }
 
-sf::Texture* AssetManager::AlreadyHaveTexture(const sf::String & FilePath)
+sf::Texture* AssetManager::AlreadyHaveTexture(const std::wstring & FilePath)
 {
-	for (TextureData& Data : Textures_)
-	{
-		if (Data.Filepath == FilePath)
-		{
-			return Data.Texture;
-		}
-	}
-	return nullptr;
+	return Textures_[FilePath];
 }

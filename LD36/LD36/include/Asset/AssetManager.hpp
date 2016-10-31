@@ -1,4 +1,6 @@
 #pragma once
+
+#include <unordered_map>
 /*
 	TODO Convert vector of textures to map
 */
@@ -21,20 +23,12 @@ public:
 
 private:
 
-	struct TextureData
-	{
-		String Filepath = "";
-		Texture* Texture = nullptr;
-	};
-
 	AssetManager();
 
-	Texture* AlreadyHaveTexture(const sf::String& FilePath);
+	Texture* AlreadyHaveTexture(const std::wstring& FilePath);
 
-	std::vector<TextureData> Textures_;
-
+	std::map<std::wstring, Texture*>Textures_;
 	std::map<std::pair<String, String>, Shader*> Shaders_;
-	//std::map<String, Texture*> TexturesMap_;
 
 	Font DefaultFont_;
 
