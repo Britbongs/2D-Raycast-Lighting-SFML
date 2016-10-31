@@ -88,7 +88,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\PlayerController\PlayerController.hpp">
-    <ClInclude Include="include\Ray\Ray.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+      <ClInclude Include="include\Ray\Ray.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Light\Light.h">
@@ -142,6 +144,8 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\PlayerController\PlayerController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\Ray\Ray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
