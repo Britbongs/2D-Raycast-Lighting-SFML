@@ -28,7 +28,7 @@ void MeshCollider::UpdatMeshCollider(const Transform& ObjectTransform)
 
 Vector2f MeshCollider::GetNormal(Int32 Index) const
 {
-	if (Index > 0 && Index < (Int32)NormalList_.size())
+	if (Index >= 0 && Index < (Int32)NormalList_.size())
 	{
 		return NormalList_[Index];
 	}
@@ -37,7 +37,7 @@ Vector2f MeshCollider::GetNormal(Int32 Index) const
 
 Vector2f MeshCollider::GetTransformedPoint(Int32 Index) const
 {
-	if (Index > 0 && Index < (Int32)TransformedPoints_.size())
+	if (Index >= 0 && Index < (Int32)TransformedPoints_.size())
 	{
 		return TransformedPoints_[Index];
 	}
@@ -82,6 +82,7 @@ void MeshCollider::InitialisePoints(const std::vector<Vector2f>&  VertArray)
 	}
 
 	NormalList_.resize(TransformedPoints_.size());
+	UpdateNormals();
 }
 
 void MeshCollider::UpdateTransformedPoints(const Transform & ObjectTransform)

@@ -16,7 +16,7 @@ public:
 
 	virtual void Update(float Delta) override;
 
-	virtual void Render() const override;
+	virtual void Render() override;
 
 	virtual void PostRender() const override;
 

@@ -27,20 +27,16 @@ bool Game::InitGame()
 	{
 		return false;
 	}
+	InitRand(); 
 
 	FPSText_.setFont(*AM->GetDefaultFont());
 	FPSText_.setCharacterSize(12u);
-	FPSText_.setColor(sf::Color::Yellow);
+
+	FPSText_.setFillColor(Color::Yellow);
 	FPSText_.setString(L"FPS:  ");
 	FPSText_.setPosition(WindowDimensions.x - (FPSText_.getGlobalBounds().width * 2.f), 10);
 
-	auto b = std::async(std::launch::async, &Game::InitialiseStates, this);
-	
-	if (!b.get())
-	{
-		return false;
-	}
-
+	InitialiseStates();
 	return true;
 }
 
@@ -82,7 +78,10 @@ void Game::CleanUpGame()
 
 bool Game::InitialiseWindow()
 {
-	//Initialise RenderWindow
+	//Initialise RenderWindow 
+	ContextSettings Settings; 
+	Settings.antialiasingLevel = 4;
+
 	RWindow_.create(sf::VideoMode(WindowDimensions.x, WindowDimensions.y), GameWindowTitle_, sf::Style::Close);
 
 	//Initialise RenderTexture
@@ -91,7 +90,7 @@ bool Game::InitialiseWindow()
 		return false;
 	}
 
-	RWindow_.setFramerateLimit(60);
+	RWindow_.setFramerateLimit(80);
 	return true;
 }
 
@@ -112,6 +111,10 @@ void Game::Update(float Delta)
 
 	StateManager_.ActiveStateUpdate(Delta);
 
+}
+
+void Game::FixedUpdate()
+{
 }
 
 void Game::HandleEvents(sf::Event & Evnt, float Delta)
@@ -155,17 +158,16 @@ void Game::Render(float Delta)
 void Game::UpdateFPSCounter(float Delta)
 {
 	const float Elapsed(ElapsedClock.getElapsedTime().asSeconds());
+	
 	if (First_)
 	{
 		Frames_ = 0;
 		FPS_ = 1.f / Delta;
 		StartTime_ = Elapsed;
 		First_ = false;
-
 	}
 
 	++Frames_;
-
 
 	if (Elapsed - StartTime_ > 0.25f && Frames_ > 10)
 	{

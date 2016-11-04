@@ -99,6 +99,7 @@ void TiledMap::SetupVetices(const TMXLoader& Loader)
 	Dimensions_ = Size;
 	Map_.resize(Size.x * Size.y * 4);
 	CollisionMap_.resize(Size.x * Size.y);
+
 	for (Int32 i = 0; i < (signed)Size.x; ++i)
 	{
 		for (Int32 j = 0; j < (signed)Size.y; ++j)
@@ -111,7 +112,15 @@ void TiledMap::SetupVetices(const TMXLoader& Loader)
 			Tile[3].position = Vector2f((float)i * TileSize_, (float)(j + 1)*TileSize_);
 			Int32 Index = i + j * Size.x;
 
-			if (i == 0 || j == 0 || i == Dimensions_.x - 1 || j == Dimensions_.y - 1)
+			if (Texture_ == nullptr)
+			{
+				continue;
+			}
+			
+			Int32 tilesetID = 0;
+			Int32 TileID = Loader.GetLayer()[0]->Data[j][i] - Loader.GetTileSet()[0]->FirstGID_;
+
+			if (Loader.GetTileSet()[0]->GetTilePropertyName(TileID) == "blocked" && Loader.GetTileSet()[0]->GetTilePropertyValue(TileID) == "true")
 			{
 				CollisionMap_[Index] = 1;
 			}
@@ -120,19 +129,22 @@ void TiledMap::SetupVetices(const TMXLoader& Loader)
 				CollisionMap_[Index] = 0;
 			}
 
-			if (Texture_ == nullptr)
-			{
-				continue;
-			}
-			Int32 tilesetID = 0;
-			Int32 tileID = Loader.GetLayer()[0]->Data[j][i] - Loader.GetTileSet()[0]->FirstGID_;
 
-			Vector2i texturePos(tileID % (Texture_->getSize().x / TileSize_), tileID / (Texture_->getSize().x / TileSize_));
+			Vector2i texturePos(TileID % (Texture_->getSize().x / TileSize_), TileID / (Texture_->getSize().x / TileSize_));
 
 			Tile[0].texCoords = Vector2f((float)texturePos.x* TileSize_, (float)texturePos.y * TileSize_);
 			Tile[1].texCoords = Vector2f((float)(texturePos.x + 1) * TileSize_, (float)texturePos.y* TileSize_);
 			Tile[2].texCoords = Vector2f((float)(texturePos.x + 1) * TileSize_, (float)(texturePos.y + 1) * TileSize_);
 			Tile[3].texCoords = Vector2f((float)texturePos.x* TileSize_, (float)(texturePos.y + 1)*TileSize_);
+
+			if (Loader.GetTileSet()[0]->GetTilePropertyName(TileID) == "blocked" && Loader.GetTileSet()[0]->GetTilePropertyValue(TileID) == "true")
+			{
+				CollisionMap_[Index] = true;
+			}
+			else
+			{
+				CollisionMap_[Index] = false;
+			}
 
 		}
 	}

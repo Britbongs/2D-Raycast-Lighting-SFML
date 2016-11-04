@@ -26,7 +26,7 @@ void MenuState::Update(float Delta)
 {
 }
 
-void MenuState::Render() const
+void MenuState::Render()
 {
 }
 

@@ -5,7 +5,6 @@
 
 //PROJECTILE CTOR
 Projectile::Projectile()
-	:GameObject(ObjectType::eProjectile)
 {
 
 }

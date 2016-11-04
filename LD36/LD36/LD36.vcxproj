@@ -108,13 +108,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>SFML_STATIC;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\SFML-2.3.2\include;$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\SFML-2.4.0\include;$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\SFML-2.3.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\SFML-2.4.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;sfml-audio-s-d.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -141,7 +141,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>SFML_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\SFML-2.3.2\include;$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\SFML-2.4.0\include;$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -149,7 +149,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\SFML-2.3.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\SFML-2.4.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-system-s.lib;sfml-audio-s.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -174,7 +174,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Playable Build|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\SFML-2.3.2\include;$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\SFML-2.4.0\include;$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <PreprocessorDefinitions>SFML_STATIC;WIN32;PLAYABLE_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -188,7 +188,7 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <Link>
-      <AdditionalLibraryDirectories>C:\SFML-2.3.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\SFML-2.4.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-system-s.lib;sfml-audio-s.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <OptimizeReferences>true</OptimizeReferences>
@@ -206,10 +206,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Controller\Controller.h" />
     <ClInclude Include="include\GameObject\GameObject.h" />
     <ClInclude Include="include\Asset\AssetManager.hpp" />
     <ClInclude Include="include\GameVars.hpp" />
-    <ClInclude Include="include\Player\PlayerController.hpp" />
+    <ClInclude Include="include\PlayerController\PlayerController.hpp" />
     <ClInclude Include="include\RapidXML\rapidxml.hpp" />
     <ClInclude Include="include\RapidXML\rapidxml_iterators.hpp" />
     <ClInclude Include="include\RapidXML\rapidxml_print.hpp" />
@@ -230,12 +231,19 @@
     <ClInclude Include="include\World\World.hpp" />
     <ClInclude Include="include\MeshCollider\MeshCollider.h" />
     <ClInclude Include="include\TMXLoader\TMXLoader.hpp" />
+    <ClInclude Include="include\Ray\Ray.hpp" />
+    <ClInclude Include="include\Light\Light.hpp" />
+    <ClInclude Include="include\Light\LightMap.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Light\LightMap.cpp" />
+    <ClCompile Include="src\Controller\Controller.cpp" />
     <ClCompile Include="LD36.cpp" />
+    <ClCompile Include="src\Light\Light.cpp" />
+    <ClCompile Include="src\Ray\Ray.cpp" />
     <ClCompile Include="src\MeshCollider\MeshCollider.cpp" />
     <ClCompile Include="src\GameObject\GameObject.cpp" />
-    <ClCompile Include="src\Player\PlayerController.cpp" />
+    <ClCompile Include="src\PlayerController\PlayerController.cpp" />
     <ClCompile Include="src\Projectile\ProjectileManager.cpp" />
     <ClCompile Include="src\DerivedStates\MenuState.cpp" />
     <ClCompile Include="src\Asset\AssetManager.cpp" />
@@ -256,6 +264,10 @@
   <ItemGroup>
     <None Include="include\Maths\MathsUtilities.inl" />
     <None Include="include\Maths\MathVector.inl" />
+    <None Include="res\shader\ambientFragShader.frag" />
+    <None Include="res\shader\attenuationFragShader.frag" />
+    <None Include="res\shader\attenuationVertexShader.vert" />
+    <None Include="res\shader\defaultVertShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

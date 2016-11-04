@@ -11,6 +11,7 @@
 
 static const std::wstring DebugLog = L"Debug: ";
 static const std::wstring AssetLog = L"Asset: ";
+static const std::wstring ErrorLog = L"ERROR!: ";
 
 static void VDebugPrintF(const std::wstring& LogType, wchar_t* Format, va_list ArgList)
 {
@@ -35,3 +36,5 @@ static void DebugPrintF(const std::wstring& LogType, wchar_t* Format, ...)
 	va_end(ArgList);
 #endif
 }
+
+#define NO_INLINE __declspec(noinline)

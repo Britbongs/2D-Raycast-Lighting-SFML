@@ -48,9 +48,6 @@
     <ClInclude Include="include\Projectile\ProjectileManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Player\PlayerController.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\GameVars.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -87,6 +84,21 @@
     <ClInclude Include="include\stdafx.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Controller\Controller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PlayerController\PlayerController.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Ray\Ray.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Light\Light.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Light\LightMap.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game\Game.cpp">
@@ -110,9 +122,6 @@
     <ClCompile Include="src\Projectile\ProjectileManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Player\PlayerController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\DerivedStates\PlayState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -134,6 +143,21 @@
     <ClCompile Include="LD36.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Controller\Controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PlayerController\PlayerController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ray\Ray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Light\Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Light\LightMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Maths\MathsUtilities.inl">
@@ -142,5 +166,9 @@
     <None Include="include\Maths\MathVector.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="res\shader\ambientFragShader.frag" />
+    <None Include="res\shader\defaultVertShader.vert" />
+    <None Include="res\shader\attenuationFragShader.frag" />
+    <None Include="res\shader\attenuationVertexShader.vert" />
   </ItemGroup>
 </Project>
