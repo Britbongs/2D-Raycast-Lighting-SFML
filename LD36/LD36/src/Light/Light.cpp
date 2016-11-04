@@ -1,11 +1,19 @@
 #include "stdafx.hpp"
-#include "Light\Light.h"
+#include "Light\Light.hpp"
+#include "Asset\AssetManager.hpp"
 #include <future>
 
 Light::Light(Vector2f Pos, World* pWorld)
 	: Position_(Pos), World_(pWorld)
 {
+	AttenuationShader_ = AssetManager::GetInstance()->
+		LoadShader(L"res//shader//attenuationVertexShader.vert", L"res//shader//attenuationFragShader.frag");
+	CHECK(AttenuationShader_);
+	RStates_.blendMode = BlendAlpha;
+	RStates_.shader = AttenuationShader_;
+
 	float Offset = 5.f;
+
 	std::async(std::launch::async, &Light::CreateVisibilityPolygon, this, Position_);
 	std::async(std::launch::async, &Light::CreateVisibilityPolygon, this, Position_ + Vector2f(Offset, 0));
 	std::async(std::launch::async, &Light::CreateVisibilityPolygon, this, Position_ + Vector2f(Offset, Offset));
@@ -21,15 +29,24 @@ Light::~Light()
 {
 }
 
-void Light::draw(RenderTarget & RTarget, RenderStates RStates) const
+void Light::Draw(RenderTarget & RTarget) const
 {
 	if (!IsLightOn_)
 	{
 		return;
 	}
+
 	for (auto& Poly : VisibilityPolygons_)
 	{
-		RTarget.draw(Poly, RStates);
+		// set parameters of attenuation shaders before drawing 
+		AttenuationShader_->setUniform("texture", Shader::CurrentTexture);
+		
+		//Map the origin of each light poly 
+		Vector2i ScreenLocation = RTarget.mapCoordsToPixel(Poly[0].position);
+		ScreenLocation.y = RTarget.getSize().y - ScreenLocation.y;
+		AttenuationShader_->setUniform("point", Vector2f(ScreenLocation));
+		
+		RTarget.draw(Poly, RStates_);
 	}
 }
 

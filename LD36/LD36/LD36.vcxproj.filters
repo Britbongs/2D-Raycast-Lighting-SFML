@@ -90,10 +90,13 @@
     <ClInclude Include="include\PlayerController\PlayerController.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-      <ClInclude Include="include\Ray\Ray.hpp">
+    <ClInclude Include="include\Ray\Ray.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Light\Light.h">
+    <ClInclude Include="include\Light\Light.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Light\LightMap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -152,6 +155,9 @@
     <ClCompile Include="src\Light\Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Light\LightMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Maths\MathsUtilities.inl">
@@ -163,5 +169,6 @@
     <None Include="res\shader\ambientFragShader.frag" />
     <None Include="res\shader\defaultVertShader.vert" />
     <None Include="res\shader\attenuationFragShader.frag" />
+    <None Include="res\shader\attenuationVertexShader.vert" />
   </ItemGroup>
 </Project>

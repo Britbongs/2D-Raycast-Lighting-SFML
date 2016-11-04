@@ -50,7 +50,7 @@ sf::Texture * AssetManager::LoadTexture(const sf::String & FilePath)
 
 Shader* AssetManager::LoadShader(const String& VertFilepath, const String& FragFilepath)
 {
-	std::pair<String, String> Key(FragFilepath, VertFilepath);
+	std::pair<String, String> Key(VertFilepath, FragFilepath);
 	//If no shader exists in the map with the two file paths passed 
 	if (Shaders_.find(Key) == Shaders_.end())
 	{
@@ -61,7 +61,7 @@ Shader* AssetManager::LoadShader(const String& VertFilepath, const String& FragF
 			delete Shaders_[Key];
 			Shaders_[Key] = nullptr;
 			Shaders_.erase(Key);
-			DebugPrintF(ErrorLog, L"Failed to load shader: Vert =  %s : Frag = %s!", VertFilepath.toWideString(), FragFilepath.toWideString());
+			DebugPrintF(ErrorLog, L"Failed to load shader: Vert =  %*s : Frag = %*s!", VertFilepath.toWideString(), FragFilepath.toWideString());
 			return nullptr;
 		}
 	}

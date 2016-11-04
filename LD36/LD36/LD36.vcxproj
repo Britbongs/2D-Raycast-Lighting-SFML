@@ -232,9 +232,11 @@
     <ClInclude Include="include\MeshCollider\MeshCollider.h" />
     <ClInclude Include="include\TMXLoader\TMXLoader.hpp" />
     <ClInclude Include="include\Ray\Ray.hpp" />
-    <ClInclude Include="include\Light\Light.h" />
+    <ClInclude Include="include\Light\Light.hpp" />
+    <ClInclude Include="include\Light\LightMap.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Light\LightMap.cpp" />
     <ClCompile Include="src\Controller\Controller.cpp" />
     <ClCompile Include="LD36.cpp" />
     <ClCompile Include="src\Light\Light.cpp" />
@@ -264,6 +266,7 @@
     <None Include="include\Maths\MathVector.inl" />
     <None Include="res\shader\ambientFragShader.frag" />
     <None Include="res\shader\attenuationFragShader.frag" />
+    <None Include="res\shader\attenuationVertexShader.vert" />
     <None Include="res\shader\defaultVertShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

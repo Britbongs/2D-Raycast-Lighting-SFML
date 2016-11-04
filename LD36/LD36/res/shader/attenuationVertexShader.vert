@@ -1,7 +1,6 @@
 #version 110 
 
 varying vec4 vertColor; //Pixel colour passed to fragment shader 
-uniform vec2 point; 
 
 void main(void)
 {

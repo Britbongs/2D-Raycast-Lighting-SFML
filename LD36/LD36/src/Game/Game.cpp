@@ -31,20 +31,11 @@ bool Game::InitGame()
 
 	FPSText_.setFont(*AM->GetDefaultFont());
 	FPSText_.setCharacterSize(12u);
-	//FPSText_.setColor(sf::Color::Yellow);
+
 	FPSText_.setFillColor(Color::Yellow);
 	FPSText_.setString(L"FPS:  ");
 	FPSText_.setPosition(WindowDimensions.x - (FPSText_.getGlobalBounds().width * 2.f), 10);
 
-	/*auto b = std::async(std::launch::async, &Game::InitialiseStates, this);
-	
-	if (b.valid())
-	{
-		if (!b.get())
-		{
-			return false;
-		}
-	}*/
 	InitialiseStates();
 	return true;
 }
@@ -167,17 +158,16 @@ void Game::Render(float Delta)
 void Game::UpdateFPSCounter(float Delta)
 {
 	const float Elapsed(ElapsedClock.getElapsedTime().asSeconds());
+	
 	if (First_)
 	{
 		Frames_ = 0;
 		FPS_ = 1.f / Delta;
 		StartTime_ = Elapsed;
 		First_ = false;
-
 	}
 
 	++Frames_;
-
 
 	if (Elapsed - StartTime_ > 0.25f && Frames_ > 10)
 	{
