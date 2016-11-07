@@ -49,7 +49,7 @@ private:
 	RenderTexture SceneRenderer_;
 	TMXLoader Loader_;
 	// TODO Move Shaders to shader manager 
-	Shader AmbientShader_;
+	Shader* AmbientShader_ = nullptr;
 	BlendMode LightRenderBlendMode_ = BlendAdd;
 
 };

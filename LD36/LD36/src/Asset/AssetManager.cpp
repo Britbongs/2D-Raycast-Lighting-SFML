@@ -61,7 +61,6 @@ Shader* AssetManager::LoadShader(const String& VertFilepath, const String& FragF
 			delete Shaders_[Key];
 			Shaders_[Key] = nullptr;
 			Shaders_.erase(Key);
-			DebugPrintF(ErrorLog, L"Failed to load shader: Vert =  %*s : Frag = %*s!", VertFilepath.toWideString(), FragFilepath.toWideString());
 			return nullptr;
 		}
 	}

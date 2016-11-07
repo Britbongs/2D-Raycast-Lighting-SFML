@@ -62,7 +62,7 @@ sf::FloatRect TiledMap::GetGlobalBounds() const
 
 bool TiledMap::GetCollideableAtIndex(Int32 index) const
 {
-	assert(index >= 0 && index < (Int32)CollisionMap_.size());
+	assert(index >= 0 && index < STATIC_CAST(Int32, CollisionMap_.size()));
 	return CollisionMap_[index];
 }
 
@@ -116,7 +116,7 @@ void TiledMap::SetupVetices(const TMXLoader& Loader)
 			{
 				continue;
 			}
-			
+
 			Int32 tilesetID = 0;
 			Int32 TileID = Loader.GetLayer()[0]->Data[j][i] - Loader.GetTileSet()[0]->FirstGID_;
 

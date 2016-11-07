@@ -63,12 +63,10 @@ bool PlayState::Initialise()
 	
 	LightMap_ = new LightMap(GetRenderTexture()->getSize(), World_);
 
-	SceneRenderer_.create((Uint32)TiledMap_->GetSize().x, (Uint32)TiledMap_->GetSize().y);
+	SceneRenderer_.create(STATIC_CAST(Uint32, TiledMap_->GetSize().x), STATIC_CAST(Uint32, TiledMap_->GetSize().y));
 	
-	if (!Shader::isAvailable())
-	{
-		DebugPrintF(DebugLog, L"ERORR! Shaders aren't available");
-	}
+	AmbientShader_ = AM->LoadShader("res//shader//defaultVertShader.vert", "res//shader//ambientFragShader.frag");
+
 	return true;
 }
 
@@ -93,7 +91,7 @@ void PlayState::Deinitialise()
 		Player_ = nullptr;
 	}
 
-	for (Int32 i = 0; i < (Int32)GameObjects_.size(); ++i)
+	for (Int32 i = 0; i < STATIC_CAST(Int32, GameObjects_.size()); ++i)
 	{
 		if (GameObjects_[i] != nullptr)
 		{
@@ -133,7 +131,7 @@ void PlayState::Render()
 
 	Sprite Empty;
 	RenderStates RStates;
-	RStates.shader = &AmbientShader_;
+	RStates.shader = AmbientShader_;
 	RStates.blendMode = BlendAlpha;
 
 	SceneRenderer_.clear(Color::Black);
@@ -143,10 +141,12 @@ void PlayState::Render()
 
 	Sprite S(SceneRenderer_.getTexture());
 	LightMap_->Draw();
-	AmbientShader_.setUniform("ambientColour", Glsl::Vec4(0.27f, 0.15f, 0.3f, 0.6f));
-	AmbientShader_.setUniform("lightMapTexture", LightMap_->GetTexture());
-	AmbientShader_.setUniform("resolution", Glsl::Vec2(GetRenderTexture()->getSize()));
-
+	if (AmbientShader_)
+	{
+		AmbientShader_->setUniform("ambientColour", Glsl::Vec4(0.27f, 0.15f, 0.3f, 0.6f));
+		AmbientShader_->setUniform("lightMapTexture", LightMap_->GetTexture());
+		AmbientShader_->setUniform("resolution", Glsl::Vec2(GetRenderTexture()->getSize()));
+	}
 	GetRenderTexture()->draw(S, RStates);
 
 	for (const auto& GO : GameObjects_)

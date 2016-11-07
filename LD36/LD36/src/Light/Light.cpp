@@ -40,12 +40,12 @@ void Light::Draw(RenderTarget & RTarget) const
 	{
 		// set parameters of attenuation shaders before drawing 
 		AttenuationShader_->setUniform("texture", Shader::CurrentTexture);
-		
+
 		//Map the origin of each light poly 
 		Vector2i ScreenLocation = RTarget.mapCoordsToPixel(Poly[0].position);
 		ScreenLocation.y = RTarget.getSize().y - ScreenLocation.y;
 		AttenuationShader_->setUniform("point", Vector2f(ScreenLocation));
-		
+
 		RTarget.draw(Poly, RStates_);
 	}
 }
@@ -61,13 +61,13 @@ void Light::CreateVisibilityPolygon(Vector2f Origin)
 	Vector2f A(0.f, 0.f), B(0.f, 0.f);
 	Vector3f Intersection(0.f, 0.f, 0.f);
 
-	for (Int32 k{ 0 }; k < (Int32)UniqueAngles_.size(); ++k)
+	for (Int32 k{ 0 }; k < STATIC_CAST(Int32, UniqueAngles_.size()); ++k)
 	{
 		Vector2f DirectionVector(cosf(UniqueAngles_[k]), sinf(UniqueAngles_[k]));
 		Ray Ray{ Origin, Vector2f(Origin.x + DirectionVector.x, Origin.y + DirectionVector.y) };
 
 		Vector3f ClosestIntersection{ -5,-5,-5 };
-		for (Int32 i{ 0 }; i < (Int32)Colliders.size(); ++i)
+		for (Int32 i{ 0 }; i < STATIC_CAST(Int32, Colliders.size()); ++i)
 		{
 			TileCollisionData& Data = Colliders[i];
 			//If the collider isn't blocked then continue the loop
@@ -106,12 +106,12 @@ void Light::CreateVisibilityPolygon(Vector2f Origin)
 	//Col.a = 10;
 	Col.a = (rand() % 255) + 10;
 	DebugPrintF(DebugLog, L"Col - %i", Col.a);
-	sort(Intersections.begin(), Intersections.end(), [](Vector3f const& a, Vector3f const& b) { return a.z < b.z; });
+	std::sort(Intersections.begin(), Intersections.end(), [](Vector3f const& a, Vector3f const& b) { return a.z < b.z; });
 
 
 	VertexArray VisibilityPolygon = VertexArray(TrianglesFan, Intersections.size() + 2);
 
-	for (Int32 i = 0; i < (Int32)Intersections.size(); ++i)
+	for (Int32 i = 0; i < STATIC_CAST(Int32, Intersections.size()); ++i)
 	{
 		VisibilityPolygon[i + 1].position = Vector2f(Intersections[i].x, Intersections[i].y);
 		VisibilityPolygon[i + 1].color = Col;
@@ -131,7 +131,7 @@ void Light::CalculateUniqueAngles(Vector2f Origin)
 	auto& UniquePoints = World_->GetUniqueTiledMapPoints();
 	UniqueAngles_.clear();
 
-	for (int i{ 0 }; i < (Int32)UniquePoints.size(); ++i)
+	for (int i{ 0 }; i < STATIC_CAST(Int32, UniquePoints.size()); ++i)
 	{
 		float angle = atan2(UniquePoints[i].y - Origin.y, UniquePoints[i].x - Origin.x);
 		UniqueAngles_.push_back(angle - 0.0001f);

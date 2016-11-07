@@ -1,7 +1,11 @@
 #pragma once
 
 #include "RapidXML\rapidxml.hpp"
-
+/* 
+	Class to load TMX map files (Tiled) stored as CSV files
+	
+	TODO: Allow compressed map file loading for faster game load times
+*/
 using namespace std;
 using namespace rapidxml;
 
@@ -100,46 +104,46 @@ class TMXLoader
 public:
 
 	~TMXLoader();
-	
+
 	const vector<MTileset*>& getTilesets() const;
-	
+
 	bool LoadMap(const std::string&);
-	
+
 	Int32 GetWidth() const { return Width_; }
-	
+
 	Int32 GetHeight() const { return Height_; }
-	
+
 	Int32 GetTileWidth() const { return TileWidth_; }
-	
+
 	Int32 GetTileHeight() const { return TileHeight_; }
-	
-	Int32 GetLayerCount() const { return Layers_.size(); }
-	
-	Int32 GetTilesetCount() const { return Tilesets_.size(); }
-	
+
+	Int32 GetLayerCount() const { return STATIC_CAST(Int32, Layers_.size()); }
+
+	Int32 GetTilesetCount() const { return STATIC_CAST(Int32, Tilesets_.size()); }
+
 	//Returns the total number of object groups (object layers) in the tiled map
-	Int32 GetObjectGroupCount() const { return ObjectGroups_.size(); }
-	
+	Int32 GetObjectGroupCount() const { return STATIC_CAST(Int32, ObjectGroups_.size()); }
+
 	const vector<MLayer*>& GetLayer() const { return(Layers_); }
-	
+
 	const vector< MTileset*>& GetTileSet() const { return(Tilesets_); }
-	
+
 	MObjectGroup GetObjectGroup(Int32) const; //Param: id of the objectgroup 
 
-	void CleanupLoadedMap(); 
+	void CleanupLoadedMap();
 
 private:
 
 	string TMXToString(const std::string&);
-	
+
 	void SetupTileMap();
-	
+
 	void SetupTilesets(xml_node<>*);
-	
+
 	void SetupLayer(xml_node<>*);
-	
+
 	void SetupObjectGroups(xml_node<>*);
-	
+
 	Int32 Width_;  //Map width
 	Int32 Height_; //Map height
 	Int32 TileWidth_;
@@ -147,6 +151,6 @@ private:
 
 	vector <MTileset*> Tilesets_;
 	vector <MLayer*> Layers_;
-	vector<MObjectGroup> ObjectGroups_;
+	vector <MObjectGroup> ObjectGroups_;
 	xml_document<> Doc_;
 };
