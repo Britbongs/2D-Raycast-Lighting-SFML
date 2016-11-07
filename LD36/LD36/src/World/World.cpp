@@ -293,7 +293,7 @@ void World::CalculateUniqueTilemapPoints()
 
 	std::vector<Vector2f> Points;
 
-	for (int i{ 0 }; i < (Int32)Colliders.size(); ++i)
+	for (int i{ 0 }; i < STATIC_CAST(Int32, Colliders.size()); ++i)
 	{
 		for (int j{ 0 }; j < Colliders[i].MCollider.GetPointCount(); ++j)
 		{
@@ -301,7 +301,7 @@ void World::CalculateUniqueTilemapPoints()
 		}
 	}
 
-	for (int i{ 0 }; i < (Int32)Points.size(); ++i)
+	for (int i{ 0 }; i < STATIC_CAST(Int32, Points.size()); ++i)
 	{
 		if (find(UniqueTiledMapPoints_.begin(), UniqueTiledMapPoints_.end(), Points[i]) != UniqueTiledMapPoints_.end())
 		{

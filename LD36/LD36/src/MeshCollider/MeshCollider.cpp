@@ -28,7 +28,7 @@ void MeshCollider::UpdatMeshCollider(const Transform& ObjectTransform)
 
 Vector2f MeshCollider::GetNormal(Int32 Index) const
 {
-	if (Index >= 0 && Index < (Int32)NormalList_.size())
+	if (Index >= 0 && Index < STATIC_CAST(Int32, NormalList_.size()))
 	{
 		return NormalList_[Index];
 	}
@@ -46,12 +46,12 @@ Vector2f MeshCollider::GetTransformedPoint(Int32 Index) const
 
 Int32 MeshCollider::GetPointCount() const
 {
-	return (Int32)TransformedPoints_.size();
+	return STATIC_CAST(Int32, TransformedPoints_.size());
 }
 
 Int32 MeshCollider::GetNormalListSize() const
 {
-	return (Int32)NormalList_.size();
+	return STATIC_CAST(Int32, NormalList_.size());
 }
 
 void MeshCollider::SetPointsList(const std::vector<Vector2f>& VertArray)
@@ -76,7 +76,7 @@ void MeshCollider::InitialisePoints(const std::vector<Vector2f>&  VertArray)
 	//Initialise transformed points to have the same values as the local points until a transform is applied
 	TransformedPoints_.resize(LocalPoints_.size());
 
-	for (Int32 i = 0; i < (Int32)TransformedPoints_.size(); ++i)
+	for (Int32 i = 0; i < STATIC_CAST(Int32, TransformedPoints_.size()); ++i)
 	{
 		TransformedPoints_[i] = LocalPoints_[i];
 	}
@@ -101,12 +101,12 @@ void MeshCollider::UpdateNormals()
 		return Normal(-Edge.y, Edge.x);
 	};
 
-	for (Int32 PointIndex = 0; PointIndex < (Int32)TransformedPoints_.size(); ++PointIndex)
+	for (Int32 PointIndex = 0; PointIndex < STATIC_CAST(Int32, TransformedPoints_.size()); ++PointIndex)
 	{
 		Point PointA = TransformedPoints_[PointIndex];
 
 		//if the another point exists after our current one, use it as pointb, otherwise use the first point
-		Int32 NextIndex = PointIndex + 1 < (Int32)TransformedPoints_.size() ? PointIndex + 1 : 0;
+		Int32 NextIndex = PointIndex + 1 < STATIC_CAST(Int32, TransformedPoints_.size()) ? PointIndex + 1 : 0;
 
 		Point PointB = TransformedPoints_[NextIndex];
 

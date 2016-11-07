@@ -63,7 +63,7 @@ bool PlayState::Initialise()
 	
 	LightMap_ = new LightMap(GetRenderTexture()->getSize(), World_);
 
-	SceneRenderer_.create((Uint32)TiledMap_->GetSize().x, (Uint32)TiledMap_->GetSize().y);
+	SceneRenderer_.create(STATIC_CAST(Uint32, TiledMap_->GetSize().x), STATIC_CAST(Uint32, TiledMap_->GetSize().y));
 	
 	if (!Shader::isAvailable())
 	{
@@ -93,7 +93,7 @@ void PlayState::Deinitialise()
 		Player_ = nullptr;
 	}
 
-	for (Int32 i = 0; i < (Int32)GameObjects_.size(); ++i)
+	for (Int32 i = 0; i < STATIC_CAST(Int32, GameObjects_.size()); ++i)
 	{
 		if (GameObjects_[i] != nullptr)
 		{
