@@ -21,18 +21,6 @@ void TiledMap::SetTexture(sf::Texture * Tex)
 	}
 
 	Texture_ = Tex;
-
-	for (Int32 i = 0; i < Dimensions_.x; ++i)
-	{
-		for (Int32 j = 0; j < Dimensions_.y; ++j)
-		{
-			sf::Vertex* Tile = &Map_[(i + j * Dimensions_.x) * 4];
-
-			Int32 TileID = TileIDs_[i][j];
-
-			SetTextureCoord(Tile, TileID);
-		}
-	}
 }
 
 Vector2f TiledMap::GetSize() const
@@ -92,6 +80,13 @@ sf::FloatRect TiledMap::GetLocalBounds() const
 	return R;
 }
 
+bool TiledMap::IsCollideableAtPos(Vector2i Pos) const
+{
+	assert(Pos.x >= 0 && Pos.x < GetGridSize().x && Pos.y >= 0 && Pos.y < GetGridSize().y);
+
+	return CollisionMap_[Pos.x + Pos.y * GetGridSize().x];
+}
+
 void TiledMap::SetupVetices(const TMXLoader& Loader)
 {
 	Map_.setPrimitiveType(sf::Quads);
@@ -119,16 +114,6 @@ void TiledMap::SetupVetices(const TMXLoader& Loader)
 
 			Int32 tilesetID = 0;
 			Int32 TileID = Loader.GetLayer()[0]->Data[j][i] - Loader.GetTileSet()[0]->FirstGID_;
-
-			if (Loader.GetTileSet()[0]->GetTilePropertyName(TileID) == "blocked" && Loader.GetTileSet()[0]->GetTilePropertyValue(TileID) == "true")
-			{
-				CollisionMap_[Index] = 1;
-			}
-			else
-			{
-				CollisionMap_[Index] = 0;
-			}
-
 
 			Vector2i texturePos(TileID % (Texture_->getSize().x / TileSize_), TileID / (Texture_->getSize().x / TileSize_));
 

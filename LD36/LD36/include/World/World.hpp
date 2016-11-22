@@ -14,9 +14,16 @@ struct WorldIntersectionData
 //SAT collider for tile 
 struct TileCollisionData
 {
+	TileCollisionData()
+		: bIsBlockedTile(false)
+	{
+		//Default CTOR
+	}
+
 	TileCollisionData(MeshCollider MeshColl, bool IsBlocked)
 		: MCollider(MeshColl), bIsBlockedTile(IsBlocked)
 	{}
+
 	MeshCollider MCollider;
 	bool bIsBlockedTile;
 };

@@ -27,16 +27,16 @@ bool PlayState::Initialise()
 	//---
 
 	World_ = new World(GameObjects_, GetRenderTexture());
-	/* 
 	if (!Loader_.LoadMap("res//movement_test_map.tmx"))
 	{
 		return false;
 	}
-	*/
+	/* 
 	if (!Loader_.LoadMap("res//test_map.tmx"))
 	{
 		return false;
 	}
+	*/
 
 	TiledMap_ = new TiledMap(64);
 
@@ -59,7 +59,7 @@ bool PlayState::Initialise()
 	Player_->SetGameObject(GameObjects_[0]);
 	Player_->Initialise();
 	
-	World_->SetupTileMeshColliders(TiledMap_);
+	//World_->SetupTileMeshColliders(TiledMap_);
 	
 	LightMap_ = new LightMap(GetRenderTexture()->getSize(), World_);
 
@@ -141,12 +141,14 @@ void PlayState::Render()
 
 	Sprite S(SceneRenderer_.getTexture());
 	LightMap_->Draw();
+
 	if (AmbientShader_)
 	{
 		AmbientShader_->setUniform("ambientColour", Glsl::Vec4(0.27f, 0.15f, 0.3f, 0.6f));
 		AmbientShader_->setUniform("lightMapTexture", LightMap_->GetTexture());
 		AmbientShader_->setUniform("resolution", Glsl::Vec2(GetRenderTexture()->getSize()));
 	}
+	
 	GetRenderTexture()->draw(S, RStates);
 
 	for (const auto& GO : GameObjects_)

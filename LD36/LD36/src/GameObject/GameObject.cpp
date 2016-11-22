@@ -39,7 +39,7 @@ void GameObject::SetSize(Vector2f Size)
 	PointsList[1] = Vector2f(Shape_.getSize().x, 0.f);
 	PointsList[2] = Vector2f(Shape_.getSize().x, Shape_.getSize().y);
 	PointsList[3] = Vector2f(0.f, Shape_.getSize().y);
-
+	MeshCollider_.SetPointsList(PointsList);
 }
 
 FloatRect GameObject::GetAABB() const

@@ -20,7 +20,7 @@ void World::SetupTileMeshColliders(const TiledMap* InTileMap)
 
 	std::vector<Vector2f> TempVertArray;
 	TempVertArray.resize(4);
-
+	TileMeshColliders_.resize(InTileMap->GetGridSize().x * InTileMap->GetGridSize().y);
 	for (Int32 i{ 0 }; i < MapDimension_.x; ++i)
 	{
 		for (Int32 j{ 0 }; j < MapDimension_.y; ++j)
@@ -30,24 +30,24 @@ void World::SetupTileMeshColliders(const TiledMap* InTileMap)
 
 			//If the tile is collideable
 			//Top left
-			TempVertArray[0].x = (float)i * TileSize;
-			TempVertArray[0].y = (float)j * TileSize;
+			TempVertArray[0].x = STATIC_CAST(float, i * TileSize);
+			TempVertArray[0].y = STATIC_CAST(float, j * TileSize);
 
 			//Top right
-			TempVertArray[1].x = (float)(i + 1) * TileSize;
-			TempVertArray[1].y = (float)j * TileSize;
+			TempVertArray[1].x = STATIC_CAST(float, (i + 1) * TileSize);
+			TempVertArray[1].y = STATIC_CAST(float, j * TileSize);
 
 			//Bottom right
-			TempVertArray[2].x = (float)(i + 1) * TileSize;
-			TempVertArray[2].y = (float)(j + 1) * TileSize;
+			TempVertArray[2].x = STATIC_CAST(float, (i + 1) * TileSize);
+			TempVertArray[2].y = STATIC_CAST(float, (j + 1) * TileSize);
 
 			//Bottom left
-			TempVertArray[3].x = (float)i * TileSize;
-			TempVertArray[3].y = (float)(j + 1) * TileSize;
+			TempVertArray[3].x = STATIC_CAST(float, i * TileSize);
+			TempVertArray[3].y = STATIC_CAST(float, (j + 1) * TileSize);
 
 			//Create the collider and push it into the vector
-			TileCollisionData Data(MeshCollider(TempVertArray), InTileMap->GetCollideableAtIndex(Index));
-			TileMeshColliders_.push_back(Data);
+			TileCollisionData Data(MeshCollider(TempVertArray), InTileMap->IsCollideableAtPos(Vector2i(i, j)));
+			TileMeshColliders_[Index] = Data;
 
 			if (Data.bIsBlockedTile)
 			{
@@ -117,7 +117,7 @@ WorldIntersectionData World::CheckWorldIntersection(GameObject & Object, Vector2
 	IntersectData.bDidIntersect = false;
 	IntersectData.CollisionResponse = MovementVector;
 
-	Vector2i PlayerGridPos = Vector2i(Object.getPosition() / (float)TILE_SIZE);
+	Vector2i PlayerGridPos = Vector2i((Object.getPosition() + (Object.GetSize()*0.5f)) / STATIC_CAST(float, TILE_SIZE));
 	Int32 i = 0;
 	bool bEarlyOut = false;
 	AABBIntersectedTileColliders_.clear();
@@ -135,7 +135,9 @@ WorldIntersectionData World::CheckWorldIntersection(GameObject & Object, Vector2
 	for (Int32 i = 0; i < STATIC_CAST(Int32, TileSearchDirections::eTile_Search_Max); ++i)
 	{
 		TileSearchDirections Direction = STATIC_CAST(TileSearchDirections, i);
+
 		Int32 TileIndex = GetSearchTileIndex(Direction, PlayerGridPos);
+
 		if (TileIndex == INDEX_NONE)
 		{
 			continue;
@@ -146,16 +148,17 @@ WorldIntersectionData World::CheckWorldIntersection(GameObject & Object, Vector2
 			continue;
 		}
 
-		FloatRect TransformedAABB = Object.GetAABB();// (MoveAABB(Object.GetAABB(), MovementVector));
-
+		FloatRect TransformedAABB = Object.GetAABB();
+		FloatRect BlockedTileAABB = GetSearchTileAABB(Direction, PlayerGridPos);
 		// if search tile is classed as a blocked tile 
-		if (AABBCollisionCheck(TransformedAABB, GetSearchTileAABB(Direction, PlayerGridPos)))
+		if (AABBCollisionCheck(TransformedAABB, BlockedTileAABB))
 		{
 			AABBIntersectedTileColliders_.push_back(&TileMeshColliders_[TileIndex].MCollider);
 		}
 	}
 
 	//DebugPrintF(DebugLog, L"Number of found intersected tiles: %d", AABBIntersectedTileColliders_.size());
+	Int32 PossibleIntersectionCount = AABBIntersectedTileColliders_.size();
 
 	Int32 RealIntersectCount = 0;
 
@@ -167,7 +170,9 @@ WorldIntersectionData World::CheckWorldIntersection(GameObject & Object, Vector2
 		}
 	}
 
-	//DebugPrintF(DebugLog, L"Number of real intersections: %d", RealIntersectCount);
+	DebugPrintF(DebugLog, L"Possible: %d - Real: %d ", PossibleIntersectionCount, RealIntersectCount);
+
+	// problem exists with wrong MeshCollider being used 
 
 	return IntersectData;
 }
@@ -247,7 +252,7 @@ bool World::IsSearchTileBlocked(TileSearchDirections Direction, const Vector2i& 
 
 Int32 World::GetSearchTileIndex(TileSearchDirections Direction, Vector2i GridLoc) const
 {
-	Int32 Index = INDEX_NONE;
+	Int32 Index = 0;
 
 	switch (Direction)
 	{
@@ -282,8 +287,10 @@ Int32 World::GetSearchTileIndex(TileSearchDirections Direction, Vector2i GridLoc
 	case eTile_Left:
 		Index = (GridLoc.x - 1) + GridLoc.y* MapDimension_.x;
 		break;
-
+	default:
+		Index = INDEX_NONE;
 	}
+
 	return Index;
 }
 
