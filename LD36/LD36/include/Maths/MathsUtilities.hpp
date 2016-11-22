@@ -3,11 +3,11 @@
 #include <cstdlib>	
 #include <ctime>
 
-const float PI{ 3.141592f };
+#define PI 3.14159265359
 
-const float PI_OVER_2{ PI / 2.f };
+#define PI_OVER_2 (PI / 2.0)
 
-const float PI_BY_2 { PI  * 2.f };
+#define PI_BY_2 (PI  * 2.0)
 
 template<typename T>
 T Degrees(T Theta);

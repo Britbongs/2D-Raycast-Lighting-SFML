@@ -19,7 +19,7 @@ public:
 
 	Int32 GetTileSize() const;
 
-	sf::FloatRect GetGlobalBounds() const;
+	FloatRect GetGlobalBounds() const;
 
 	bool GetCollideableAtIndex(Int32 index) const;
 

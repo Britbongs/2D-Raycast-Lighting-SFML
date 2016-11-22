@@ -13,6 +13,7 @@ GameObject::GameObject()
 	PointsList[3] = Vector2f(0.f, 1.f);
 
 	MeshCollider_ = MeshCollider(PointsList);
+	setOrigin(32.f, 32.f);
 }
 
 GameObject::~GameObject()

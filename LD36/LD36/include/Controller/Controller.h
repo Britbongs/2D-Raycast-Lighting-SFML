@@ -9,7 +9,7 @@ class Controller
 
 public:
 
-	explicit Controller(World* World);
+	explicit Controller(World* World, RenderWindow* RWindow, RenderTarget* RMainTarget);
 
 	~Controller();
 
@@ -23,13 +23,18 @@ public:
 
 protected:
 
-	GameObject* GetGameObject() { return GameObject_; }
+	GameObject* GetGameObject() const { return GameObject_; }
 
-	World* GetWorld() { return World_; }
+	World* GetWorld() const { return World_; }
 
+	RenderWindow* GetRenderWindow() const { return RWindow_; }
+
+	RenderTarget* GetMainRenderTarget() const { return RMainTarget_; }
 private:
 
 	World* World_ = nullptr;
 	GameObject* GameObject_ = nullptr;
+	RenderWindow* RWindow_ = nullptr;
+	RenderTarget* RMainTarget_ = nullptr;
 };
 

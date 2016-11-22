@@ -11,7 +11,7 @@ PlayState::PlayState(sf::Int32 ID, sf::RenderWindow* RWindow, sf::RenderTexture*
 
 PlayState::~PlayState()
 {
-		
+
 }
 
 bool PlayState::Initialise()
@@ -31,12 +31,6 @@ bool PlayState::Initialise()
 	{
 		return false;
 	}
-	/* 
-	if (!Loader_.LoadMap("res//test_map.tmx"))
-	{
-		return false;
-	}
-	*/
 
 	TiledMap_ = new TiledMap(64);
 
@@ -55,16 +49,14 @@ bool PlayState::Initialise()
 	World_->SetupTileMeshColliders(TiledMap_);
 	GameObjects_.push_back(new GameObject());
 	GameObjects_.back()->SetSize(Vector2f(64.f, 64.f));
-	Player_ = new PlayerController(World_);
+	Player_ = new PlayerController(World_, GetRenderWindow(), GetRenderTexture());
 	Player_->SetGameObject(GameObjects_[0]);
 	Player_->Initialise();
-	
-	//World_->SetupTileMeshColliders(TiledMap_);
-	
+
 	LightMap_ = new LightMap(GetRenderTexture()->getSize(), World_);
 
 	SceneRenderer_.create(STATIC_CAST(Uint32, TiledMap_->GetSize().x), STATIC_CAST(Uint32, TiledMap_->GetSize().y));
-	
+
 	AmbientShader_ = AM->LoadShader("res//shader//defaultVertShader.vert", "res//shader//ambientFragShader.frag");
 
 	return true;
@@ -99,7 +91,7 @@ void PlayState::Deinitialise()
 			GameObjects_[i] = nullptr;
 		}
 	}
-	
+
 	if (World_)
 	{
 		delete World_;
@@ -148,7 +140,7 @@ void PlayState::Render()
 		AmbientShader_->setUniform("lightMapTexture", LightMap_->GetTexture());
 		AmbientShader_->setUniform("resolution", Glsl::Vec2(GetRenderTexture()->getSize()));
 	}
-	
+
 	GetRenderTexture()->draw(S, RStates);
 
 	for (const auto& GO : GameObjects_)
@@ -174,6 +166,10 @@ void PlayState::HandleEvents(sf::Event& Evnt, float Delta)
 			Image Img = LightMap_->GetTexture().copyToImage();
 			Img.saveToFile("Rendered_Light_Map.png");
 		}
+		if (Evnt.key.code == Keyboard::C)
+		{
+			LightMap_->ClearAllLights();
+		}
 	}
 
 	if (Evnt.type == Event::MouseButtonPressed)
@@ -186,7 +182,7 @@ void PlayState::HandleEvents(sf::Event& Evnt, float Delta)
 #pragma region VisibilityAsync
 			sf::Clock C;
 			C.restart();
-			
+
 			LightMap_->AddLight(WorldMousePos);
 
 			Time T = C.getElapsedTime();
