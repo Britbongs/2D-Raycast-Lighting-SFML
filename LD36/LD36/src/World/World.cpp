@@ -116,63 +116,88 @@ WorldIntersectionData World::CheckWorldIntersection(GameObject & Object, Vector2
 	WorldIntersectionData IntersectData;
 	IntersectData.bDidIntersect = false;
 	IntersectData.CollisionResponse = MovementVector;
-
+	
 	Vector2i PlayerGridPos = Vector2i((Object.getPosition() + (Object.GetSize()*0.5f)) / STATIC_CAST(float, TILE_SIZE));
 	Int32 i = 0;
 	bool bEarlyOut = false;
 	AABBIntersectedTileColliders_.clear();
 
-	auto MoveAABB = [](FloatRect& Rect, const Vector2f& MoveVector)
+	auto MoveAABB = [](const FloatRect& Rect, const Vector2f& MoveVector)
 	{//Lambda to return a moved floatrect 
 
 		return FloatRect(Vector2f(Rect.left, Rect.top) + MoveVector, Vector2f(Rect.width, Rect.height));
 	};
 
+	ColliderPair ColPair[2];
+	Transform T1(Object.getTransform()), T2(Object.getTransform()); // Create 2 transform matrices with objects transform 
+	ColPair[1].second = ColPair[0].second = Object.GetMeshCollider();
+
+	ColPair[0].first = MoveAABB(Object.GetAABB(), Vector2f(MovementVector.x, 0.f));
+	T1.translate(MovementVector.x, 0.f);
+	ColPair[0].second.UpdatMeshCollider(T1);
+
+	ColPair[1].first = MoveAABB(Object.GetAABB(), Vector2f(0.f, MovementVector.y));
+	T2.translate(0.f, MovementVector.y);
+	ColPair[1].second.UpdatMeshCollider(T2);
+
+
 	//Loop through all search directions 
 	//If the search tile is not a valid index, early out
 	//if the players aabb moving in the movement direction is found to be colliding 
 	//add the intersecting tile to a vector which will be iterated over with more precise MeshCollider
-	for (Int32 i = 0; i < STATIC_CAST(Int32, TileSearchDirections::eTile_Search_Max); ++i)
+	for (Int32 ColPairIndex = 0; ColPairIndex < 2; ++ColPairIndex)
 	{
-		TileSearchDirections Direction = STATIC_CAST(TileSearchDirections, i);
-
-		Int32 TileIndex = GetSearchTileIndex(Direction, PlayerGridPos);
-
-		if (TileIndex == INDEX_NONE)
+		for (Int32 i = 0; i < STATIC_CAST(Int32, TileSearchDirections::eTile_Search_Max); ++i)
 		{
+			TileSearchDirections Direction = STATIC_CAST(TileSearchDirections, i);
+
+			Int32 TileIndex = GetSearchTileIndex(Direction, PlayerGridPos);
+
+			if (TileIndex == INDEX_NONE)
+			{
+				continue;
+			}
+
+			if (!IsSearchTileBlocked(Direction, PlayerGridPos))
+			{
+				continue;
+			}
+
+			//FloatRect TransformedAABB = Object.GetAABB();
+			FloatRect BlockedTileAABB = GetSearchTileAABB(Direction, PlayerGridPos);
+			// if search tile is classed as a blocked tile 
+			//if (AABBCollisionCheck(TransformedAABB, BlockedTileAABB))
+			if(AABBCollisionCheck(ColPair[ColPairIndex].first, BlockedTileAABB))
+			{
+				AABBIntersectedTileColliders_.push_back(&TileMeshColliders_[TileIndex].MCollider);
+			}
+		}
+		
+		bool bDidFindCollision = false;
+		
+		for (auto Collider : AABBIntersectedTileColliders_)
+		{
+			if (DoMeshCollidersIntersect(Object.GetMeshCollider(), *Collider))
+			{
+				bDidFindCollision = true;
+				break;
+			}
+		}
+
+		if (bDidFindCollision)
+		{
+			if (ColPairIndex == 0)
+			{// X-axis collision
+				IntersectData.CollisionResponse.x *= -1.05f; 
+			}
+			else
+			{//Y-Axis Collision
+				IntersectData.CollisionResponse.y *= -1.05f;
+			}
+			IntersectData.bDidIntersect = true;
 			continue;
 		}
-
-		if (!IsSearchTileBlocked(Direction, PlayerGridPos))
-		{
-			continue;
-		}
-
-		FloatRect TransformedAABB = Object.GetAABB();
-		FloatRect BlockedTileAABB = GetSearchTileAABB(Direction, PlayerGridPos);
-		// if search tile is classed as a blocked tile 
-		if (AABBCollisionCheck(TransformedAABB, BlockedTileAABB))
-		{
-			AABBIntersectedTileColliders_.push_back(&TileMeshColliders_[TileIndex].MCollider);
-		}
 	}
-
-	//DebugPrintF(DebugLog, L"Number of found intersected tiles: %d", AABBIntersectedTileColliders_.size());
-	Int32 PossibleIntersectionCount = AABBIntersectedTileColliders_.size();
-
-	Int32 RealIntersectCount = 0;
-
-	for (auto Collider : AABBIntersectedTileColliders_)
-	{
-		if (DoMeshCollidersIntersect(Object.GetMeshCollider(), *Collider))
-		{
-			++RealIntersectCount;
-		}
-	}
-
-	DebugPrintF(DebugLog, L"Possible: %d - Real: %d ", PossibleIntersectionCount, RealIntersectCount);
-
-	// problem exists with wrong MeshCollider being used 
 
 	return IntersectData;
 }

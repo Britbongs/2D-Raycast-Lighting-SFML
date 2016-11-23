@@ -52,6 +52,8 @@ private:
 
 	using AABB = FloatRect;
 
+	using ColliderPair = std::pair<FloatRect, MeshCollider>;
+
 	struct Projection
 	{// Line Projection for Separating Axis Theorem 
 		float Max = 0.f; //maximum value
@@ -79,7 +81,7 @@ private:
 
 	Vector2i MapDimension_;
 
-	enum TileSearchDirections
+	enum TileSearchDirections : Uint32
 	{
 		eTile_Up_Left,
 		eTile_Up,

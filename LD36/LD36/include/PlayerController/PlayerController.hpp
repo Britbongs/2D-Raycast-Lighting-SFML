@@ -35,6 +35,13 @@ private:
 
 	void UpdateRotation();
 
+	void PlayerJoystickUpdate(float Delta);
+
 	//Pointer to active world
 	World* World_ = nullptr;
+	const Int32 PLAYER_JOYSTICK_SLOT = 0; 
+
+	bool bIsJoystickConnected_ = false;
+
+	const float AXIS_DEAD_ZONE = 5.f;
 };

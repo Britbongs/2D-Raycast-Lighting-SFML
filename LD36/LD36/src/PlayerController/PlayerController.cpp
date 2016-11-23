@@ -54,6 +54,11 @@ void PlayerController::Update(float Delta)
 
 	}
 
+	if (Joystick::isConnected(PLAYER_JOYSTICK_SLOT))
+	{
+		PlayerJoystickUpdate(Delta); //Uncomment to enable gamepad controls 
+	}
+
 	MovementVector = Normalise(MovementVector) * PLAYER_MOVE_SPEED * Delta;
 	WorldIntersectionData IntersectionData = GetWorld()->CheckWorldIntersection(*GetGameObject(), MovementVector);
 
@@ -80,5 +85,38 @@ void PlayerController::UpdateRotation()
 
 	float RotationAngle = Degrees(atan2(DirectionFromPlayer.y, DirectionFromPlayer.x)); //Angle to rotate player by (in degrees)
 
-	GO->setRotation(RotationAngle);
+	//GO->setRotation(RotationAngle);
+}
+
+void PlayerController::PlayerJoystickUpdate(float Delta)
+{
+	Joystick::update(); // Update SFML joystick (because not polling in event loop)
+	auto GO = GetGameObject();
+	Vector2f Direction;
+
+	if (Joystick::hasAxis(PLAYER_JOYSTICK_SLOT, Joystick::X))
+	{
+		Direction.x = Joystick::getAxisPosition(PLAYER_JOYSTICK_SLOT, Joystick::X);
+	}
+
+	if (Joystick::hasAxis(PLAYER_JOYSTICK_SLOT, Joystick::Y))
+	{
+		Direction.y = Joystick::getAxisPosition(PLAYER_JOYSTICK_SLOT, Joystick::Y);
+	}
+
+	if (GetLength(Direction) < AXIS_DEAD_ZONE) 
+	{// In deadzone, do nothing 
+		return;
+	}
+	Direction = Normalise(Direction);
+	Direction *= Delta * PLAYER_MOVE_SPEED;
+
+	WorldIntersectionData IntersectionData = GetWorld()->CheckWorldIntersection(*GetGameObject(), Direction);
+
+	if (IntersectionData.bDidIntersect)
+	{
+		Direction = IntersectionData.CollisionResponse;
+	}
+
+	GO->move(Direction);
 }

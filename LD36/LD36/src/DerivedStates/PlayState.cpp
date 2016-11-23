@@ -123,7 +123,7 @@ void PlayState::Render()
 
 	Sprite Empty;
 	RenderStates RStates;
-	RStates.shader = AmbientShader_;
+	//RStates.shader = AmbientShader_;
 	RStates.blendMode = BlendAlpha;
 
 	SceneRenderer_.clear(Color::Black);
