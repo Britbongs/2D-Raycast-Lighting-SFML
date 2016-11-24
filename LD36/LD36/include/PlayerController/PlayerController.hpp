@@ -4,7 +4,7 @@
 #include "World\World.hpp"
 #include "Controller\Controller.h"
 
-enum PlayerMoveDirection
+enum PlayerMoveDirection : Uint32
 {
 	UP,
 	UP_LEFT,

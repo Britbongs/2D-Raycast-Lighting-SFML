@@ -60,25 +60,63 @@ void World::SetupTileMeshColliders(const TiledMap* InTileMap)
 	CalculateUniqueTilemapPoints();
 }
 
-bool World::DoMeshCollidersIntersect(const MeshCollider& MeshA, const MeshCollider& MeshB) const
+WorldIntersectionData World::DoMeshCollidersIntersect(const MeshCollider& MeshA, const MeshCollider& MeshB) const
 {
+	WorldIntersectionData CollData;
+	
 	//TODO catch multiple collision resolution 
 	//-----------------------------------------
-	auto DoProjectionsOverlap = [=](const Projection& ProjA, const Projection& ProjB)
+	auto DoProjectionsOverlap = [](const Projection& ProjA, const Projection& ProjB)
 	{
-		return ProjB.Max >= ProjA.Min && ProjB.Min <= ProjA.Max;
+		return !(ProjA.Min > ProjB.Max  || ProjB.Min > ProjA.Max);
+	};
+
+	auto GetOverlapAmount = [](const Projection& ProjA, const Projection& ProjB)
+	{
+		return Max(0.0f, Min(ProjA.Max, ProjB.Max) - Max(ProjA.Min, ProjB.Min));
+	};
+
+	auto DoesProjectionContain = [](const Projection& ProjA, const Projection& ProjB)
+	{
+		return ProjA.Min > ProjB.Min && ProjA.Max < ProjB.Max;
 	};
 
 	Projection ProjectionA, ProjectionB;
-
-
+	// MTV = Minimum Translation Vector 
+	Vector2f MTVAxis;  //Direction component
+	float MTVOverlap = 1.0e6; // Magnitude (initialised as large value to allow smaller values to overwrite this one) 
+	
 	for (Int32 i = 0; i < MeshA.GetNormalListSize(); ++i)
 	{
 		ProjectionA = GetProjection(MeshA, MeshA.GetNormal(i));
 		ProjectionB = GetProjection(MeshB, MeshA.GetNormal(i));
+
 		if (!DoProjectionsOverlap(ProjectionA, ProjectionB))
 		{
-			return false;
+			CollData.bDidIntersect = false;
+			return CollData;
+		}
+		else
+		{
+			float O = GetOverlapAmount(ProjectionA, ProjectionB);
+			if (DoesProjectionContain(ProjectionA, ProjectionB) || DoesProjectionContain(ProjectionA, ProjectionB))
+			{
+				float MIN = fabs(ProjectionA.Min - ProjectionB.Min);
+				float MAX = fabs(ProjectionA.Max - ProjectionB.Max);
+				if (MIN < MAX)
+				{
+					O += MIN;
+				}
+				else
+				{
+					O += MAX;
+				}
+			}
+			if (O < MTVOverlap)
+			{
+				MTVAxis = MeshA.GetNormal(i);
+				MTVOverlap = O;
+			}
 		}
 	}
 
@@ -88,11 +126,40 @@ bool World::DoMeshCollidersIntersect(const MeshCollider& MeshA, const MeshCollid
 		ProjectionB = GetProjection(MeshB, MeshB.GetNormal(i));
 		if (!DoProjectionsOverlap(ProjectionA, ProjectionB))
 		{
-			return false;
+			CollData.bDidIntersect = false;
+			return CollData;
+		}
+		else
+		{
+			float O = GetOverlapAmount(ProjectionA, ProjectionB);
+			if (DoesProjectionContain(ProjectionA, ProjectionB) || DoesProjectionContain(ProjectionA, ProjectionB))
+			{
+				float MIN = fabs(ProjectionA.Min - ProjectionB.Min);
+				float MAX = fabs(ProjectionA.Max - ProjectionB.Max);
+				if (MIN < MAX)
+				{
+					O += MIN;
+				}
+				else
+				{
+					O += MAX;
+				}
+			}
+			if (O < MTVOverlap)
+			{
+				MTVAxis = MeshA.GetNormal(i);
+				MTVOverlap = O;
+			}
 		}
 	}
 
-	return true;
+	MTVAxis *= MTVOverlap;
+	CollData.bDidIntersect = true; 
+	CollData.CollisionResponse = MTVAxis;
+	
+	std::cout << "MTV Axis : " <<  MTVAxis << std::endl;
+	
+	return CollData;
 }
 
 World::Projection World::GetProjection(const MeshCollider & Collider, const Vector2f & EdgeNormal) const
@@ -117,7 +184,7 @@ WorldIntersectionData World::CheckWorldIntersection(GameObject & Object, Vector2
 	IntersectData.bDidIntersect = false;
 	IntersectData.CollisionResponse = MovementVector;
 	
-	Vector2i PlayerGridPos = Vector2i((Object.getPosition() + (Object.GetSize()*0.5f)) / STATIC_CAST(float, TILE_SIZE));
+	Vector2i PlayerGridPos = Vector2i((Object.getPosition()) / STATIC_CAST(float, TILE_SIZE));
 	Int32 i = 0;
 	bool bEarlyOut = false;
 	AABBIntersectedTileColliders_.clear();
@@ -177,9 +244,11 @@ WorldIntersectionData World::CheckWorldIntersection(GameObject & Object, Vector2
 		
 		for (auto Collider : AABBIntersectedTileColliders_)
 		{
-			if (DoMeshCollidersIntersect(Object.GetMeshCollider(), *Collider))
+			WorldIntersectionData CollData = DoMeshCollidersIntersect(Object.GetMeshCollider(), *Collider);
+			if (CollData.bDidIntersect) 
 			{
 				bDidFindCollision = true;
+				IntersectData.CollisionResponse = CollData.CollisionResponse;
 				break;
 			}
 		}
@@ -188,11 +257,11 @@ WorldIntersectionData World::CheckWorldIntersection(GameObject & Object, Vector2
 		{
 			if (ColPairIndex == 0)
 			{// X-axis collision
-				IntersectData.CollisionResponse.x *= -1.05f; 
+				//IntersectData.CollisionResponse.x *= -1.05f; 
 			}
 			else
 			{//Y-Axis Collision
-				IntersectData.CollisionResponse.y *= -1.05f;
+				//IntersectData.CollisionResponse.y *= -1.05f;
 			}
 			IntersectData.bDidIntersect = true;
 			continue;

@@ -60,7 +60,7 @@ private:
 		float Min = 0.f; //minimum value
 	};
 
-	bool DoMeshCollidersIntersect(const MeshCollider& MeshA, const MeshCollider& MeshB) const;
+	WorldIntersectionData DoMeshCollidersIntersect(const MeshCollider& MeshA, const MeshCollider& MeshB) const;
 
 	Projection GetProjection(const MeshCollider& Collider, const Vector2f& EdgeNormal) const;
 

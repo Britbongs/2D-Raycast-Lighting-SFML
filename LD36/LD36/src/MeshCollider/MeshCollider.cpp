@@ -112,6 +112,8 @@ void MeshCollider::UpdateNormals()
 
 		Normal Edge = PointA - PointB;
 
+		Edge = Normalise(Edge);
+
 		NormalList_[PointIndex] = MakePerpendicular(Edge);
 	}
 }
