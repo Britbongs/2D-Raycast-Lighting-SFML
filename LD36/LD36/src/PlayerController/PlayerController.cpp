@@ -64,7 +64,7 @@ void PlayerController::Update(float Delta)
 
 	if (IntersectionData.bDidIntersect)
 	{
-		MovementVector = IntersectionData.CollisionResponse;
+		MovementVector = IntersectionData.CollisionResponse * Delta;
 	}
 
 	Obj->move(MovementVector);

@@ -64,16 +64,18 @@ WorldIntersectionData World::DoMeshCollidersIntersect(const MeshCollider& MeshA,
 {
 	WorldIntersectionData CollData;
 	
-	//TODO catch multiple collision resolution 
-	//-----------------------------------------
 	auto DoProjectionsOverlap = [](const Projection& ProjA, const Projection& ProjB)
 	{
 		return !(ProjA.Min > ProjB.Max  || ProjB.Min > ProjA.Max);
 	};
 
-	auto GetOverlapAmount = [](const Projection& ProjA, const Projection& ProjB)
+	auto GetOverlapAmount = [&DoProjectionsOverlap](const Projection& ProjA, const Projection& ProjB)
 	{
-		return Max(0.0f, Min(ProjA.Max, ProjB.Max) - Max(ProjA.Min, ProjB.Min));
+		if (DoProjectionsOverlap(ProjA, ProjB))
+		{
+			return Min(ProjA.Max, ProjA.Min) - Max(ProjA.Min, ProjB.Min);
+		}
+		return 0.0f;
 	};
 
 	auto DoesProjectionContain = [](const Projection& ProjA, const Projection& ProjB)
@@ -99,7 +101,7 @@ WorldIntersectionData World::DoMeshCollidersIntersect(const MeshCollider& MeshA,
 		else
 		{
 			float O = GetOverlapAmount(ProjectionA, ProjectionB);
-			if (DoesProjectionContain(ProjectionA, ProjectionB) || DoesProjectionContain(ProjectionA, ProjectionB))
+			if (DoesProjectionContain(ProjectionA, ProjectionB) || DoesProjectionContain(ProjectionB, ProjectionA))
 			{
 				float MIN = fabs(ProjectionA.Min - ProjectionB.Min);
 				float MAX = fabs(ProjectionA.Max - ProjectionB.Max);
@@ -132,7 +134,7 @@ WorldIntersectionData World::DoMeshCollidersIntersect(const MeshCollider& MeshA,
 		else
 		{
 			float O = GetOverlapAmount(ProjectionA, ProjectionB);
-			if (DoesProjectionContain(ProjectionA, ProjectionB) || DoesProjectionContain(ProjectionA, ProjectionB))
+			if (DoesProjectionContain(ProjectionA, ProjectionB) || DoesProjectionContain(ProjectionB, ProjectionA))
 			{
 				float MIN = fabs(ProjectionA.Min - ProjectionB.Min);
 				float MAX = fabs(ProjectionA.Max - ProjectionB.Max);
@@ -255,6 +257,7 @@ WorldIntersectionData World::CheckWorldIntersection(GameObject & Object, Vector2
 
 		if (bDidFindCollision)
 		{
+			//TODO remove the previous collision response if MTV works 
 			if (ColPairIndex == 0)
 			{// X-axis collision
 				//IntersectData.CollisionResponse.x *= -1.05f; 
