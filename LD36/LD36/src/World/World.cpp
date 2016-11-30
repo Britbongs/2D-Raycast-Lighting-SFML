@@ -1,6 +1,6 @@
 #include "stdafx.hpp"
 #include "World\World.hpp"
-
+#include <cfloat> //For FLT_MAX
 
 World::World(std::vector<GameObject*>& Objects, RenderTexture* RTexture)
 	: Objects_(Objects), RTexture_(RTexture)
@@ -86,7 +86,7 @@ WorldIntersectionData World::DoMeshCollidersIntersect(const MeshCollider& MeshA,
 	Projection ProjectionA, ProjectionB;
 	// MTV = Minimum Translation Vector 
 	Vector2f MTVAxis;  //Direction component
-	float MTVOverlap = 1.0e6; // Magnitude (initialised as large value to allow smaller values to overwrite this one) 
+	float MTVOverlap = FLT_MAX; // Magnitude (initialised as large value to allow smaller values to overwrite this one) 
 	
 	for (Int32 i = 0; i < MeshA.GetNormalListSize(); ++i)
 	{
@@ -244,27 +244,28 @@ WorldIntersectionData World::CheckWorldIntersection(GameObject & Object, Vector2
 		
 		bool bDidFindCollision = false;
 		
+		WorldIntersectionData MeshResult; 
+		
 		for (auto Collider : AABBIntersectedTileColliders_)
 		{
-			WorldIntersectionData CollData = DoMeshCollidersIntersect(Object.GetMeshCollider(), *Collider);
-			if (CollData.bDidIntersect) 
+			//WorldIntersectionData CollData = DoMeshCollidersIntersect(Object.GetMeshCollider(), *Collider);
+			MeshResult = DoMeshCollidersIntersect(Object.GetMeshCollider(), *Collider);
+			if (MeshResult.bDidIntersect) 
 			{
-				bDidFindCollision = true;
-				IntersectData.CollisionResponse = CollData.CollisionResponse;
 				break;
 			}
 		}
-
-		if (bDidFindCollision)
+		
+		if (MeshResult.bDidIntersect)
 		{
 			//TODO remove the previous collision response if MTV works 
 			if (ColPairIndex == 0)
 			{// X-axis collision
-				//IntersectData.CollisionResponse.x *= -1.05f; 
+				IntersectData.CollisionResponse.x = MeshResult.CollisionResponse.x; 
 			}
 			else
 			{//Y-Axis Collision
-				//IntersectData.CollisionResponse.y *= -1.05f;
+				IntersectData.CollisionResponse.y = MeshResult.CollisionResponse.y;
 			}
 			IntersectData.bDidIntersect = true;
 			continue;
